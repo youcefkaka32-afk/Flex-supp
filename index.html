@@ -29,7 +29,63 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <!-- Chatbase removed from production to prevent page hide; add back only for dev testing -->
+
+    <!-- Chatbase embed — restored with defensive override to prevent page hide -->
+    <script>
+      (function(){
+        function neutralize() {
+          try {
+            const html = document.documentElement
+            const body = document.body
+            const styles = {
+              position: 'static',
+              top: 'auto',
+              left: 'auto',
+              width: 'auto',
+              height: 'auto',
+              overflow: 'visible',
+              'overflow-x': 'visible',
+              'overflow-y': 'visible',
+              transform: 'none'
+            }
+            for (const k in styles) {
+              try { html.style.setProperty(k, styles[k], 'important') } catch(e) {}
+              try { body.style.setProperty(k, styles[k], 'important') } catch(e) {}
+            }
+          } catch (e) {}
+        }
+
+        const obs = new MutationObserver((muts) => {
+          for (const m of muts) {
+            if (m.attributeName === 'class' && document.documentElement.classList.contains('__cb_widget_active')) {
+              neutralize()
+            }
+          }
+        })
+        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+
+        if (document.readyState === 'complete') neutralize();
+        else window.addEventListener('load', neutralize)
+      })();
+    </script>
+
+    <script>
+      (function(){
+        if(!window.chatbase||window.chatbase("getState")!=="initialized"){
+          window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};
+          window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})
+        }
+        const onLoad=function(){
+          const script=document.createElement('script');
+          script.src='https://www.chatbase.co/embed.min.js';
+          script.id='sHaahB1RfteTCk55rvx1L';
+          script.domain='www.chatbase.co';
+          document.body.appendChild(script)
+        };
+        if(document.readyState==="complete"){onLoad()}else{window.addEventListener('load',onLoad)}
+      })();
+    </script>
+
     <!-- redeploy-check: 2026-06-14T13:05:00Z -->
   </body>
 </html>
