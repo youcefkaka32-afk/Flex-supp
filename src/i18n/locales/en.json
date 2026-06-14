@@ -17,7 +17,33 @@
       "shop": "SHOP",
       "about": "ABOUT"
     },
-    "login": "LOGIN / REGISTER"
+    "login": "LOGIN / REGISTER",
+    "slides": {
+      "protein": {
+        "title": "PROTEIN",
+        "kicker": "BUILD YOUR BODY",
+        "subtitle": "Premium Whey Formula",
+        "cta": "SHOP NOW"
+      },
+      "vitamins": {
+        "title": "VITAMINS",
+        "kicker": "ELEVATE YOUR HEALTH",
+        "subtitle": "Complete Multivitamin Complex",
+        "cta": "SHOP NOW"
+      },
+      "massgainer": {
+        "title": "MASS GAINER",
+        "kicker": "BULK UP FASTER",
+        "subtitle": "High-Calorie Mass Formula",
+        "cta": "SHOP NOW"
+      },
+      "creatine": {
+        "title": "CREATINE",
+        "kicker": "UNLEASH YOUR POWER",
+        "subtitle": "Pre-Workout & Creatine Stack",
+        "cta": "SHOP NOW"
+      }
+    }
   },
   "subhero": {
     "badge": "Authenticity · Performance · Results",
