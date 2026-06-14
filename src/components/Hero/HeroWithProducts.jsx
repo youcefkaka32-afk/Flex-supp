@@ -330,9 +330,13 @@ export default function HeroWithProducts() {
     const backLetters = Array.from(titleBackRef.current.querySelectorAll('.letter'))
     const allLetters = [...frontLetters, ...backLetters]
 
+    const alignLeft = activeSlide.titleStyle?.align === 'left'
+    const xPct = alignLeft ? 0 : -50
+    const yPct = -50
+
     gsap.killTweensOf([allLetters, infoKickerRef.current, infoSubRef.current, voirPlusRef.current, shoeStageRef.current, titleFrontRef.current, titleBackRef.current])
     gsap.set([infoKickerRef.current, infoSubRef.current, voirPlusRef.current], { opacity: 0, y: 18 })
-    gsap.set([titleBackRef.current, titleFrontRef.current], { x: 0, y: 0 })
+    gsap.set([titleBackRef.current, titleFrontRef.current], { x: 0, y: 0, xPercent: xPct, yPercent: yPct })
     
     if (activeSlide.shoe === 'superfly') {
       gsap.set(shoeStageRef.current, { opacity: 0, scale: 1.05, y: 600, x: 0, xPercent: -50, yPercent: -50 })
@@ -620,6 +624,11 @@ export default function HeroWithProducts() {
       letterEntrySkew = 0
     }
 
+    const activeSlide = slides[s.currentIndex]
+    const alignLeft = activeSlide.titleStyle?.align === 'left'
+    const xPct = alignLeft ? 0 : -50
+    const yPct = -50
+
     s.glitchPower = 0.9
     spawnGlitchScanlines()
     heroRef.current.classList.add('is-glitching')
@@ -628,20 +637,24 @@ export default function HeroWithProducts() {
     gsap.to(titleFrontRef.current, {
       x: 14,
       skewX: 4,
+      xPercent: xPct,
+      yPercent: yPct,
       duration: 0.04,
       yoyo: true,
       repeat: 4,
       ease: 'none',
-      onComplete: () => gsap.set(titleFrontRef.current, { x: 0, skewX: 0 }),
+      onComplete: () => gsap.set(titleFrontRef.current, { x: 0, skewX: 0, xPercent: xPct, yPercent: yPct }),
     })
     gsap.to(titleBackRef.current, {
       x: -10,
       skewX: -4,
+      xPercent: xPct,
+      yPercent: yPct,
       duration: 0.04,
       yoyo: true,
       repeat: 4,
       ease: 'none',
-      onComplete: () => gsap.set(titleBackRef.current, { x: 0, skewX: 0 }),
+      onComplete: () => gsap.set(titleBackRef.current, { x: 0, skewX: 0, xPercent: xPct, yPercent: yPct }),
     })
 
     // Slingshot leaving bottle off-screen
