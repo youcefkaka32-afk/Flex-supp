@@ -77,7 +77,7 @@ html {
 html, body {
   width: 100%;
   min-height: 100%;
-  background: #000;
+  background: linear-gradient(180deg, #04070b 0%, #07111b 60%, #05070a 100%);
   color: #fff;
 }
 

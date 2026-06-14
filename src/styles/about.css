@@ -907,7 +907,7 @@ a.about-cta__meta-value:hover { color: var(--red); }
 .about-hero__flip-text {
   display: inline-block;
   perspective: 800px;
-  perspectiveOrigin: center;
+  perspective-origin: center;
 }
 
 .about-hero__flip-char {
