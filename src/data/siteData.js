@@ -23,7 +23,7 @@ export const slides = [
     kicker: 'BUILD YOUR BODY',
     subtitle: 'Premium Whey Formula',
     cta: 'SHOP NOW',
-    ctaHref: '/shop',
+    ctaHref: '/shop?category=whey',
     ctaProminent: true,
     goal: 'muscle',
     // Protein → very dominant red, white center, tiny orange
@@ -44,7 +44,7 @@ export const slides = [
     kicker: 'ELEVATE YOUR HEALTH',
     subtitle: 'Complete Multivitamin Complex',
     cta: 'SHOP NOW',
-    ctaHref: '/shop',
+    ctaHref: '/shop?category=bcaa',
     ctaProminent: false,
     goal: 'energy',
     // Vitamins → cyan/light blue dominant left, orange right, white
@@ -65,7 +65,7 @@ export const slides = [
     kicker: 'BULK UP FASTER',
     subtitle: 'High-Calorie Mass Formula',
     cta: 'SHOP NOW',
-    ctaHref: '/shop',
+    ctaHref: '/shop?category=whey',
     ctaProminent: false,
     goal: 'bulk',
     // Mass Gainer → very large purple bloom on left, then blue, white
@@ -86,7 +86,7 @@ export const slides = [
     kicker: 'UNLEASH YOUR POWER',
     subtitle: 'Pre-Workout & Creatine Stack',
     cta: 'SHOP NOW',
-    ctaHref: '/shop',
+    ctaHref: '/shop?category=creatine',
     ctaProminent: false,
     goal: 'force',
     // Creatine → very large red bloom on right, green left, white

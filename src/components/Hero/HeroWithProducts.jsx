@@ -1076,13 +1076,13 @@ export default function HeroWithProducts() {
     if (event.target.closest('a, button, input, textarea, select')) return
     const currentSlide = state.current.currentIndex
     if (currentSlide === 0) {
-      navigate('/shop?categories=Protéines')
+      navigate('/shop?category=whey')
     } else if (currentSlide === 1) {
-      navigate('/shop?categories=Pré-workout,Creatine')
+      navigate('/shop?category=bcaa')
     } else if (currentSlide === 2) {
-      navigate('/shop?categories=Recovery,Whey')
+      navigate('/shop?category=whey')
     } else if (currentSlide === 3) {
-      navigate('/shop?categories=BCAA,Pre-Workout')
+      navigate('/shop?category=creatine')
     }
   }
 
