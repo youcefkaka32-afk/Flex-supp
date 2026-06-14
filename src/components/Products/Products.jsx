@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -37,10 +37,41 @@ export default function Products() {
   const [sidebarOpen, setSidebarOpen]       = useState(true)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [currentPage, setCurrentPage]       = useState(1)
+  const location = useLocation()
+  const toolbarRef = useRef(null)
+  const hasMountedRef = useRef(false)
   const PRODUCTS_PER_PAGE = 12
 
   const categories  = data?.categories ?? []
   const allProducts = data?.products   ?? []
+
+  const scrollToProducts = () => {
+    const toolbar = toolbarRef.current
+    if (!toolbar) return
+    toolbar.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const categoryParam = params.get('category') || params.get('categories')?.split(',')[0]?.trim()
+    if (!categoryParam) return
+    if (!categories.some((cat) => cat.id === categoryParam)) return
+    setActiveCategory(categoryParam)
+  }, [location.search, categories])
+
+  useEffect(() => {
+    if (location.search.includes('category=')) {
+      scrollToProducts()
+    }
+  }, [location.search])
+
+  useEffect(() => {
+    if (hasMountedRef.current) {
+      scrollToProducts()
+    } else {
+      hasMountedRef.current = true
+    }
+  }, [activeCategory])
 
   const [minPrice, maxPrice] = useMemo(() => {
     if (!allProducts.length) return [0, 15000]
@@ -131,7 +162,7 @@ export default function Products() {
       </div>
 
       {/* Toolbar */}
-      <div className="boutique-toolbar">
+      <div className="boutique-toolbar" ref={toolbarRef}>
         <div className="boutique-toolbar__left">
           <button className="sidebar-toggle-btn" onClick={() => setSidebarOpen(s => !s)}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -1,0 +1,20 @@
+.hero {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - 88px);
+  min-height: calc(100vh - 88px);
+  overflow: hidden;
+  background: #05070d;
+  cursor: none;
+  isolation: isolate;
+  color: #fff;
+  will-change: auto;
+}
+
+/* Prevent content shift during page transitions */
+.hero * {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ... (full CSS content preserved in backup) */

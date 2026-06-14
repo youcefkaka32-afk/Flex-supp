@@ -77,16 +77,14 @@
   object-position: center;
   display: block;
   opacity: 0;
-  transform: scale(1.06);
-  transition:
-    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.0s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
+  /* Avoid any scale transforms during image reveal to prevent
+     a perceptible zoom. Keep only opacity transition. */
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
   position: relative;
   z-index: 2;
 }
 
 .lazy-image-el.is-visible {
   opacity: 1;
-  transform: scale(1);
 }

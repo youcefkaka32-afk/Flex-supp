@@ -27,6 +27,8 @@ export const slides = [
     goal: 'muscle',
     image: heroMainImage,
     imageMobile: heroMainImageMobile,
+    imagePosition: 'center 62%',
+    imageOffset: { x: 0, y: 0.08 },
     titleStyle: { top: '54%', left: '50%', align: 'center', width: 'auto' },
     titleSplit: { front: [0, 1, 2, 3, 4, 5, 6, 7, 8], back: [], outlines: [] },
     shoe: 'superfly',

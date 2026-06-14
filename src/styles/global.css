@@ -717,6 +717,41 @@ img { display: block; max-width: 100%; }
 }
 
 /* Animation Delays */
+
+/* Temporary helper: when present on <body>, disable animations/transitions
+   that can cause scale/zoom perception during route transitions. This is
+   intentionally broad and short-lived; it is safe to remove once the
+   underlying animation sources are fully resolved. */
+.no-scale-animations *,
+.no-scale-animations *::before,
+.no-scale-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Cinematic entrance panels */
+.cinematic-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(20,20,20,0.95) 100%);
+  z-index: 99997;
+  pointer-events: none;
+}
+.cinematic-panel--top { top: 0; transform-origin: top center; }
+.cinematic-panel--bottom { bottom: 0; transform-origin: bottom center; }
+
+/* Slight sheen overlay for cinematic effect */
+.cinematic-panel::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.02) 100%);
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+  pointer-events: none;
+}
 .delay-100 {
   animation-delay: 100ms;
 }

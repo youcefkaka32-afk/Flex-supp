@@ -71,9 +71,8 @@ export default function Categories() {
         {/* Category Grid */}
         <div className="categories-grid">
           {(loading ? Array(4).fill(null) : categories).map((cat, i) => (
-            <motion.a
+            <motion.div
               key={cat ? cat.id : i}
-              href="/shop"
               className={`category-tile ${!cat ? 'category-tile--skeleton' : ''}`}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -82,7 +81,10 @@ export default function Categories() {
               whileHover={{ y: -4 }}
             >
               {cat && (
-                <>
+                <Link
+                  to={`/shop?category=${encodeURIComponent(cat.id)}`}
+                  className="category-tile__link"
+                >
                   {/* Top accent bar */}
                   <div className="category-tile__accent" />
 
@@ -102,9 +104,9 @@ export default function Categories() {
                     </span>
                     <span className="category-tile__arrow">→</span>
                   </div>
-                </>
+                </Link>
               )}
-            </motion.a>
+            </motion.div>
           ))}
         </div>
 

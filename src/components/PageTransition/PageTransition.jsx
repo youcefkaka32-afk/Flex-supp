@@ -1,5 +1,6 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 
 /* ─────────────────────────────────────────────────────────
    PageTransition — animates on navigations BETWEEN pages
@@ -10,21 +11,36 @@ const pageVariants = {
   animate: {
     opacity: 1,
     transition: {
-      duration: 0.4,
+      duration: 0.45,
       ease: [0.22, 1, 0.36, 1],
-      delay: 0.08,
+      delay: 0.02,
     },
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.2,
-      ease: [0.55, 0, 1, 0.45],
+      duration: 0.35,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
 }
 
 export default function PageTransition({ children }) {
+  const location = useLocation()
+
+  useEffect(() => {
+    // Temporarily disable CSS animations/transitions that include scale
+    // while the route transition is in progress to avoid perceptual zooms.
+    if (typeof document === 'undefined') return
+    document.body.classList.add('no-scale-animations')
+    const t = setTimeout(() => {
+      document.body.classList.remove('no-scale-animations')
+    }, 1200)
+    return () => {
+      clearTimeout(t)
+      document.body.classList.remove('no-scale-animations')
+    }
+  }, [location.pathname])
   return (
     <motion.div
       initial="initial"
@@ -34,43 +50,11 @@ export default function PageTransition({ children }) {
       style={{ 
         width: '100%', 
         minHeight: '100vh',
+        position: 'relative',
         willChange: 'opacity',
       }}
     >
       {children}
     </motion.div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────────
-   PageCurtain — red stripe sweep on navigation
-   ───────────────────────────────────────────────────────── */
-export function PageCurtain() {
-  const location = useLocation()
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        key={`curtain-${location.pathname}`}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '3px',
-          background: 'linear-gradient(90deg, #E31B23 0%, #ff6b6b 50%, #E31B23 100%)',
-          zIndex: 99999,
-          transformOrigin: 'left center',
-          pointerEvents: 'none',
-          willChange: 'transform',
-        }}
-        initial={{ scaleX: 0, opacity: 1 }}
-        animate={[
-          { scaleX: 1, transition: { duration: 0.38, ease: [0.76, 0, 0.24, 1] } },
-          { opacity: 0, transition: { duration: 0.22, delay: 0.1 } },
-        ]}
-        exit={{ opacity: 0, transition: { duration: 0 } }}
-      />
-    </AnimatePresence>
   )
 }

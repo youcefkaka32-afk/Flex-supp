@@ -38,6 +38,8 @@ function Counter({ target, suffix, duration = 2 }) {
 
 // Reveal on scroll wrapper
 function Reveal({ children, delay = 0, direction = 'up', className = '' }) {
+  const { i18n } = useTranslation()
+  const lang = (i18n && i18n.language) ? i18n.language : 'en'
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const variants = {
@@ -48,6 +50,16 @@ function Reveal({ children, delay = 0, direction = 'up', className = '' }) {
     },
     visible: { opacity: 1, y: 0, x: 0 }
   }
+
+  // If language is Arabic, render static non-animated wrapper to ensure readability
+  if (lang === 'ar') {
+    return (
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    )
+  }
+
   return (
     <motion.div
       ref={ref}
@@ -130,7 +142,8 @@ const PRODUCTS = [
 ]
 
 export default function AboutPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lang = (i18n && i18n.language) ? i18n.language : 'en'
 
   // Get dynamic data from translations
   const STRIP_ITEMS = getStripItems(t)
@@ -160,7 +173,7 @@ export default function AboutPage() {
   }, [])
 
   return (
-    <div className="about-page">
+    <div className="about-page" lang={lang}>
 
       {/* ── HERO ── */}
       <section className="about-hero">
@@ -192,39 +205,56 @@ export default function AboutPage() {
           </motion.h1>
 
           <div className="about-hero__flip-tagline">
-            <Text3DFlip
-              className="about-hero__flip-text"
-              textClassName="about-hero__flip-char"
-              flipTextClassName="about-hero__flip-char"
-              rotateDirection="top"
-              staggerDuration={0.035}
-              staggerFrom="first"
-              transition={{ type: 'spring', damping: 22, stiffness: 150 }}
-            >
-              {t('about.tagline')}
-            </Text3DFlip>
+            {lang === 'ar' ? (
+              <div className="about-hero__flip-text about-hero__flip-text--static">{t('about.tagline')}</div>
+            ) : (
+              <Text3DFlip
+                className="about-hero__flip-text"
+                textClassName="about-hero__flip-char"
+                flipTextClassName="about-hero__flip-char"
+                rotateDirection="top"
+                staggerDuration={0.035}
+                staggerFrom="first"
+                transition={{ type: 'spring', damping: 22, stiffness: 150 }}
+              >
+                {t('about.tagline')}
+              </Text3DFlip>
+            )}
           </div>
 
-          <motion.p
-            className="about-hero__sub"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.8 }}
-          >
-            {t('about.story1Sub')}
-          </motion.p>
+          {lang === 'ar' ? (
+            <p className="about-hero__sub about-hero__sub--static">{t('about.story1Sub')}</p>
+          ) : (
+            <motion.p
+              className="about-hero__sub"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.8 }}
+            >
+              {t('about.story1Sub')}
+            </motion.p>
+          )}
 
-          <motion.div
-            className="about-hero__cta font-display"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
-            transition={{ duration: 1, delay: 1.4 }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-            {t('about.scrollDown')}
-          </motion.div>
+          {lang === 'ar' ? (
+            <div className="about-hero__cta font-display about-hero__cta--static">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+              {t('about.scrollDown')}
+            </div>
+          ) : (
+            <motion.div
+              className="about-hero__cta font-display"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              transition={{ duration: 1, delay: 1.4 }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+              {t('about.scrollDown')}
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -268,10 +298,10 @@ export default function AboutPage() {
       </section>
 
       {/* ── FOUNDERS STORY STRIP ── */}
-      <div className="about-story-strip" style={{ position: 'relative', overflow: 'hidden', color: 'white' }}>
-        <StripedPattern style={{ opacity: 0.15 }} />
-        <div style={{ width: 'min(1100px, calc(100vw - 60px))', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <h2 className="font-display">{t('whyUs.manifestoEyebrow')}</h2>
+      <div className="about-story-strip">
+        <StripedPattern className="about-story-strip__pattern" />
+        <div className="about-story-strip__content">
+          <h2 className="font-display about-story-strip__title">{t('whyUs.manifestoEyebrow')}</h2>
         </div>
       </div>
 

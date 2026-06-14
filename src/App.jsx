@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useState, useEffect, useRef, lazy, Suspense } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react'
 import './styles/global.css'
 import './styles/mobile-enhancements.css'
 import './styles/mobile-scale-fix.css'
@@ -8,11 +8,12 @@ import { CartProvider } from './context/CartContext'
 import CartDrawer      from './components/Cart/CartDrawer'
 import CheckoutModal   from './components/Checkout/CheckoutModal'
 import Navbar          from './components/Navbar/Navbar'
-import PageTransition, { PageCurtain } from './components/PageTransition/PageTransition'
+import PageTransition from './components/PageTransition/PageTransition'
 import CustomCursor    from './components/CustomCursor/CustomCursor'
 import AnnouncementBar from './components/AnnouncementBar/AnnouncementBar'
 import ScrollToTop     from './components/ui/ScrollToTop'
 import LoaderReveal    from './components/Loader/LoaderReveal'
+import { slides } from './data/siteData'
 
 // Video loader available but not used
 // import LoaderRevealVideo from './components/Loader/LoaderRevealVideo'
@@ -35,16 +36,29 @@ function AnimatedRoutes() {
   const location = useLocation()
   const isAdmin = location.pathname.startsWith('/admin')
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [location.pathname])
+  useLayoutEffect(() => {
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+
+    const scrollTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+      document.body.scrollTop = 0
+      document.documentElement.scrollTop = 0
+    }
+
+    scrollTop()
+    requestAnimationFrame(scrollTop)
+    const timeout = window.setTimeout(scrollTop, 50)
+
+    return () => window.clearTimeout(timeout)
+  }, [location.pathname, location.search])
   
   return (
     <>
       {!isAdmin && <AnnouncementBar />}
       {!isAdmin && <Navbar />}
       {!isAdmin && <CustomCursor />}
-      {!isAdmin && <PageCurtain />}
       <AnimatePresence mode="wait">
         <Suspense fallback={null}>
           <Routes location={location} key={location.pathname}>
@@ -78,6 +92,10 @@ export default function App() {
   console.log('[App] 🎬 Starting with:', { isFirstLoad, forceFirstLoad, revealComplete })
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+
     if (isAdmin) {
       document.body.style.overflow = ''
       setRevealComplete(true)
@@ -89,7 +107,30 @@ export default function App() {
     } else {
       document.body.style.overflow = ''
     }
+
+    return () => {
+      if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'auto'
+      }
+    }
   }, [revealComplete, isAdmin])
+
+  // Preload hero slide images to avoid background image load during navigation
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    try {
+      slides.forEach(s => {
+        const img = new Image()
+        img.src = s.image
+        if (s.imageMobile) {
+          const img2 = new Image()
+          img2.src = s.imageMobile
+        }
+      })
+    } catch (e) {
+      // ignore
+    }
+  }, [])
 
   return (
     <CartProvider>

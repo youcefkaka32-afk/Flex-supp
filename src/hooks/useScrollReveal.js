@@ -51,8 +51,11 @@ export function useScrollReveal(opts = {}, externalRef = null) {
     if (!targets.length) return
 
     // Preset from-vars
+    // NOTE: avoid animating `scale` by default — many large hero/background
+    // images look like they're 'zooming' when we tween scale. Keep `scale`
+    // behaviour only for the explicit `scale` preset.
     const presets = {
-      fadeUp:    { opacity: 0, y: 56, scale: 0.98 },
+      fadeUp:    { opacity: 0, y: 56 },
       fadeLeft:  { opacity: 0, x: 60 },
       fadeRight: { opacity: 0, x: -60 },
       scale:     { opacity: 0, scale: 0.88, y: 20 },
@@ -68,7 +71,6 @@ export function useScrollReveal(opts = {}, externalRef = null) {
       opacity: 1,
       x: 0,
       y: 0,
-      scale: 1,
       duration,
       ease,
       delay,
@@ -78,6 +80,11 @@ export function useScrollReveal(opts = {}, externalRef = null) {
         start,
         once,
       },
+    }
+
+    // Only animate `scale` if the fromVars explicitly included it.
+    if (Object.prototype.hasOwnProperty.call(fromVars, 'scale')) {
+      toVars.scale = 1
     }
 
     const ctx = gsap.context(() => {

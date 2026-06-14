@@ -98,6 +98,35 @@
   margin-top: 16vh;
 }
 
+/* Force white text in hero (Arabic + English) */
+.about-page .about-hero__eyebrow,
+.about-page .about-hero__eyebrow *,
+.about-page .about-hero__title,
+.about-page .about-hero__flip-text,
+.about-page .about-hero__flip-text--static,
+.about-page .about-hero__sub,
+.about-page .about-hero__cta {
+  color: #ffffff !important;
+}
+
+/* Keep the title's span (SUPPS) red like the design */
+.about-page .about-hero__title span {
+  color: var(--red) !important;
+}
+
+/* Ensure Arabic static hero variants stay white even with global Arabic color */
+.about-page[lang="ar"] .about-hero__eyebrow,
+.about-page[lang="ar"] .about-hero__title,
+.about-page[lang="ar"] .about-hero__flip-text--static,
+.about-page[lang="ar"] .about-hero__sub--static,
+.about-page[lang="ar"] .about-hero__cta--static {
+  color: #ffffff !important;
+}
+
+.about-page[lang="ar"] .about-hero__title span {
+  color: var(--red) !important;
+}
+
 .about-hero__eyebrow {
   display: inline-flex;
   align-items: center;
@@ -248,40 +277,173 @@
 
 /* ══ STORY STRIP ════════════════════════════════════════════ */
 .about-story-strip {
-  background: var(--red);
-  padding: 1.2rem 2rem;
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 0;
+  background: linear-gradient(135deg, #f10808 0%, #d10303 45%, #a50000 100%);
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
 }
 
-.about-story-strip h2 {
+.about-story-strip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 12% 50%, rgba(255,255,255,0.18), transparent 28%),
+              radial-gradient(circle at 88% 30%, rgba(255,255,255,0.10), transparent 22%),
+              repeating-linear-gradient(45deg, rgba(255,255,255,0.15) 0, rgba(255,255,255,0.15) 1px, transparent 1px, transparent 6px);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.about-story-strip__pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+}
+
+.about-story-strip__content {
+  width: min(1100px, calc(100vw - 60px));
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.about-story-strip__title {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: clamp(22px, 3vw, 32px);
+  font-size: clamp(32px, 4vw, 52px);
   font-weight: 900;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #ffffff;
+  text-align: center;
   margin: 0;
+  max-width: 900px;
+  line-height: 1.05;
+}
+
+.about-story-strip__title::before {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  margin: 0 auto 1rem;
+  background: rgba(255,255,255,0.9);
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .about-story-strip {
+    padding: 2.5rem 0;
+  }
+
+  .about-story-strip__content {
+    min-height: 170px;
+  }
 }
 
 /* ══ STORY BODY ═════════════════════════════════════════════ */
 .about-story {
-  background: #ffffff;
-  padding: 4rem 0 6rem;
+  background: #f9f6f2;
+  padding: 6rem 0 8rem;
   color: #000000;
 }
 
 .about-story__shell {
-  width: min(900px, calc(100vw - 60px));
+  width: min(1100px, calc(100vw - 60px));
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  gap: 2.5rem;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 36px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.08);
+  padding: 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-story__shell::before {
+  content: '“';
+  position: absolute;
+  top: 1.25rem;
+  left: 2rem;
+  font-size: 7rem;
+  line-height: 1;
+  color: rgba(227,27,35,0.08);
+  font-family: 'Barlow Condensed', sans-serif;
+  pointer-events: none;
+}
+
+.about-story__shell::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -20%;
+  width: 420px;
+  height: 420px;
+  transform: translateY(-50%);
+  background: radial-gradient(circle at center, rgba(227,27,35,0.14), transparent 55%);
+  pointer-events: none;
 }
 
 .about-story__p {
   font-family: 'Inter', sans-serif;
-  font-size: clamp(14px, 1.3vw, 17px);
-  line-height: 1.85;
-  color: rgba(0,0,0,0.72);
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 1.9;
+  color: rgba(0,0,0,0.75);
+  position: relative;
+  z-index: 1;
+}
+
+.about-story__p:first-child {
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-weight: 600;
+  color: rgba(0,0,0,0.88);
+  max-width: 640px;
+}
+
+.about-story__p:nth-child(3) {
+  grid-column: 2;
+  align-self: start;
+  padding: 2.25rem;
+  border-radius: 28px;
+  background: rgba(227,27,35,0.05);
+  border: 1px solid rgba(227,27,35,0.14);
+  box-shadow: 0 22px 40px rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.88);
+  letter-spacing: 0.01em;
+}
+
+.about-story__p:nth-child(3)::before {
+  content: 'Founder Philosophy';
+  display: block;
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--red);
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 992px) {
+  .about-story__shell {
+    grid-template-columns: 1fr;
+  }
+
+  .about-story__shell::before,
+  .about-story__shell::after {
+    display: none;
+  }
+
+  .about-story__p:nth-child(3) {
+    grid-column: 1;
+  }
 }
 
 /* ══ STATS ══════════════════════════════════════════════════ */
@@ -679,6 +841,67 @@ a.about-cta__meta-value:hover { color: var(--red); }
   margin-top: 0.25rem;
   display: flex;
   justify-content: center;
+}
+
+/* Static / non-animated variants for Arabic language */
+.about-hero__flip-text--static,
+.about-hero__sub--static,
+.about-hero__cta--static {
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Ensure direction and readable font for Arabic */
+.about-page[lang="ar"] .about-hero__flip-text--static,
+.about-page[lang="ar"] .about-hero__sub--static,
+.about-page[lang="ar"] .about-hero__cta--static {
+  direction: rtl;
+  unicode-bidi: isolate; /* avoid bidi effects */
+  text-align: right;
+}
+
+/* Arabic: bigger and readable text for page content */
+.about-page[lang="ar"] {
+  color: #000000 !important;
+}
+
+.about-page[lang="ar"] .about-story__p,
+.about-page[lang="ar"] .about-diff__body,
+.about-page[lang="ar"] .about-feature-text h3,
+.about-page[lang="ar"] .about-feature-text p,
+.about-page[lang="ar"] .about-products__title,
+.about-page[lang="ar"] .about-product-card__label {
+  color: #000000 !important;
+  font-size: 1.15rem !important;
+  line-height: 1.6 !important;
+}
+
+/* Keep About page hero text white for Arabic hero section */
+.about-page[lang="ar"] .about-hero__title,
+.about-page[lang="ar"] .about-hero__eyebrow,
+.about-page[lang="ar"] .about-hero__flip-text--static,
+.about-page[lang="ar"] .about-hero__sub--static {
+  color: #ffffff !important;
+}
+
+/* Preserve red accent for the mapped SUPPS span */
+.about-page[lang="ar"] .about-hero__title span {
+  color: var(--red) !important;
+}
+
+/* Larger hero title for Arabic */
+.about-page[lang="ar"] .about-hero__title {
+  font-size: 3.2rem !important;
+}
+
+/* Slightly enlarge flip tagline and subtext */
+.about-page[lang="ar"] .about-hero__flip-text--static {
+  font-size: 1.6rem !important;
+}
+.about-page[lang="ar"] .about-hero__sub--static {
+  font-size: 1.05rem !important;
 }
 
 .about-hero__flip-text {

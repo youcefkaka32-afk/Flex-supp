@@ -34,6 +34,7 @@ const fragmentShader = `
   uniform float uProgress;
   uniform float uGlitch;
   uniform float uImageScale;
+  uniform vec2 uImageOffset;
   uniform vec2 uResolution;
   uniform sampler2D uPrevTex;
   uniform sampler2D uNextTex;
@@ -80,6 +81,7 @@ const fragmentShader = `
     float wave = snoise(vec2(uv.y * 6.0, uTime * 0.8)) * 0.004 * glitch * direction;
     vec2 sampleUv = coverUv(uv, texSize, uResolution);
     sampleUv = (sampleUv - 0.5) * uImageScale + 0.5;
+    sampleUv += uImageOffset;
     sampleUv.x += rowShift + wave;
     return texture2D(tex, sampleUv);
   }
@@ -141,15 +143,14 @@ export default function Hero() {
   })
 
   const getSlideImageScale = (slide) => {
-    const desktop = typeof window !== 'undefined' && window.innerWidth > 520
-    const isMobile = window.innerWidth <= 768
-    
-    // If mobile and slide has mobile image, zoom out more for better framing
-    if (isMobile && slide.imageMobile) {
-      return 1.15  // Slightly zoomed out on mobile
-    }
-    
-    return desktop ? (slide === slides[0] ? 1.15 : 0.88) : 1.0
+    // Lock image sampling scale to 1.0 to avoid perceived zooming
+    // Keep this conservative: always return 1.0 so the shader samples at natural scale
+    return 1.0
+  }
+
+  const getSlideImageOffset = (slide) => {
+    if (!slide || !slide.imageOffset) return { x: 0, y: 0 }
+    return slide.imageOffset
   }
 
   const handleHeroClick = (event) => {
@@ -201,20 +202,14 @@ export default function Hero() {
       linear-gradient(to top, rgba(0, 0, 0, 0.28) 0%, transparent 32%),
       url("${imageToUse}")
     `
-    layer.style.backgroundPosition = 'center center, center center, center center'
+    const backgroundPosition = slide.imagePosition ?? 'center center'
+    layer.style.backgroundPosition = `${backgroundPosition}, ${backgroundPosition}, ${backgroundPosition}`
     const desktop = (typeof window !== 'undefined' && window.innerWidth > 520)
     
-    // Zoom out mobile hero image for better framing
-    let imgSize
-    if (!desktop && slide.imageMobile) {
-      imgSize = '105%'  // Slightly zoomed out mobile images
-    } else if (!desktop) {
-      imgSize = 'cover'  // Regular mobile size for slides without mobile variant
-    } else {
-      imgSize = slide === slides[0] ? '85% 85%' : '115% 115%'  // Desktop sizing
-    }
-    
-    layer.style.backgroundSize = `cover, cover, ${imgSize}`
+    // Keep background-size consistent to avoid perceptual zooming when
+    // swapping images during navigation. Use 'cover' for all cases so the
+    // CSS fallback and GL canvas share the same framing behavior.
+    layer.style.backgroundSize = `cover, cover, cover`
     layer.style.backgroundRepeat = 'no-repeat'
   }
 
@@ -276,7 +271,10 @@ export default function Hero() {
     u.uPrevTexSize.value.set(prev.image.width, prev.image.height)
     u.uNextTex.value = next
     u.uNextTexSize.value.set(next.image.width, next.image.height)
-    u.uImageScale.value = getSlideImageScale(nextSlide)
+    // Ensure GL sampling scale is stable during transition
+    u.uImageScale.value = 1.0
+    if (u.uImageOffset && u.uImageOffset.value) u.uImageOffset.value.set(getSlideImageOffset(nextSlide).x, getSlideImageOffset(nextSlide).y)
+    if (typeof window !== 'undefined' && window.console) console.log('[Hero] triggerGLTransition uImageScale=', u.uImageScale.value)
     u.uProgress.value = 0
     gsap.killTweensOf(u.uProgress)
     gsap.to(u.uProgress, { value: 1, duration: 0.75, ease: 'power2.out' })
@@ -314,7 +312,9 @@ export default function Hero() {
           u.uPrevTexSize.value.set(tex.image.width, tex.image.height)
           u.uNextTex.value = tex
           u.uNextTexSize.value.set(tex.image.width, tex.image.height)
-          u.uImageScale.value = getSlideImageScale(slide)
+          u.uImageScale.value = 1.0
+          if (u.uImageOffset && u.uImageOffset.value) u.uImageOffset.value.set(getSlideImageOffset(slide).x, getSlideImageOffset(slide).y)
+          if (typeof window !== 'undefined' && window.console) console.log('[Hero] immediate set uImageScale=', u.uImageScale.value)
           u.uProgress.value = 1
           u.uGlitch.value = 0
         }
@@ -333,26 +333,26 @@ export default function Hero() {
       // update GL image scale for transition target
       if (s.glMaterial) {
         s.glMaterial.uniforms.uImageScale.value = getSlideImageScale(slide)
+        if (s.glMaterial.uniforms.uImageOffset && s.glMaterial.uniforms.uImageOffset.value) s.glMaterial.uniforms.uImageOffset.value.set(getSlideImageOffset(slide).x, getSlideImageOffset(slide).y)
       }
       gsap.killTweensOf([s.activeBackground, s.inactiveBackground])
-      gsap.set(s.inactiveBackground, { opacity: 0, scale: 1.15 })
+      gsap.set(s.inactiveBackground, { opacity: 0 })
       s.inactiveBackground.classList.add('is-active')
-      gsap.to(s.inactiveBackground, { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out' })
-      gsap.to(s.activeBackground, { opacity: 0, scale: 0.92, duration: 1.6, ease: 'power2.out', onComplete: () => { s.activeBackground.classList.remove('is-active') } })
+      gsap.to(s.inactiveBackground, { opacity: 1, duration: 1.6, ease: 'power2.out' })
+      gsap.to(s.activeBackground, { opacity: 0, duration: 1.6, ease: 'power2.out', onComplete: () => { s.activeBackground.classList.remove('is-active') } })
       ;[s.activeBackground, s.inactiveBackground] = [s.inactiveBackground, s.activeBackground]
     } else if (!s.isGLActive) {
       applyBackground(slide, s.inactiveBackground)
       // apply CSS background sizing per slide when GL is not active
       if (s.inactiveBackground) {
-        const desktop = typeof window !== 'undefined' && window.innerWidth > 520
-        const imgSize = desktop ? (slide === slides[0] ? '85% 85%' : '115% 115%') : 'cover'
-        s.inactiveBackground.style.backgroundSize = `cover, cover, ${imgSize}`
+        // Use cover for background sizing to avoid CSS-driven zooming
+        s.inactiveBackground.style.backgroundSize = 'cover, cover, cover'
       }
       gsap.killTweensOf([s.activeBackground, s.inactiveBackground])
-      gsap.set(s.inactiveBackground, { opacity: 0, scale: 1.15 })
+      gsap.set(s.inactiveBackground, { opacity: 0 })
       s.inactiveBackground.classList.add('is-active')
-      gsap.to(s.inactiveBackground, { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out' })
-      gsap.to(s.activeBackground, { opacity: 0, scale: 0.92, duration: 1.6, ease: 'power2.out', onComplete: () => { s.activeBackground.classList.remove('is-active') } })
+      gsap.to(s.inactiveBackground, { opacity: 1, duration: 1.6, ease: 'power2.out' })
+      gsap.to(s.activeBackground, { opacity: 0, duration: 1.6, ease: 'power2.out', onComplete: () => { s.activeBackground.classList.remove('is-active') } })
       ;[s.activeBackground, s.inactiveBackground] = [s.inactiveBackground, s.activeBackground]
     }
 
@@ -450,8 +450,19 @@ export default function Hero() {
 
         const canvas = glCanvasRef.current
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' })
+        // Prefer sizing from the hero container so we have reliable layout
+        // dimensions even if the canvas hasn't been painted yet. This avoids
+        // transient sampling/scale artifacts when route content changes size.
+        const heroEl = heroRef.current
+        const initialWidth = (heroEl && heroEl.clientWidth) || (canvas && canvas.clientWidth) || window.innerWidth
+        const initialHeight = (heroEl && heroEl.clientHeight) || (canvas && canvas.clientHeight) || window.innerHeight
+        // Ensure the canvas has explicit CSS size to avoid layout jumps
+        if (canvas) {
+          canvas.style.width = `${initialWidth}px`
+          canvas.style.height = `${initialHeight}px`
+        }
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-        renderer.setSize(window.innerWidth, window.innerHeight)
+        renderer.setSize(initialWidth, initialHeight, false)
         s.glRenderer = renderer
         s.isGLActive = true
 
@@ -466,8 +477,9 @@ export default function Hero() {
           uTime: { value: 0 },
           uProgress: { value: 1 },
           uGlitch: { value: 0 },
-          uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+          uResolution: { value: new THREE.Vector2(initialWidth, initialHeight) },
           uImageScale: { value: getSlideImageScale(firstSlide) },
+          uImageOffset: { value: new THREE.Vector2(getSlideImageOffset(firstSlide).x, getSlideImageOffset(firstSlide).y) },
           uPrevTex: { value: firstTex },
           uNextTex: { value: firstTex },
           uPrevTexSize: { value: new THREE.Vector2(firstTex.image.width, firstTex.image.height) },
@@ -499,10 +511,17 @@ export default function Hero() {
         animateGL()
 
         onResize = () => {
-          renderer.setSize(window.innerWidth, window.innerHeight)
+          const w = (heroEl && heroEl.clientWidth) || (canvas && canvas.clientWidth) || window.innerWidth
+          const h = (heroEl && heroEl.clientHeight) || (canvas && canvas.clientHeight) || window.innerHeight
+          if (canvas) {
+            canvas.style.width = `${w}px`
+            canvas.style.height = `${h}px`
+          }
           renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-          mat.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight)
+          renderer.setSize(w, h, false)
+          mat.uniforms.uResolution.value.set(w, h)
           mat.uniforms.uImageScale.value = getSlideImageScale(slides[s.currentIndex])
+          if (mat.uniforms.uImageOffset && mat.uniforms.uImageOffset.value) mat.uniforms.uImageOffset.value.set(getSlideImageOffset(slides[s.currentIndex]).x, getSlideImageOffset(slides[s.currentIndex]).y)
         }
         window.addEventListener('resize', onResize)
       } catch (err) {
