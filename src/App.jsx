@@ -13,6 +13,7 @@ import CustomCursor    from './components/CustomCursor/CustomCursor'
 import AnnouncementBar from './components/AnnouncementBar/AnnouncementBar'
 import ScrollToTop     from './components/ui/ScrollToTop'
 import LoaderReveal    from './components/Loader/LoaderReveal'
+import Chatbase from './components/Chatbase/Chatbase'
 
 // Video loader available but not used
 // import LoaderRevealVideo from './components/Loader/LoaderRevealVideo'
@@ -121,6 +122,7 @@ export default function App() {
             }}
           />
         )}
+        {!isAdmin && <Chatbase />}
       </BrowserRouter>
     </CartProvider>
   )
