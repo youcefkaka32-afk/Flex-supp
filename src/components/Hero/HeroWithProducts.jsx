@@ -760,6 +760,7 @@ export default function HeroWithProducts() {
       const frontLetters = Array.from(titleFrontRef.current.querySelectorAll('.letter'))
       const backLetters = Array.from(titleBackRef.current.querySelectorAll('.letter'))
       const isAr = i18n.language === 'ar'
+      const nextSlide = slides[nextIndex]
       const length = isAr ? 1 : nextSlide.title.length
       
       const allNewLetters = [...frontLetters, ...backLetters]
