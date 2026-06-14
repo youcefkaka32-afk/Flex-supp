@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './ToolPage.css'
 import './WorkoutPlanning.css'
+import Icon from '../../components/Icons/WorkoutIcons'
 
 export default function WorkoutPlanning() {
   const { i18n } = useTranslation()
@@ -43,55 +44,55 @@ export default function WorkoutPlanning() {
           title: 'Quel est votre objectif principal?',
           subtitle: 'Choisissez l\'objectif qui correspond le mieux à vos besoins actuels',
           options: [
-            { value: 'muscle', icon: '💪', title: 'Prise de Masse', desc: 'Construire du muscle et augmenter la force' },
-            { value: 'fat-loss', icon: '🔥', title: 'Perte de Graisse', desc: 'Brûler la graisse tout en préservant le muscle' },
-            { value: 'strength', icon: '⚡', title: 'Force Pure', desc: 'Maximiser la force et la puissance' },
-            { value: 'athletic', icon: '🏃', title: 'Performance Athlétique', desc: 'Améliorer l\'explosivité et l\'endurance' }
+            { value: 'muscle', icon: 'dumbbell', title: 'Prise de Masse', desc: 'Construire du muscle et augmenter la force' },
+            { value: 'fat-loss', icon: 'fire', title: 'Perte de Graisse', desc: 'Brûler la graisse tout en préservant le muscle' },
+            { value: 'strength', icon: 'bolt', title: 'Force Pure', desc: 'Maximiser la force et la puissance' },
+            { value: 'athletic', icon: 'run', title: 'Performance Athlétique', desc: 'Améliorer l\'explosivité et l\'endurance' }
           ]
         },
         experience: {
           title: 'Quel est votre niveau d\'expérience?',
           subtitle: 'Sélectionnez le niveau qui décrit le mieux votre parcours en musculation',
           options: [
-            { value: 'beginner', icon: '🌱', title: 'Débutant', desc: 'Moins de 6 mois d\'entraînement régulier' },
-            { value: 'intermediate', icon: '🎯', title: 'Intermédiaire', desc: '6 mois à 2 ans d\'entraînement' },
-            { value: 'advanced', icon: '🔥', title: 'Avancé', desc: 'Plus de 2 ans d\'entraînement régulier' }
+            { value: 'beginner', icon: 'seedling', title: 'Débutant', desc: 'Moins de 6 mois d\'entraînement régulier' },
+            { value: 'intermediate', icon: 'target', title: 'Intermédiaire', desc: '6 mois à 2 ans d\'entraînement' },
+            { value: 'advanced', icon: 'fire', title: 'Avancé', desc: 'Plus de 2 ans d\'entraînement régulier' }
           ]
         },
         frequency: {
           title: 'Combien de fois par semaine pouvez-vous vous entraîner?',
           subtitle: 'Choisissez une fréquence réaliste pour vos disponibilités',
           options: [
-            { value: '3', icon: '3️⃣', title: '3 jours', desc: 'Programme de base efficace' },
-            { value: '4', icon: '4️⃣', title: '4 jours', desc: 'Très bon compromis volume/récupération' },
-            { value: '5', icon: '5️⃣', title: '5 jours', desc: 'Entraînement avancé avec plus de variation' }
+            { value: '3', icon: 'num-3', title: '3 jours', desc: 'Programme de base efficace' },
+            { value: '4', icon: 'num-4', title: '4 jours', desc: 'Très bon compromis volume/récupération' },
+            { value: '5', icon: 'num-5', title: '5 jours', desc: 'Entraînement avancé avec plus de variation' }
           ]
         },
         equipment: {
           title: 'Quel équipement avez-vous?',
           subtitle: 'Sélectionnez ce que vous pouvez utiliser pour votre programme',
           options: [
-            { value: 'gym', icon: '🏋️', title: 'Salle de sport', desc: 'Accès à machines et charges libres' },
-            { value: 'home', icon: '🏠', title: 'À la maison', desc: 'Haltere, bande élastique ou poids du corps' },
-            { value: 'minimal', icon: '🧘', title: 'Équipement limité', desc: 'Poids du corps et accessoires simples' }
+            { value: 'gym', icon: 'dumbbell', title: 'Salle de sport', desc: 'Accès à machines et charges libres' },
+            { value: 'home', icon: 'home', title: 'À la maison', desc: 'Haltere, bande élastique ou poids du corps' },
+            { value: 'minimal', icon: 'minimal', title: 'Équipement limité', desc: 'Poids du corps et accessoires simples' }
           ]
         },
         bodyType: {
           title: 'Quel est votre type de corps?',
           subtitle: 'Cela aide à personnaliser l\'approche d\'entraînement',
           options: [
-            { value: 'ectomorph', icon: '🦵', title: 'Ectomorphe', desc: 'Physique long et fin, gain de muscle difficile' },
-            { value: 'mesomorph', icon: '💥', title: 'Mésomorphe', desc: 'Physique naturellement sportif' },
-            { value: 'endomorph', icon: '🍑', title: 'Endomorphe', desc: 'Prise de masse facile, perte de graisse plus lente' }
+            { value: 'ectomorph', icon: 'leg', title: 'Ectomorphe', desc: 'Physique long et fin, gain de muscle difficile' },
+            { value: 'mesomorph', icon: 'bolt', title: 'Mésomorphe', desc: 'Physique naturellement sportif' },
+            { value: 'endomorph', icon: 'peach', title: 'Endomorphe', desc: 'Prise de masse facile, perte de graisse plus lente' }
           ]
         },
         limitations: {
           title: 'Avez-vous des limitations physiques?',
           subtitle: 'Aidez-nous à adapter le programme en toute sécurité',
           options: [
-            { value: 'none', icon: '✅', title: 'Aucune limitation', desc: 'Entraînement standard possible' },
-            { value: 'knees', icon: '🦵', title: 'Genoux sensibles', desc: 'Moins d\'impact, mouvements contrôlés' },
-            { value: 'back', icon: '🔙', title: 'Dos sensible', desc: 'Éviter les charges lourdes et torsions' }
+            { value: 'none', icon: 'check', title: 'Aucune limitation', desc: 'Entraînement standard possible' },
+            { value: 'knees', icon: 'knee', title: 'Genoux sensibles', desc: 'Moins d\'impact, mouvements contrôlés' },
+            { value: 'back', icon: 'back', title: 'Dos sensible', desc: 'Éviter les charges lourdes et torsions' }
           ]
         }
       }
@@ -121,55 +122,55 @@ export default function WorkoutPlanning() {
           title: 'ما هو هدفك الرئيسي؟',
           subtitle: 'اختر الهدف الذي يناسب احتياجاتك الحالية',
           options: [
-            { value: 'muscle', icon: '💪', title: 'زيادة العضلات', desc: 'بناء العضلات وزيادة القوة' },
-            { value: 'fat-loss', icon: '🔥', title: 'حرق الدهون', desc: 'حرق الدهون مع الحفاظ على العضلات' },
-            { value: 'strength', icon: '⚡', title: 'القوة', desc: 'زيادة القوة والقدرة' },
-            { value: 'athletic', icon: '🏃', title: 'الأداء الرياضي', desc: 'تحسين القوة والقدرة على التحمل' }
+            { value: 'muscle', icon: 'dumbbell', title: 'زيادة العضلات', desc: 'بناء العضلات وزيادة القوة' },
+            { value: 'fat-loss', icon: 'fire', title: 'حرق الدهون', desc: 'حرق الدهون مع الحفاظ على العضلات' },
+            { value: 'strength', icon: 'bolt', title: 'القوة', desc: 'زيادة القوة والقدرة' },
+            { value: 'athletic', icon: 'run', title: 'الأداء الرياضي', desc: 'تحسين القوة والقدرة على التحمل' }
           ]
         },
         experience: {
           title: 'ما هو مستوى خبرتك؟',
           subtitle: 'اختر المستوى الذي يصف مسيرتك التدريبية',
           options: [
-            { value: 'beginner', icon: '🌱', title: 'مبتدئ', desc: 'أقل من 6 أشهر تدريب منتظم' },
-            { value: 'intermediate', icon: '🎯', title: 'متوسط', desc: 'من 6 أشهر إلى سنتين تدريب' },
-            { value: 'advanced', icon: '🔥', title: 'متقدم', desc: 'أكثر من سنتين تدريب منتظم' }
+            { value: 'beginner', icon: 'seedling', title: 'مبتدئ', desc: 'أقل من 6 أشهر تدريب منتظم' },
+            { value: 'intermediate', icon: 'target', title: 'متوسط', desc: 'من 6 أشهر إلى سنتين تدريب' },
+            { value: 'advanced', icon: 'fire', title: 'متقدم', desc: 'أكثر من سنتين تدريب منتظم' }
           ]
         },
         frequency: {
           title: 'كم مرة يمكنك التدريب أسبوعيًا؟',
           subtitle: 'اختر وتيرة واقعية لجدولك',
           options: [
-            { value: '3', icon: '3️⃣', title: '3 أيام', desc: 'برنامج أساسي فعال' },
-            { value: '4', icon: '4️⃣', title: '4 أيام', desc: 'توازن ممتاز بين حجم التدريب والتعافي' },
-            { value: '5', icon: '5️⃣', title: '5 أيام', desc: 'تدريب متقدم مع تنوع أكبر' }
+            { value: '3', icon: 'num-3', title: '3 أيام', desc: 'برنامج أساسي فعال' },
+            { value: '4', icon: 'num-4', title: '4 أيام', desc: 'توازن ممتاز بين حجم التدريب والتعافي' },
+            { value: '5', icon: 'num-5', title: '5 أيام', desc: 'تدريب متقدم مع تنوع أكبر' }
           ]
         },
         equipment: {
           title: 'ما هي المعدات المتاحة لديك؟',
           subtitle: 'حدد ما يمكنك استخدامه في برنامجك',
           options: [
-            { value: 'gym', icon: '🏋️', title: 'نادي رياضي', desc: 'أجهزة وأوزان حرة' },
-            { value: 'home', icon: '🏠', title: 'المنزل', desc: 'أوزان، أحزمة مطاطية، وزن الجسم' },
-            { value: 'minimal', icon: '🧘', title: 'معدات قليلة', desc: 'تمارين وزن الجسم وأدوات بسيطة' }
+            { value: 'gym', icon: 'dumbbell', title: 'نادي رياضي', desc: 'أجهزة وأوزان حرة' },
+            { value: 'home', icon: 'home', title: 'المنزل', desc: 'أوزان، أحزمة مطاطية، وزن الجسم' },
+            { value: 'minimal', icon: 'minimal', title: 'معدات قليلة', desc: 'تمارين وزن الجسم وأدوات بسيطة' }
           ]
         },
         bodyType: {
           title: 'ما هو نوع جسدك؟',
           subtitle: 'هذا يساعد في تخصيص نهج التدريب',
           options: [
-            { value: 'ectomorph', icon: '🦵', title: 'إكتومورف', desc: 'جسم نحيف وطويل، صعوبة في زيادة العضلات' },
-            { value: 'mesomorph', icon: '💥', title: 'ميزومورف', desc: 'جسم رياضي طبيعي' },
-            { value: 'endomorph', icon: '🍑', title: 'إندومورف', desc: 'زيادة في العضلات سهلة، فقدان الدهون أبطأ' }
+            { value: 'ectomorph', icon: 'leg', title: 'إكتومورف', desc: 'جسم نحيف وطويل، صعوبة في زيادة العضلات' },
+            { value: 'mesomorph', icon: 'bolt', title: 'ميزومورف', desc: 'جسم رياضي طبيعي' },
+            { value: 'endomorph', icon: 'peach', title: 'إندومورف', desc: 'زيادة في العضلات سهلة، فقدان الدهون أبطأ' }
           ]
         },
         limitations: {
           title: 'هل لديك أي قيود جسدية؟',
           subtitle: 'ساعدنا في تخصيص البرنامج بأمان',
           options: [
-            { value: 'none', icon: '✅', title: 'لا توجد قيود', desc: 'برنامج قياسي مناسب' },
-            { value: 'knees', icon: '🦵', title: 'ركبتين حساسة', desc: 'تقليل التأثير والحركات المسيطر عليها' },
-            { value: 'back', icon: '🔙', title: 'ظهر حساس', desc: 'تجنب الأحمال الثقيلة والالتواءات' }
+            { value: 'none', icon: 'check', title: 'لا توجد قيود', desc: 'برنامج قياسي مناسب' },
+            { value: 'knees', icon: 'knee', title: 'ركبتين حساسة', desc: 'تقليل التأثير والحركات المسيطر عليها' },
+            { value: 'back', icon: 'back', title: 'ظهر حساس', desc: 'تجنب الأحمال الثقيلة والالتواءات' }
           ]
         }
       }
@@ -199,55 +200,55 @@ export default function WorkoutPlanning() {
           title: 'What is your main goal?',
           subtitle: 'Choose the objective that best matches your current needs',
           options: [
-            { value: 'muscle', icon: '💪', title: 'Muscle Gain', desc: 'Build muscle and increase strength' },
-            { value: 'fat-loss', icon: '🔥', title: 'Fat Loss', desc: 'Burn fat while preserving muscle' },
-            { value: 'strength', icon: '⚡', title: 'Pure Strength', desc: 'Maximize strength and power' },
-            { value: 'athletic', icon: '🏃', title: 'Athletic Performance', desc: 'Improve explosiveness and endurance' }
+            { value: 'muscle', icon: 'dumbbell', title: 'Muscle Gain', desc: 'Build muscle and increase strength' },
+            { value: 'fat-loss', icon: 'fire', title: 'Fat Loss', desc: 'Burn fat while preserving muscle' },
+            { value: 'strength', icon: 'bolt', title: 'Pure Strength', desc: 'Maximize strength and power' },
+            { value: 'athletic', icon: 'run', title: 'Athletic Performance', desc: 'Improve explosiveness and endurance' }
           ]
         },
         experience: {
           title: 'What is your experience level?',
           subtitle: 'Select the level that best describes your gym journey',
           options: [
-            { value: 'beginner', icon: '🌱', title: 'Beginner', desc: 'Less than 6 months of regular training' },
-            { value: 'intermediate', icon: '🎯', title: 'Intermediate', desc: '6 months to 2 years of training' },
-            { value: 'advanced', icon: '🔥', title: 'Advanced', desc: 'More than 2 years of regular training' }
+            { value: 'beginner', icon: 'seedling', title: 'Beginner', desc: 'Less than 6 months of regular training' },
+            { value: 'intermediate', icon: 'target', title: 'Intermediate', desc: '6 months to 2 years of training' },
+            { value: 'advanced', icon: 'fire', title: 'Advanced', desc: 'More than 2 years of regular training' }
           ]
         },
         frequency: {
           title: 'How many times per week can you train?',
           subtitle: 'Choose a realistic frequency for your schedule',
           options: [
-            { value: '3', icon: '3️⃣', title: '3 days', desc: 'A solid beginner-friendly program' },
-            { value: '4', icon: '4️⃣', title: '4 days', desc: 'Great balance between volume and recovery' },
-            { value: '5', icon: '5️⃣', title: '5 days', desc: 'More advanced training with greater variety' }
+            { value: '3', icon: 'num-3', title: '3 days', desc: 'A solid beginner-friendly program' },
+            { value: '4', icon: 'num-4', title: '4 days', desc: 'Great balance between volume and recovery' },
+            { value: '5', icon: 'num-5', title: '5 days', desc: 'More advanced training with greater variety' }
           ]
         },
         equipment: {
           title: 'What equipment do you have?',
           subtitle: 'Select what you can use for your program',
           options: [
-            { value: 'gym', icon: '🏋️', title: 'Gym Access', desc: 'Machines and free weights available' },
-            { value: 'home', icon: '🏠', title: 'Home Setup', desc: 'Dumbbells, bands, or bodyweight' },
-            { value: 'minimal', icon: '🧘', title: 'Minimal Gear', desc: 'Bodyweight and basic equipment' }
+            { value: 'gym', icon: 'dumbbell', title: 'Gym Access', desc: 'Machines and free weights available' },
+            { value: 'home', icon: 'home', title: 'Home Setup', desc: 'Dumbbells, bands, or bodyweight' },
+            { value: 'minimal', icon: 'minimal', title: 'Minimal Gear', desc: 'Bodyweight and basic equipment' }
           ]
         },
         bodyType: {
           title: 'What is your body type?',
           subtitle: 'This helps personalize the training approach',
           options: [
-            { value: 'ectomorph', icon: '🦵', title: 'Ectomorph', desc: 'Lean frame, muscle gain is harder' },
-            { value: 'mesomorph', icon: '💥', title: 'Mesomorph', desc: 'Naturally athletic build' },
-            { value: 'endomorph', icon: '🍑', title: 'Endomorph', desc: 'Gains muscle easily, fat loss can be slower' }
+            { value: 'ectomorph', icon: 'leg', title: 'Ectomorph', desc: 'Lean frame, muscle gain is harder' },
+            { value: 'mesomorph', icon: 'bolt', title: 'Mesomorph', desc: 'Naturally athletic build' },
+            { value: 'endomorph', icon: 'peach', title: 'Endomorph', desc: 'Gains muscle easily, fat loss can be slower' }
           ]
         },
         limitations: {
           title: 'Do you have any physical limitations?',
           subtitle: 'Help us adapt the plan safely for you',
           options: [
-            { value: 'none', icon: '✅', title: 'No Limitations', desc: 'Standard workout plan is suitable' },
-            { value: 'knees', icon: '🦵', title: 'Knee Sensitivities', desc: 'Lower-impact and controlled movements' },
-            { value: 'back', icon: '🔙', title: 'Back Concerns', desc: 'Avoid heavy loads and twisting' }
+            { value: 'none', icon: 'check', title: 'No Limitations', desc: 'Standard workout plan is suitable' },
+            { value: 'knees', icon: 'knee', title: 'Knee Sensitivities', desc: 'Lower-impact and controlled movements' },
+            { value: 'back', icon: 'back', title: 'Back Concerns', desc: 'Avoid heavy loads and twisting' }
           ]
         }
       }
@@ -301,7 +302,7 @@ export default function WorkoutPlanning() {
           const option = answer ? t.questions[key].options.find((item) => item.value === answer) : null
           return (
             <div className="quiz-option" key={key}>
-              <div className="quiz-option__icon">{option?.icon || '•'}</div>
+              <div className="quiz-option__icon">{option?.icon ? <Icon name={option.icon} size={28} /> : '•'}</div>
               <h3>{option?.title || key}</h3>
               <p>{option?.desc || '–'}</p>
             </div>
@@ -334,7 +335,7 @@ export default function WorkoutPlanning() {
               <div className="quiz-intro__features">
                 {t.intro.features.map((feature) => (
                   <div className="quiz-intro__feature" key={feature}>
-                    <span className="quiz-intro__feature-icon">✓</span>
+                    <span className="quiz-intro__feature-icon"><Icon name="check" size={16} /></span>
                     <p className="quiz-intro__feature-text">{feature}</p>
                   </div>
                 ))}
@@ -365,7 +366,7 @@ export default function WorkoutPlanning() {
                       className={`quiz-option ${isSelected ? 'selected' : ''}`}
                       onClick={() => updateAnswer(option.value)}
                     >
-                      <div className="quiz-option__icon">{option.icon}</div>
+                      <div className="quiz-option__icon"><Icon name={option.icon} size={36} /></div>
                       <h3>{option.title}</h3>
                       <p>{option.desc}</p>
                     </button>
