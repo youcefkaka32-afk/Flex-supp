@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { gsap } from 'gsap'
 import { CustomEase } from 'gsap/CustomEase'
 import * as THREE from 'three'
@@ -209,6 +210,7 @@ export default function HeroWithProducts() {
   const dotsRef = useRef(null)
 
   const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
   const state = useRef({
     currentIndex: 0,
     activeBackground: null,
@@ -250,15 +252,17 @@ export default function HeroWithProducts() {
 
   const syncCTA = (slide) => {
     if (!infoSubRef.current || !voirPlusRef.current || !infoKickerRef.current) return
-    if (slide.kicker) {
-      infoKickerRef.current.textContent = slide.kicker
-    }
+    const key = slide.title.toLowerCase()
+    
+    infoKickerRef.current.textContent = t(`hero.slides.${key}.kicker`, slide.kicker)
+    
     if (slide.infoSubHtml) {
       infoSubRef.current.innerHTML = slide.infoSubHtml
     } else {
-      infoSubRef.current.textContent = slide.subtitle
+      infoSubRef.current.textContent = t(`hero.slides.${key}.subtitle`, slide.subtitle)
     }
-    voirPlusRef.current.textContent = slide.cta
+    
+    voirPlusRef.current.textContent = t(`hero.slides.${key}.cta`, slide.cta)
     voirPlusRef.current.href = slide.ctaHref
     voirPlusRef.current.classList.toggle('prominent', !!slide.ctaProminent)
   }
@@ -278,6 +282,15 @@ export default function HeroWithProducts() {
 
   const buildTitleLayerHtml = (slide, layer) => {
     const isFront = layer === 'front'
+    const isAr = i18n.language === 'ar'
+    
+    if (isAr) {
+      if (!isFront) return '' // Do not render back/outline layers for cursive Arabic text
+      const key = slide.title.toLowerCase()
+      const translatedTitle = t(`hero.slides.${key}.title`, slide.title)
+      return `<span class="letter solid" data-idx="0">${translatedTitle}</span>`
+    }
+    
     const spec = titleSpec(slide)
     return spec
       .map((item, index) => {
@@ -297,6 +310,11 @@ export default function HeroWithProducts() {
     titleFrontRef.current.setAttribute('style', styleStr)
     titleBackRef.current.setAttribute('style', styleStr)
     
+    // Add long-title class if character length is greater than 8
+    const isLong = slide.title.length > 8
+    titleFrontRef.current.className = `title-layer front${isLong ? ' long-title' : ''}`
+    titleBackRef.current.className = `title-layer back${isLong ? ' long-title' : ''}`
+    
     titleFrontRef.current.innerHTML = buildTitleLayerHtml(slide, 'front')
     titleBackRef.current.innerHTML = buildTitleLayerHtml(slide, 'back')
   }
@@ -307,11 +325,19 @@ export default function HeroWithProducts() {
     shoeStageRef.current.style.top = slide.shoeStyle?.top || '50%'
     shoeStageRef.current.style.width = slide.shoeStyle?.width || '400px'
     shoeStageRef.current.style.height = slide.shoeStyle?.height || '400px'
-    // On mobile, keep the product image large to fit portrait/vertical modes beautifully
+    
+    // On mobile, optimize product image scale
     const isMobile = window.innerWidth <= 768
     const isSmallMobile = window.innerWidth <= 520
     const baseScale = parseFloat(slide.shoeStyle?.scale || '1.0')
-    const mobileScale = isSmallMobile ? baseScale * 0.85 : isMobile ? baseScale * 0.90 : baseScale
+    
+    // Slightly smaller mobile scale for Creatine (extra) and Protein (superfly) to prevent cramping
+    const isSmallerOnMobile = slide.shoe === 'extra' || slide.shoe === 'superfly'
+    const mobileReduction = isSmallerOnMobile 
+      ? (isSmallMobile ? 0.70 : 0.76)
+      : (isSmallMobile ? 0.85 : 0.90)
+    
+    const mobileScale = isMobile ? baseScale * mobileReduction : baseScale
     shoeBaseRef.current.style.transform = `rotate(${slide.shoeStyle?.baseRotate || '0deg'}) scale(${mobileScale})`
 
     
@@ -369,7 +395,8 @@ export default function HeroWithProducts() {
       }, 0)
     }
 
-    const length = activeSlide.title.length
+    const isAr = i18n.language === 'ar'
+    const length = isAr ? 1 : activeSlide.title.length
     const duration = 0.7
     const ease = 'power3.out'
     const delayStart = activeSlide.shoe === 'superfly' ? 0.08 : 0.1
@@ -377,7 +404,7 @@ export default function HeroWithProducts() {
     for (let i = 0; i < length; i++) {
       const fl = frontLetters[i]
       const bl = backLetters[i]
-      if (!fl || !bl) continue
+      if (!fl || (!bl && !isAr)) continue
 
       const isFVisible = !fl.classList.contains('hidden')
       const isBVisible = !bl.classList.contains('hidden')
@@ -391,14 +418,15 @@ export default function HeroWithProducts() {
       if (activeSlide.shoe === 'superfly') {
         if (isFVisible) gsap.set(fl, { opacity: 0, y: -200, x: 0 })
         else gsap.set(fl, { y: -200, x: 0 })
-        gsap.set(bl, { opacity: 0, y: -200, x: 0 })
+        if (bl) gsap.set(bl, { opacity: 0, y: -200, x: 0 })
       } else {
         if (isFVisible) gsap.set(fl, { opacity: 0, y: 0, x: -150 })
         else gsap.set(fl, { y: 0, x: -150 })
-        gsap.set(bl, { opacity: 0, y: 0, x: -150 })
+        if (bl) gsap.set(bl, { opacity: 0, y: 0, x: -150 })
       }
 
-      entryTl.to([fl, bl], { y: 0, x: 0, duration: duration, ease: ease }, delay)
+      const targets = bl ? [fl, bl] : [fl]
+      entryTl.to(targets, { y: 0, x: 0, duration: duration, ease: ease }, delay)
       if (opacityTargets.length > 0) {
         entryTl.to(opacityTargets, { opacity: 1, duration: duration, ease: ease }, delay)
       }
@@ -731,8 +759,8 @@ export default function HeroWithProducts() {
       if (!titleFrontRef.current || !titleBackRef.current) return
       const frontLetters = Array.from(titleFrontRef.current.querySelectorAll('.letter'))
       const backLetters = Array.from(titleBackRef.current.querySelectorAll('.letter'))
-      const nextSlide = slides[nextIndex]
-      const length = nextSlide.title.length
+      const isAr = i18n.language === 'ar'
+      const length = isAr ? 1 : nextSlide.title.length
       
       const allNewLetters = [...frontLetters, ...backLetters]
       gsap.killTweensOf(allNewLetters)
@@ -740,15 +768,15 @@ export default function HeroWithProducts() {
       for (let i = 0; i < length; i++) {
         const fl = frontLetters[i]
         const bl = backLetters[i]
-        if (!fl || !bl) continue
+        if (!fl || (!bl && !isAr)) continue
 
         const isFVisible = !fl.classList.contains('hidden')
-        const isBVisible = !bl.classList.contains('hidden')
+        const isBVisible = bl ? !bl.classList.contains('hidden') : false
 
-        const targets = [fl, bl]
+        const targets = bl ? [fl, bl] : [fl]
         const visibleTargets = []
         if (isFVisible) visibleTargets.push(fl)
-        if (isBVisible) visibleTargets.push(bl)
+        if (bl && isBVisible) visibleTargets.push(bl)
 
         const delay = i * 0.035
 
@@ -1122,12 +1150,12 @@ export default function HeroWithProducts() {
       <header className="nav">
         <div className="logo">FLEX SUPPS</div>
         <nav className="center-nav" aria-label="Primary">
-          <a href="#" data-nav="accueil">ACCUEIL</a>
-          <a href="/shop" data-nav="boutique">BOUTIQUE</a>
-          <a href="#" data-nav="apropos">A PROPOS</a>
+          <a href="#" data-nav="accueil">{t('nav.home').toUpperCase()}</a>
+          <a href="/shop" data-nav="boutique">{t('nav.shop').toUpperCase()}</a>
+          <a href="#" data-nav="apropos">{t('nav.about').toUpperCase()}</a>
         </nav>
         <div className="right-nav">
-          <a href="#">LOGIN / REGISTER</a>
+          <a href="#">{t('hero.login').toUpperCase()}</a>
           <CartIcon />
         </div>
       </header>

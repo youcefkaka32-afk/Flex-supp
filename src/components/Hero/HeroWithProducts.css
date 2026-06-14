@@ -789,3 +789,46 @@
     transform: translateZ(0);
   }
 }
+
+/* RTL / Arabic support for Hero */
+[dir="rtl"] .hero-with-products .logo {
+  letter-spacing: 0.05em;
+}
+
+[dir="rtl"] .hero-with-products .title-layer {
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: 0;
+  font-size: clamp(40px, 9vw, 92px);
+}
+
+[dir="rtl"] .hero-with-products .info-line.kicker {
+  letter-spacing: 0.12em;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+}
+
+[dir="rtl"] .hero-with-products .info-line.sub {
+  letter-spacing: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+}
+
+[dir="rtl"] .hero-with-products .voir-plus {
+  letter-spacing: 0.1em;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+}
+
+/* Long category title optimizations (e.g. MASSGAINER) to prevent cramping */
+@media (max-width: 768px) {
+  .hero-with-products .title-layer.long-title {
+    font-size: clamp(24px, 8.5vw, 44px) !important;
+    letter-spacing: 0.02em;
+  }
+}
+@media (max-width: 520px) {
+  .hero-with-products .title-layer.long-title {
+    font-size: clamp(18px, 9vw, 32px) !important;
+    letter-spacing: 0.01em;
+  }
+}

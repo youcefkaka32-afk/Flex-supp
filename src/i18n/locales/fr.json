@@ -17,7 +17,33 @@
       "shop": "BOUTIQUE",
       "about": "À PROPOS"
     },
-    "login": "CONNEXION / INSCRIPTION"
+    "login": "CONNEXION / INSCRIPTION",
+    "slides": {
+      "protein": {
+        "title": "PROTÉINE",
+        "kicker": "CONSTRUISEZ VOTRE CORPS",
+        "subtitle": "Formule Whey Premium",
+        "cta": "ACHETER"
+      },
+      "vitamins": {
+        "title": "VITAMINES",
+        "kicker": "ÉLEVEZ VOTRE SANTÉ",
+        "subtitle": "Complexe Multivitaminé Complet",
+        "cta": "ACHETER"
+      },
+      "massgainer": {
+        "title": "MASS GAINER",
+        "kicker": "DÉVELOPPEZ-VOUS PLUS VITE",
+        "subtitle": "Formule Prise de Masse Hypercalorique",
+        "cta": "ACHETER"
+      },
+      "creatine": {
+        "title": "CRÉATINE",
+        "kicker": "LIBÉREZ VOTRE PUISSANCE",
+        "subtitle": "Stack Pré-Workout & Créatine",
+        "cta": "ACHETER"
+      }
+    }
   },
   "subhero": {
     "badge": "Authenticité · Performance · Résultats",
