@@ -1,0 +1,109 @@
+.hero-experimental {
+  position: relative;
+  min-height: calc(100vh - 88px);
+  width: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #05070d;
+  color: #fff;
+}
+
+.hero-experimental__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  filter: brightness(0.48) saturate(1.1);
+  transform: scale(1.02);
+}
+
+.hero-experimental__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 7, 12, 0.32), rgba(5, 7, 12, 0.85) 62%, rgba(5, 7, 12, 0.98));
+  pointer-events: none;
+}
+
+.hero-experimental__content {
+  position: relative;
+  z-index: 2;
+  max-width: 960px;
+  width: min(100%, 1080px);
+  padding: clamp(32px, 6vw, 72px);
+  text-align: center;
+}
+
+.hero-experimental__eyebrow {
+  display: inline-flex;
+  margin-bottom: 1rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: 0.86rem;
+  color: #f4d06f;
+}
+
+.hero-experimental__title {
+  margin: 0;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hero-experimental__text {
+  margin: 1.6rem auto 0;
+  max-width: 720px;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.8;
+}
+
+.hero-experimental__actions {
+  margin-top: 2.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hero-experimental__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 170px;
+  padding: 0.95rem 1.8rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: transform 200ms ease, background 200ms ease, color 200ms ease;
+}
+
+.hero-experimental__button:hover {
+  transform: translateY(-2px);
+}
+
+.hero-experimental__button--primary {
+  background: #df2935;
+  color: #fff;
+}
+
+.hero-experimental__button--ghost {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 768px) {
+  .hero-experimental {
+    min-height: calc(100vh - 72px);
+  }
+  .hero-experimental__title {
+    font-size: clamp(2.4rem, 12vw, 4rem);
+  }
+  .hero-experimental__actions {
+    flex-direction: column;
+  }
+}

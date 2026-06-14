@@ -1,5 +1,5 @@
 import React from 'react'
-import Hero             from '../components/Hero/Hero'
+import HeroExperimental from '../components/Hero/HeroExperimental'
 import SubHeroPromo     from '../components/SubHeroPromo/SubHeroPromo'
 import TrustBar         from '../components/WhyUs/TrustBar'
 import TabbedCatalog    from '../components/FeaturedProducts/TabbedCatalog'
@@ -15,7 +15,7 @@ import Footer           from '../components/Footer/Footer'
 export default function HomePage() {
   return (
     <>
-      <Hero />
+      <HeroExperimental />
       <SubHeroPromo />
       <TrustBar />
       <TabbedCatalog />
