@@ -150,27 +150,6 @@ export default function AboutPage() {
   const FEATURES = getFeatures(t)
   const STATS = getStats(t)
 
-  // Force white body background for this page
-  useEffect(() => {
-    document.body.style.background = '#ffffff'
-    document.documentElement.style.background = '#ffffff'
-    return () => {
-      document.body.style.background = ''
-      document.documentElement.style.background = ''
-    }
-  }, [])
-
-  // Also set it immediately on mount via a style tag
-  useEffect(() => {
-    const style = document.createElement('style')
-    style.id = 'about-page-override'
-    style.textContent = 'html, body { background: #ffffff !important; }'
-    document.head.appendChild(style)
-    return () => {
-      const el = document.getElementById('about-page-override')
-      if (el) el.remove()
-    }
-  }, [])
 
   return (
     <div className="about-page" lang={lang}>

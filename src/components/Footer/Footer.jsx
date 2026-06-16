@@ -113,8 +113,18 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="footer-dev-credit-link"
                 >
-                  Youcef
+                  Youcef.builds
+                </a>{' '}
+                (
+                <a
+                  href="https://wa.me/213560684042"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="footer-dev-credit-link"
+                >
+                  WhatsApp
                 </a>
+                )
               </p>
               <p className="footer-disclaimer">
                 These statements have not been evaluated by any official authority. Products are not intended to diagnose, treat, cure or prevent any disease. Always consult a qualified healthcare professional before starting any diet or supplement program.

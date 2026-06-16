@@ -1,9 +1,10 @@
 /* Tool Page Styles */
 .tool-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #FFFFFF 0%, #f8f8f8 50%, #FFFFFF 100%);
+  background: linear-gradient(180deg, var(--pg-bg) 0%, var(--pg-bg-alt) 50%, var(--pg-bg) 100%);
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
 /* Decorative background elements */
@@ -91,13 +92,15 @@
 
 /* Calculator Styles */
 .tool-calculator {
-  background: #FFFFFF;
+  background: var(--pg-surface);
   border-radius: var(--radius-l);
   padding: var(--space-4xl);
   margin-bottom: var(--space-5xl);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
+  border: 1px solid var(--pg-border);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 /* Decorative corner accent */
@@ -142,19 +145,20 @@
 .calc-label {
   font-size: 14px;
   font-weight: 700;
-  color: #333;
+  color: var(--pg-text-dim);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .calc-input {
   padding: var(--space-m) var(--space-l);
-  border: 2px solid #ddd;
+  border: 2px solid var(--pg-border-mid);
   border-radius: var(--radius-s);
   font-size: 18px;
   font-weight: 600;
   transition: all 0.2s ease;
-  background: #FFFFFF;
+  background: var(--pg-bg);
+  color: var(--pg-text);
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
@@ -170,6 +174,8 @@
   white-space: normal;
   padding: var(--space-s);
   line-height: 1.5;
+  background: var(--pg-bg);
+  color: var(--pg-text);
 }
 
 .calc-button {
@@ -195,10 +201,11 @@
 .calc-result {
   margin-top: var(--space-3xl);
   padding: var(--space-3xl);
-  background: #FFFFFF;
+  background: var(--pg-surface-2);
   border-radius: var(--radius-m);
   text-align: center;
   border: 3px solid var(--red);
+  transition: background 0.3s ease;
 }
 
 .result-value {
@@ -212,7 +219,7 @@
 .result-label {
   font-size: 24px;
   font-weight: 700;
-  color: #333;
+  color: var(--pg-text);
 }
 
 .result-number {
@@ -225,7 +232,7 @@
 .result-category {
   font-size: 20px;
   font-weight: 600;
-  color: #666;
+  color: var(--pg-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -308,7 +315,7 @@
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 900;
   margin-bottom: var(--space-xl);
-  color: #111;
+  color: var(--pg-text);
   text-transform: uppercase;
   position: relative;
   display: inline-block;
@@ -329,7 +336,7 @@
 .article-content {
   font-size: 17px;
   line-height: 1.8;
-  color: #444;
+  color: var(--pg-text-dim);
 }
 
 .article-content p {
@@ -346,7 +353,7 @@
 }
 
 .article-content strong {
-  color: #111;
+  color: var(--pg-text);
   font-weight: 700;
 }
 
@@ -355,7 +362,7 @@
   font-size: 24px;
   font-weight: 900;
   margin: var(--space-2xl) 0 var(--space-l);
-  color: #111;
+  color: var(--pg-text);
   text-transform: uppercase;
 }
 
@@ -374,14 +381,14 @@
 }
 
 .body-type-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  background: linear-gradient(135deg, var(--pg-surface) 0%, var(--pg-bg-alt) 100%);
   padding: var(--space-xl);
   border-radius: var(--radius-m);
   text-align: center;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid var(--pg-border);
 }
 
 /* Decorative accent line */
@@ -400,8 +407,8 @@
 .body-type-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 12px 28px rgba(0,0,0,0.15);
-  background: #FFFFFF;
-  border-color: rgba(227, 27, 35, 0.1);
+  background: var(--pg-surface-2);
+  border-color: rgba(227, 27, 35, 0.15);
 }
 
 .body-type-card:hover::before {
@@ -420,13 +427,13 @@
 .body-type-card p {
   font-size: 15px;
   line-height: 1.6;
-  color: #666;
+  color: var(--pg-text-muted);
   margin: 0;
 }
 
 /* Info Box Styles */
 .info-box {
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  background: linear-gradient(135deg, var(--pg-surface) 0%, var(--pg-surface-2) 100%);
   border-left: 4px solid var(--red);
   padding: var(--space-xl);
   border-radius: var(--radius-m);
@@ -451,13 +458,13 @@
 .info-box p {
   font-size: 15px;
   line-height: 1.7;
-  color: #555;
+  color: var(--pg-text-dim);
   margin: 0;
 }
 
 /* Visual Diagram Styles */
 .visual-diagram {
-  background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--pg-bg-alt) 0%, var(--pg-surface) 100%);
   border-radius: var(--radius-l);
   padding: var(--space-2xl);
   margin: var(--space-3xl) 0;
@@ -465,7 +472,7 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(227, 27, 35, 0.08);
+  border: 1px solid var(--pg-border-mid);
 }
 
 /* Decorative corner stripes */
@@ -495,7 +502,7 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 24px;
   font-weight: 900;
-  color: #111;
+  color: var(--pg-text);
   margin-bottom: var(--space-xl);
   text-transform: uppercase;
 }
@@ -508,10 +515,10 @@
 }
 
 .diagram-item {
-  background: #FFFFFF;
+  background: var(--pg-bg);
   padding: var(--space-l);
   border-radius: var(--radius-m);
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--pg-border);
   transition: all 0.3s ease;
 }
 
@@ -533,7 +540,7 @@
 .diagram-item p {
   font-size: 14px;
   line-height: 1.6;
-  color: #666;
+  color: var(--pg-text-muted);
   margin: 0;
 }
 

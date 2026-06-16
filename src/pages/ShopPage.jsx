@@ -18,17 +18,8 @@ export default function ShopPage() {
     return () => window.clearTimeout(timeout)
   }, [])
 
-  useEffect(() => {
-    document.body.style.background = '#ffffff'
-    document.documentElement.style.background = '#ffffff'
-    return () => {
-      document.body.style.background = ''
-      document.documentElement.style.background = ''
-    }
-  }, [])
-
   return (
-    <div className="boutique-page-wrapper" style={{ background: '#ffffff' }}>
+    <div className="boutique-page-wrapper" style={{ background: 'transparent' }}>
       <Products />
       <Categories />
       <Footer />

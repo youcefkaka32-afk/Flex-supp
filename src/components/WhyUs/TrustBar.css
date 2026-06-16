@@ -120,3 +120,31 @@
     font-size: 13px;
   }
 }
+
+/* Dark theme overrides */
+[data-theme="dark"] .trustbar-section {
+  background: var(--pg-bg-alt);
+  border-bottom-color: var(--pg-border);
+  box-shadow: none;
+}
+
+[data-theme="dark"] .trustbar-item {
+  color: var(--pg-text);
+}
+
+[data-theme="dark"] .trustbar-item__icon-wrap {
+  color: var(--pg-text);
+}
+
+[data-theme="dark"] .trustbar-item__title {
+  color: var(--pg-text);
+}
+
+[data-theme="dark"] .trustbar-item__desc {
+  color: var(--pg-text-muted);
+}
+
+[data-theme="dark"] .trustbar-item:hover {
+  background: rgba(227, 27, 35, 0.12);
+}
+

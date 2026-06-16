@@ -1,15 +1,16 @@
 /* Full page white background */
 .product-page-bg {
-  background: #ffffff;
+  background: var(--pg-bg);
   min-height: 100vh;
   width: 100%;
+  transition: background 0.3s ease;
 }
 
 .product-page-shell {
   width: min(1320px, calc(100vw - 40px));
   margin: 0 auto 6rem;
   padding-top: 8rem;
-  color: #000000;
+  color: var(--pg-text);
   background: transparent;
 }
 
@@ -19,8 +20,8 @@
   display: grid;
   place-items: center;
   text-align: center;
-  color: #000000;
-  background: #ffffff;
+  color: var(--pg-text);
+  background: var(--pg-bg);
 }
 
 .product-page-topbar {
@@ -29,9 +30,9 @@
 
 .back-link {
   font-family: 'Barlow Condensed', sans-serif;
-  color: #000000;
+  color: var(--pg-text);
   background: transparent;
-  border: 1px solid rgba(0,0,0,0.2);
+  border: 1px solid var(--pg-border-mid);
   padding: 0.85rem 1.25rem;
   border-radius: 999px;
   text-transform: uppercase;
@@ -53,19 +54,19 @@
 
 .product-gallery,
 .product-info-panel {
-  background: #f8f8f8;
-  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--pg-surface);
+  border: 1px solid var(--pg-border);
   border-radius: 24px;
   padding: 2rem;
 }
 
 .product-main-image-wrap {
-  background: #ffffff;
+  background: var(--pg-bg);
   border-radius: 26px;
   padding: 2rem;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--pg-border);
 }
 
 .product-main-image {
@@ -83,8 +84,8 @@
 }
 
 .thumbnail-button {
-  border: 1px solid rgba(0,0,0,0.12);
-  background: #ffffff;
+  border: 1px solid var(--pg-border-mid);
+  background: var(--pg-bg);
   border-radius: 18px;
   padding: 0.35rem;
   width: 72px;
@@ -107,7 +108,7 @@
 
 .product-brand-label {
   display: inline-block;
-  color: rgba(0,0,0,0.45);
+  color: var(--pg-text-muted);
   font-size: 0.85rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -118,7 +119,7 @@
   margin: 0;
   font-size: clamp(3rem, 5vw, 4.8rem);
   line-height: 0.95;
-  color: #000000;
+  color: var(--pg-text);
 }
 
 .stock-badge {
@@ -145,7 +146,7 @@
 }
 
 .product-short-description {
-  color: rgba(0,0,0,0.6);
+  color: var(--pg-text-dim);
   line-height: 1.8;
   margin-bottom: 1rem;
 }
@@ -172,7 +173,7 @@
 }
 
 .price-old {
-  color: rgba(0,0,0,0.35);
+  color: var(--pg-text-faint);
   text-decoration: line-through;
   font-size: 1rem;
 }
@@ -203,7 +204,7 @@
 }
 
 .selector-label {
-  color: rgba(0,0,0,0.45);
+  color: var(--pg-text-muted);
   text-transform: uppercase;
   font-size: 0.78rem;
   letter-spacing: 0.18em;
@@ -227,8 +228,8 @@
 }
 
 .flavor-circle.selected {
-  border-color: #000000;
-  box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
+  border-color: var(--pg-text);
+  box-shadow: 0 0 0 4px var(--pg-border);
 }
 
 .selected-flavor {
@@ -238,15 +239,15 @@
   min-width: 220px;
   padding: 0.75rem 1rem;
   border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.12);
-  color: #000000;
-  background: rgba(0,0,0,0.03);
+  border: 1px solid var(--pg-border-mid);
+  color: var(--pg-text);
+  background: var(--pg-surface);
 }
 
 .size-pill {
-  border: 1px solid rgba(0,0,0,0.15);
+  border: 1px solid var(--pg-border-mid);
   background: transparent;
-  color: #000000;
+  color: var(--pg-text);
   padding: 0.85rem 1.2rem;
   border-radius: 999px;
   cursor: pointer;
@@ -269,8 +270,8 @@
   display: inline-flex;
   align-items: center;
   gap: 1rem;
-  background: rgba(0,0,0,0.03);
-  border: 1px solid rgba(0,0,0,0.1);
+  background: var(--pg-surface);
+  border: 1px solid var(--pg-border);
   border-radius: 999px;
   padding: 0.5rem 0.75rem;
 }
@@ -278,10 +279,10 @@
 .quantity-btn {
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid var(--pg-border);
   border-radius: 999px;
-  background: rgba(0,0,0,0.04);
-  color: #000000;
+  background: var(--pg-surface-2);
+  color: var(--pg-text);
   font-size: 1.4rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -296,7 +297,7 @@
   min-width: 40px;
   text-align: center;
   font-weight: 700;
-  color: #000000;
+  color: var(--pg-text);
 }
 
 .add-cart-button {
@@ -306,8 +307,8 @@
 
 .product-detail-section {
   margin-top: 3rem;
-  background: #f8f8f8;
-  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--pg-surface);
+  border: 1px solid var(--pg-border);
   border-radius: 24px;
   padding: 2rem;
 }
@@ -320,16 +321,16 @@
 
 .detail-title {
   margin-top: 0;
-  color: #000000;
+  color: var(--pg-text);
 }
 
 .product-detail-section h3 {
-  color: #000000;
+  color: var(--pg-text);
   margin-bottom: 0.75rem;
 }
 
 .product-detail-section p {
-  color: rgba(0,0,0,0.6);
+  color: var(--pg-text-dim);
   line-height: 1.8;
 }
 
@@ -338,7 +339,7 @@
 }
 
 .related-products-section .section-title {
-  color: #000000;
+  color: var(--pg-text);
 }
 
 .related-products-section .eyebrow {
@@ -353,8 +354,8 @@
 }
 
 .related-product-card {
-  background: #f8f8f8;
-  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--pg-surface);
+  border: 1px solid var(--pg-border);
   border-radius: 22px;
   padding: 1rem;
   display: grid;
@@ -382,7 +383,7 @@
 }
 
 .related-card-brand {
-  color: rgba(0,0,0,0.45);
+  color: var(--pg-text-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -390,7 +391,7 @@
 
 .related-product-card h3 {
   margin: 0;
-  color: #000000;
+  color: var(--pg-text);
   font-size: 1rem;
   line-height: 1.3;
 }

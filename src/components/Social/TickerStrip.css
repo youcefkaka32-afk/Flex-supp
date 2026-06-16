@@ -1,7 +1,7 @@
 .ticker-strip {
-  background: #ffffff;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--pg-bg);
+  border-top: 1px solid var(--pg-border);
+  border-bottom: 1px solid var(--pg-border);
   padding: 14px 0;
   overflow: hidden;
   white-space: nowrap;
@@ -24,7 +24,7 @@
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #111111;
+  color: var(--pg-text);
   padding: 0 0.5rem;
   gap: 0.75rem;
 }
@@ -38,7 +38,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--pg-border-mid);
   flex-shrink: 0;
   margin-left: 0.5rem;
 }

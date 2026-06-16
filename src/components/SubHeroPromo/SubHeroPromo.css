@@ -93,3 +93,24 @@
     order: -1;
   }
 }
+
+/* Dark theme overrides */
+[data-theme="dark"] .subhero-promo {
+  background: #1a1515;
+  color: var(--pg-text);
+  border-bottom-color: var(--pg-border);
+}
+
+[data-theme="dark"] .subhero-promo__title {
+  color: var(--pg-text);
+}
+
+[data-theme="dark"] .subhero-promo__subtitle {
+  color: var(--pg-text-dim);
+}
+
+[data-theme="dark"] .subhero-promo__badge {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--red);
+}
+

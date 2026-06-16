@@ -19,16 +19,6 @@ export default function ProductPage() {
   const [readMore, setReadMore]             = useState(false)
   const [mainImage, setMainImage]           = useState(product?.image)
 
-  // Force white body background on this page
-  useEffect(() => {
-    document.body.style.background = '#ffffff'
-    document.documentElement.style.background = '#ffffff'
-    return () => {
-      document.body.style.background = ''
-      document.documentElement.style.background = ''
-    }
-  }, [])
-
   useEffect(() => {
     if (product) {
       setSelectedFlavor(product.flavors?.[0] ?? { name: '', color: '#777' })

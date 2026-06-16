@@ -3,12 +3,13 @@
    ───────────────────────────────────────────────────────── */
 
 .reviews-section {
-  background: #f5f5f5;
+  background: var(--pg-bg-alt);
   padding: 8rem 0 7rem;
-  color: #111111;
-  border-top: 1px solid rgba(0,0,0,0.08);
-  border-bottom: 1px solid rgba(0,0,0,0.08);
+  color: var(--pg-text);
+  border-top: 1px solid var(--pg-border);
+  border-bottom: 1px solid var(--pg-border);
   overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* RTL Support for Arabic */
@@ -45,7 +46,7 @@
 .reviews-section__title {
   font-size: clamp(2.4rem, 5vw, 4rem);
   font-weight: 900;
-  color: #000000;
+  color: var(--pg-text);
   margin: 0.4rem 0 0;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -69,14 +70,14 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 3.5rem;
   font-weight: 900;
-  color: #000000;
+  color: var(--pg-text);
   line-height: 1;
 }
 
 /* ── Carousel wrapper ── */
 .reviews-carousel-wrap {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 1.25rem;
 }
 
@@ -85,6 +86,8 @@
   overflow: hidden;
   cursor: grab;
   user-select: none;
+  padding: 1.5rem 0;
+  margin: -1.5rem 0;
 }
 
 .reviews-viewport:active { cursor: grabbing; }
@@ -99,24 +102,27 @@
   flex: 0 0 calc(100% / 3);
   box-sizing: border-box;
   padding: 0 0.875rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Card surface ── */
 .review-card__inner {
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--pg-bg);
+  border: 1px solid var(--pg-border);
   border-radius: 16px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
   height: 100%;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-  transition: box-shadow 0.25s, transform 0.25s;
+  width: 100%;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.25s, transform 0.25s, background 0.3s ease, border-color 0.3s ease;
 }
 
 .review-card__inner:hover {
-  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-hover);
   transform: translateY(-4px);
 }
 
@@ -151,12 +157,12 @@
 .review-card__username {
   font-weight: 700;
   font-size: 15px;
-  color: #111111;
+  color: var(--pg-text);
 }
 
 .review-card__date {
   font-size: 12px;
-  color: rgba(0,0,0,0.4);
+  color: var(--pg-text-muted);
   margin-top: 2px;
 }
 
@@ -169,7 +175,7 @@
 
 .rev-stars .star {
   font-size: 16px;
-  color: rgba(0,0,0,0.12);
+  color: var(--pg-border-mid);
 }
 
 .rev-stars .star.filled {
@@ -181,14 +187,14 @@
   margin: 0;
   font-size: 17px;
   font-weight: 800;
-  color: #111111;
+  color: var(--pg-text);
   line-height: 1.3;
 }
 
 .review-card__text {
   margin: 0;
   font-size: 14px;
-  color: #374151;
+  color: var(--pg-text-dim);
   line-height: 1.75;
   font-style: italic;
   flex: 1;
@@ -199,7 +205,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  border-top: 1px solid rgba(0,0,0,0.07);
+  border-top: 1px solid var(--pg-border);
   padding-top: 1rem;
   margin-top: auto;
 }
@@ -208,7 +214,7 @@
   width: 44px;
   height: 44px;
   object-fit: contain;
-  background: #f7f9fa;
+  background: var(--pg-surface-2);
   border-radius: 8px;
   padding: 3px;
   flex-shrink: 0;
@@ -217,7 +223,7 @@
 .review-card__prod-name {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(0,0,0,0.5);
+  color: var(--pg-text-muted);
   line-height: 1.3;
 }
 
@@ -226,12 +232,13 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  border: 1.5px solid rgba(0,0,0,0.15);
-  background: #ffffff;
-  color: #000000;
+  border: 1.5px solid var(--pg-border-mid);
+  background: var(--pg-bg);
+  color: var(--pg-text);
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
   cursor: pointer;
   flex-shrink: 0;
   transition: all 0.2s;
@@ -262,7 +269,7 @@
   height: 9px;
   border-radius: 50%;
   border: none;
-  background: rgba(0,0,0,0.18);
+  background: var(--pg-border-mid);
   cursor: pointer;
   padding: 0;
   transition: all 0.25s;
@@ -391,7 +398,7 @@
     height: 8px;
     border-radius: 50%;
     border: none;
-    background-color: #cccccc;
+    background-color: var(--pg-border-mid);
     cursor: pointer;
     padding: 0;
     transition: width 0.3s ease, border-radius 0.3s ease;
@@ -446,7 +453,7 @@
     transform: none !important;
     font-size: 0 !important;
     border: none !important;
-    background-color: #cccccc !important;
+    background-color: var(--pg-border-mid) !important;
     transition: width 0.3s ease, height 0.2s ease, border-radius 0.3s ease;
   }
 

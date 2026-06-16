@@ -4,13 +4,14 @@
 
 .categories-section {
   padding: var(--space-6xl) 0;
-  background: #ffffff;
-  border-top: 1px solid rgba(0,0,0,0.08);
+  background: var(--pg-bg);
+  border-top: 1px solid var(--pg-border);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 /* Ensure title uses dark text on light background */
 .categories-section .section-title {
-  color: #000000;
+  color: var(--pg-text);
 }
 
 .categories-section .eyebrow {
@@ -18,8 +19,8 @@
 }
 
 .categories-section .btn {
-  border-color: rgba(0,0,0,0.15);
-  color: #000000;
+  border-color: var(--pg-border-mid);
+  color: var(--pg-text);
 }
 
 .categories-section .btn:hover {
@@ -40,15 +41,15 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background: #f8f8f8;
-  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--pg-surface);
+  border: 1px solid var(--pg-border);
   border-radius: 12px;
   padding: 28px 24px;
   text-decoration: none;
-  color: #000000;
+  color: var(--pg-text);
   position: relative;
   overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
   cursor: pointer;
 }
 
@@ -97,7 +98,7 @@
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #000000;
+  color: var(--pg-text);
   margin: 0 0 10px 0;
   line-height: 1;
 }
@@ -107,7 +108,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(0,0,0,0.55);
+  color: var(--pg-text-muted);
   margin: 0 0 auto 0;
   padding-bottom: 20px;
 }
@@ -119,7 +120,7 @@
   justify-content: space-between;
   width: 100%;
   margin-top: 16px;
-  border-top: 1px solid rgba(0,0,0,0.08);
+  border-top: 1px solid var(--pg-border);
   padding-top: 16px;
 }
 
@@ -132,7 +133,7 @@
 
 .category-tile__arrow {
   font-size: 18px;
-  color: rgba(0,0,0,0.35);
+  color: var(--pg-text-faint);
   transition: color 0.3s, transform 0.3s;
 }
 
@@ -144,7 +145,7 @@
 /* Skeleton */
 .category-tile--skeleton {
   min-height: 220px;
-  background: rgba(0,0,0,0.06);
+  background: var(--pg-surface-2);
   border-color: transparent;
   animation: skelPulse 1.5s ease-in-out infinite;
 }

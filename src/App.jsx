@@ -5,6 +5,7 @@ import './styles/global.css'
 import './styles/mobile-enhancements.css'
 import './styles/mobile-scale-fix.css'
 import { CartProvider } from './context/CartContext'
+import { ThemeProvider } from './context/ThemeContext'
 import CartDrawer      from './components/Cart/CartDrawer'
 import CheckoutModal   from './components/Checkout/CheckoutModal'
 import Navbar          from './components/Navbar/Navbar'
@@ -133,8 +134,9 @@ export default function App() {
   }, [])
 
   return (
-    <CartProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <CartProvider>
+        <BrowserRouter>
         {/* Content - hide completely until reveal on first load */}
         <motion.div
           initial={{ opacity: isFirstLoad ? 0 : 1 }}
@@ -165,5 +167,6 @@ export default function App() {
         {/* Chatbase now injected from index.html with defensive overrides */}
       </BrowserRouter>
     </CartProvider>
+    </ThemeProvider>
   )
 }
