@@ -1,0 +1,1173 @@
+﻿[1mReact Doctor[22m [2mv0.5.6[22m
+
+[90m  [39m
+
+  [31mÔ£û[39m [31mBugs: Hook called conditionally[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/rules-of-hooks[39m
+    `useState` changes Hook order between renders when called
+    conditionally, so React can attach state to the wrong Hook.
+[2m    ÔåÆ Call hooks at the top level of a React function component[22m
+[2m    or custom Hook so React sees the same hook order on every[22m
+[2m    render.[22m
+
+[90m    src/components/Chatbase/Chatbase.jsx:10-13[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m  9 |[39m                                                       [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 10 |[39m   [36mconst[39m [open[33m,[39m setOpen] [33m=[39m useState([36mfalse[39m)             [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 11 |[39m   [36mconst[39m iframeRef [33m=[39m useRef([36mnull[39m)                      [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 12 |[39m                                                       [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 13 |[39m   useEffect(() [33m=>[39m {                                   [2mÔöé[22m
+    [2mÔöé[22m  [90m 14 |[39m     [36mif[39m ([33mAUTOLOAD[39m) {[0m                                   [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+  [33mÔÜá[39m [33mSecurity: HTML injection sink with dynamic content[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/dangerous-html-sink[39m
+    HTML is injected from a dynamic-looking source, which can
+    become XSS if the value is user-controlled or unsanitized.
+[2m    ÔåÆ Prefer rendering structured React nodes. If HTML is[22m
+[2m    required, sanitize with a well-reviewed sanitizer and keep[22m
+[2m    the trust boundary close to the sink.[22m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:260[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:318-319[39m
+
+  [31mÔ£û[39m [31mSecurity: Permissive Supabase RLS policy[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/supabase-rls-policy-risk[39m
+    Supabase policy SQL disables RLS, permits writes broadly,
+    or references a service-role bypass.
+[2m    ÔåÆ Keep public-read policies explicit, but gate inserts,[22m
+[2m    updates, deletes, and service-role bypasses behind[22m
+[2m    `auth.uid()` plus trusted tenant membership.[22m
+
+[90m    supabase/schema.sql:67[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m 66 |[39m [33m--[39m [33mRecreate[39m policies                                  [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 67 |[39m create policy [32m"Public can read products"[39m on products[0mÔÇª [2mÔöé[22m
+    [2mÔöé[22m  [90m    |[39m [31m[1m^[22m[39m                                                     [2mÔöé[22m
+    [2mÔöé[22m  [90m 68 |[39m create policy [32m"Public can read categories"[39m on catego[0mÔÇª [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+  [33mÔÜá[39m [33mBugs: Array index used as a key[39m [90m├ù20[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-array-index-as-key[39m
+    Your users can see & submit the wrong data when this list
+    reorders or filters, so use a stable id like
+    `key={item.id}`, not the array index "i".
+[2m    ÔåÆ Use a stable id from the item, like `key={item.id}` or[22m
+[2m    `key={item.slug}`. Index keys break when the list reorders[22m
+[2m    or filters.[22m
+
+[90m    src/components/CTABanner/CTABanner.jsx:57[39m
+
+[90m    src/pages/ProductPage.jsx:84[39m
+
+[90m    src/pages/Tools/BMICalculator.jsx:192[39m
+
+[90m    src/components/FeaturedProducts/FeaturedProducts.jsx:102[39m
+
+[90m    src/components/Social/TickerStrip.jsx:23[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:309[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:342[39m
+
+[90m    src/components/WhyUs/WhyUs.jsx:33[39m
+
+[90m    src/components/WhyUs/TrustBar.jsx:67[39m
+
+[90m    src/components/ui/cta-with-rectangle.jsx:51[39m
+
+[90m    src/pages/AboutPage.jsx:244[39m
+
+[90m    src/pages/AboutPage.jsx:317[39m
+
+[90m    src/pages/AboutPage.jsx:414[39m
+
+[90m    src/pages/AboutPage.jsx:433[39m
+
+[90m    src/pages/AdminPage.jsx:967[39m
+
+[90m    src/pages/Tools/BodyTypes.jsx:128[39m
+
+[90m    src/pages/Tools/BodyTypes.jsx:182[39m
+
+[90m    src/pages/Tools/CalorieCalculator.jsx:321[39m
+
+[90m    src/registry/magicui/text-3d-flip.jsx:57[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:1203[39m
+
+  [33mÔÜá[39m [33mBugs: Missing effect dependencies[39m [90m├ù14[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/exhaustive-deps[39m
+    `useEffect` can run with a stale `lottieSrc,
+    lottieSrc.startsWith` & show your users old data.
+[2m    ÔåÆ Don't blindly add missing dependencies. Read the hook[22m
+[2m    callback first.[22m
+[2m    [22m
+[2m    Bad:[22m
+[2m    useEffect(() => {[22m
+[2m      setCount(count + 1);[22m
+[2m    }, [count]);[22m
+[2m    [22m
+[2m    Better:[22m
+[2m    useEffect(() => {[22m
+[2m      setCount((currentCount) => currentCount + 1);[22m
+[2m    }, []);[22m
+[2m    [22m
+[2m    If the missing value is recreated every render, move it[22m
+[2m    inside the hook or stabilize it before adding it to deps.[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:71-74[39m
+
+[90m    src/components/Products/Products.jsx:60[39m
+
+[90m    src/components/Products/Products.jsx:80[39m
+
+[90m    src/components/Products/Products.jsx:84-86[39m
+
+[90m    src/components/Products/Products.jsx:104[39m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:31[39m
+
+[90m    src/hooks/useStoreData.ts:175[39m
+
+[90m    src/hooks/useScrollReveal.js:95[39m
+
+[90m    src/components/Loader/Loader.jsx:33[39m
+
+[90m    src/components/Loader/Loader.jsx:57[39m
+
+[90m    src/components/Loader/Loader.jsx:141[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:838[39m
+
+  [33mÔÜá[39m [33mSecurity: BaaS authority map shipped in browser artifact[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/artifact-baas-authority-surface[39m
+    A browser artifact exposes Firebase/Supabase config
+    together with sensitive collections or authorization fields.
+[2m    ÔåÆ Client BaaS config is often public, but shipped[22m
+[2m    collection names plus owner, role, tenant, or admin fields[22m
+[2m    give attackers a precise authorization map. Verify[22m
+[2m    rules/RLS enforce every boundary server-side.[22m
+
+[90m    dist/assets/supabase-NqpLMp-i.js:44[39m
+
+  [33mÔÜá[39m [33mSecurity: iframe missing sandbox attribute[39m [90m├ù2[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/iframe-missing-sandbox[39m
+    Combining `allow-scripts` & `allow-same-origin` lets the
+    iframe remove its own sandbox, defeating the protection.
+[2m    ÔåÆ Add `sandbox=""` or a curated value so embedded pages[22m
+[2m    cannot get full access to your site by default.[22m
+
+[90m    src/components/Chatbase/Chatbase.jsx:36[39m
+
+[90m    src/pages/AboutPage.jsx:356[39m
+
+  [33mÔÜá[39m [33mAccessibility: Label missing associated control[39m [90m├ù18[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/label-has-associated-control[39m
+    Screen reader users can't tell which input this label names
+    because it's tied to none, so add `htmlFor` or wrap the
+    input inside it.
+[2m    ÔåÆ Tie every label to a control with `htmlFor`, or by[22m
+[2m    nesting the input.[22m
+
+[90m    src/pages/AdminPage.jsx:211[39m
+
+[90m    src/pages/AdminPage.jsx:216[39m
+
+[90m    src/pages/AdminPage.jsx:221[39m
+
+[90m    src/pages/AdminPage.jsx:232[39m
+
+[90m    src/pages/AdminPage.jsx:243[39m
+
+[90m    src/pages/AdminPage.jsx:248[39m
+
+[90m    src/pages/AdminPage.jsx:253[39m
+
+[90m    src/pages/AdminPage.jsx:258[39m
+
+[90m    src/pages/AdminPage.jsx:263[39m
+
+[90m    src/pages/AdminPage.jsx:285[39m
+
+[90m    src/pages/AdminPage.jsx:290[39m
+
+[90m    src/pages/AdminPage.jsx:295[39m
+
+[90m    src/pages/AdminPage.jsx:300[39m
+
+[90m    src/pages/AdminPage.jsx:763[39m
+
+[90m    src/pages/AdminPage.jsx:767[39m
+
+[90m    src/pages/AdminPage.jsx:771[39m
+
+[90m    src/pages/AdminPage.jsx:775[39m
+
+[90m    src/pages/AdminPage.jsx:866[39m
+
+  [33mÔÜá[39m [33mBugs: Derived state stored in an effect[39m [90m├ù4[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-derived-state-effect[39m
+    Your users briefly see stale state on every prop change.
+[2m    ÔåÆ Work out derived values while rendering: `const x =[22m
+[2m    fn(dep)`. To reset a component's state when a prop changes,[22m
+[2m    give it a key prop: `<Component key={prop} />`. See[22m
+[2m    https://react.dev/learn/you-might-not-need-an-effect[22m
+
+[90m    src/components/Products/Products.jsx:114[39m
+
+[90m    src/components/Products/Products.jsx:454[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:213[39m
+
+[90m    src/pages/AdminPage.jsx:85[39m
+
+  [33mÔÜá[39m [33mBugs: Effects chained together[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-effect-chain[39m
+    Your screen redraws several times from a single action
+    because one useEffect changes "activeCategory", which sets
+    off this one.
+[2m    ÔåÆ Compute as much as possible during render (e.g. `const[22m
+[2m    isGameOver = round > 5`) and write all related state inside[22m
+[2m    the event handler that originally fires the chain. Each[22m
+[2m    effect link adds an extra render and makes the code rigid[22m
+[2m    as requirements evolve[22m
+
+[90m    src/components/Products/Products.jsx:114[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:233[39m
+
+[90m    src/pages/AdminPage.jsx:369[39m
+
+  [33mÔÜá[39m [33mPerformance: Non-passive scroll listener[39m [90m├ù2[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/client-passive-event-listeners[39m
+    "touchmove" listener without { passive: true } makes
+    scrolling janky for your users. Only add it if the handler
+    doesn't call event.preventDefault(), since passive
+    listeners silently ignore preventDefault().
+[2m    ÔåÆ Add `{ passive: true }` as the third argument:[22m
+[2m    `addEventListener('scroll', handler, { passive: true })`.[22m
+[2m    Only do this if the handler doesn't call[22m
+[2m    `event.preventDefault()`, since passive listeners ignore it[22m
+[2m    (which breaks pull-to-refresh, custom gestures, and nested[22m
+[2m    scrolling).[22m
+
+[90m    src/components/Products/Products.jsx:420-421[39m
+
+  [33mÔÜá[39m [33mPerformance: Unstable context provider value[39m [90m├ù2[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/jsx-no-constructed-context-values[39m
+    Every reader of this context redraws on each render because
+    you build its `value` inline.
+[2m    ÔåÆ Wrap the context value in `useMemo` or move it outside[22m
+[2m    the component so consumers do not redraw every render.[22m
+
+[90m    src/context/ThemeContext.jsx:20[39m
+
+[90m    src/context/CartContext.jsx:75[39m
+
+  [33mÔÜá[39m [33mBugs: Unknown DOM property[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-unknown-property[39m
+    React ignores this prop because it doesn't recognize the
+    name.
+[2m    ÔåÆ Use the prop name React expects, like `className`,[22m
+[2m    `htmlFor`, or `tabIndex`, so the attribute is applied[22m
+[2m    correctly.[22m
+
+[90m    src/components/Social/SocialGrid.jsx:89[39m
+
+  [33mÔÜá[39m [33mBugs: Data fetching inside an effect[39m [90m├ù2[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-fetch-in-effect[39m
+    fetch() inside useEffect can race, double-fire, or leak.
+    Use a data-fetching layer or Server Component instead.
+[2m    ÔåÆ Use a data-fetching layer or Server Component so fetches[22m
+[2m    do not race, double-fire, or leak from `useEffect`.[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:52[39m
+
+[90m    src/hooks/useStoreData.ts:90[39m
+
+  [33mÔÜá[39m [33mAccessibility: Control missing accessible label[39m [90m├ù29[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/control-has-associated-label[39m
+    Blind users can't tell what this control does because
+    screen readers find no label, so add visible text,
+    `aria-label`, or `aria-labelledby`.
+[2m    ÔåÆ Give every interactive control a label screen readers can[22m
+[2m    read.[22m
+
+[90m    src/pages/Tools/BMICalculator.jsx:124[39m
+
+[90m    src/pages/Tools/BMICalculator.jsx:135[39m
+
+[90m    src/components/Products/Products.jsx:431-434[39m
+
+[90m    src/components/Loader/LoaderRevealVideo.jsx:111[39m
+
+[90m    src/components/CTABanner/WorkBanner.jsx:44[39m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:45[39m
+
+[90m    src/pages/AdminPage.jsx:126[39m
+
+[90m    src/pages/AdminPage.jsx:134[39m
+
+[90m    src/pages/AdminPage.jsx:212[39m
+
+[90m    src/pages/AdminPage.jsx:217[39m
+
+[90m    src/pages/AdminPage.jsx:244[39m
+
+[90m    src/pages/AdminPage.jsx:249[39m
+
+[90m    src/pages/AdminPage.jsx:254[39m
+
+[90m    src/pages/AdminPage.jsx:259[39m
+
+[90m    src/pages/AdminPage.jsx:286[39m
+
+[90m    src/pages/AdminPage.jsx:291[39m
+
+[90m    src/pages/AdminPage.jsx:296[39m
+
+[90m    src/pages/AdminPage.jsx:301[39m
+
+[90m    src/pages/AdminPage.jsx:405[39m
+
+[90m    src/pages/AdminPage.jsx:646[39m
+
+[90m    src/pages/AdminPage.jsx:764[39m
+
+[90m    src/pages/AdminPage.jsx:768[39m
+
+[90m    src/pages/AdminPage.jsx:772[39m
+
+[90m    src/pages/AdminPage.jsx:776[39m
+
+[90m    src/pages/AdminPage.jsx:867[39m
+
+[90m    src/pages/Tools/CalorieCalculator.jsx:192[39m
+
+[90m    src/pages/Tools/CalorieCalculator.jsx:203[39m
+
+[90m    src/pages/Tools/CalorieCalculator.jsx:214[39m
+
+  [33mÔÜá[39m [33mBugs: Multiple setState calls in one effect[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-cascading-set-state[39m
+    3 setState calls in one useEffect redraw your screen each
+    time they run together.
+[2m    ÔåÆ Combine related updates in `useReducer` so one effect[22m
+[2m    does not redraw the screen once per `setState` call.[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:107[39m
+
+[90m    src/pages/ProductPage.jsx:22[39m
+
+[90m    src/components/Products/Products.jsx:454[39m
+
+  [33mÔÜá[39m [33mBugs: Parent kept in sync with a callback effect[39m [90m├ù2[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-prop-callback-in-effect[39m
+    Your parent re-renders on every local state change because
+    this useEffect calls the prop "onComplete" just to stay in
+    sync.
+[2m    ÔåÆ Move the shared state into a Provider so both sides read[22m
+[2m    the same value. Then you don't need a useEffect to keep[22m
+[2m    them in sync.[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:151[39m
+
+[90m    src/components/Loader/LoaderRevealVideo.jsx:49[39m
+
+  [33mÔÜá[39m [33mAccessibility: Anchor used as a button[39m [90m├ù8[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/anchor-is-valid[39m
+    Keyboard users can't reach this link because its `href`
+    goes nowhere (`#`, `javascript:`, or empty), so point it at
+    a real destination.
+[2m    ÔåÆ Give links a real destination. Use `<button>` for in-page[22m
+[2m    actions.[22m
+
+[90m    src/components/Hero/Hero.jsx:668-673[39m
+
+[90m    src/components/Footer/Footer.jsx:49[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:1154-1159[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:1195[39m
+
+  [33mÔÜá[39m [33mBugs: Derived value copied into state[39m [90m├ù5[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-derived-state[39m
+    Storing "selectedFlavor" in state when you can derive it
+    from other values costs an extra render.
+[2m    ÔåÆ Work out the value while rendering (or with useMemo if[22m
+[2m    it's expensive) instead of copying it into useState through[22m
+[2m    a useEffect. See[22m
+[2m    https://react.dev/learn/you-might-not-need-an-effect#updating-state-based-on-props-or-state[22m
+
+[90m    src/components/Products/Products.jsx:455-456[39m
+
+[90m    src/registry/magicui/meteors.jsx:15[39m
+
+[90m    src/pages/AdminPage.jsx:85[39m
+
+[90m    src/pages/AdminPage.jsx:369[39m
+
+  [33mÔÜá[39m [33mPerformance: Full Framer Motion import[39m [90m├ù15[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/use-lazy-motion[39m
+    Importing "motion" ships about 30 kb of extra code and
+    slows page load. Use "m" with LazyMotion instead.
+[2m    ÔåÆ Use `import { LazyMotion, m } from "framer-motion"` with[22m
+[2m    `domAnimation` features. Saves about 30kb.[22m
+
+[90m    src/components/CTABanner/CTABanner.jsx:2[39m
+
+[90m    src/components/Loader/LoaderReveal.jsx:2[39m
+
+[90m    src/components/FeaturedProducts/FeaturedProducts.jsx:2[39m
+
+[90m    src/App.jsx:2[39m
+
+[90m    src/components/Products/Products.jsx:3[39m
+
+[90m    src/components/Categories/Categories.jsx:2[39m
+
+[90m    src/components/WhyUs/WhyUs.jsx:2[39m
+
+[90m    src/components/Loader/Loader.jsx:2[39m
+
+[90m    src/components/Loader/LoaderRevealVideo.jsx:2[39m
+
+[90m    src/components/Brands/Brands.jsx:2[39m
+
+[90m    src/registry/magicui/text-animate.jsx:2[39m
+
+[90m    src/components/PageTransition/PageTransition.jsx:1[39m
+
+[90m    src/pages/AboutPage.jsx:2[39m
+
+[90m    src/registry/magicui/text-3d-flip.jsx:6[39m
+
+[90m    src/components/Navbar/Navbar.jsx:2[39m
+
+  [33mÔÜá[39m [33mAccessibility: Role used instead of HTML tag[39m [90m├ù5[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/prefer-tag-over-role[39m
+    Screen reader users get more reliable semantics from
+    `<dialog>` than `role="dialog"`, so use `<dialog>` instead.
+[2m    ÔåÆ Use the matching HTML element when one exists so browsers[22m
+[2m    and assistive tech get native semantics.[22m
+
+[90m    src/components/Chatbase/Chatbase.jsx:31[39m
+
+[90m    src/components/Products/Products.jsx:433-436[39m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:147[39m
+
+[90m    src/components/AnnouncementBar/AnnouncementBar.jsx:7[39m
+
+  [33mÔÜá[39m [33mAccessibility: Interaction on static element[39m [90m├ù6[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-static-element-interactions[39m
+    Screen reader users can't tell this click handler is
+    interactive because it has no `role`, so add a `role` or
+    use a button or link.
+[2m    ÔåÆ Give clickable static elements a `role`, or use a button[22m
+[2m    or link.[22m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:299[39m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:44[39m
+
+[90m    src/pages/AdminPage.jsx:200[39m
+
+[90m    src/pages/AdminPage.jsx:753[39m
+
+[90m    src/pages/AdminPage.jsx:856[39m
+
+[90m    src/components/Navbar/Navbar.jsx:130[39m
+
+  [33mÔÜá[39m [33mMaintainability: deslop/unused-file[39m [90m├ù19[39m
+    Unused file is not reachable from any entry point, so it
+    adds maintenance surface without shipping any code.
+[2m    ÔåÆ Delete the file if it is truly unreachable, or import it[22m
+[2m    from an entry point.[22m
+
+[90m    src/components/CTABanner/CTABanner.jsx[39m
+
+[90m    src/components/Chatbase/Chatbase.jsx[39m
+
+[90m    src/components/FeaturedProducts/FeaturedProducts.jsx[39m
+
+[90m    src/components/Hero/Hero.jsx[39m
+
+[90m    src/components/Hero/HeroExperimental.jsx[39m
+
+[90m    src/components/Hero/backups/Hero.original.jsx[39m
+
+[90m    src/components/Loader/Loader.jsx[39m
+
+[90m    src/components/Loader/LoaderRevealVideo.jsx[39m
+
+[90m    src/components/Location/Location.jsx[39m
+
+[90m    src/components/ProductCard/ProductCard.jsx[39m
+
+[90m    src/components/WhyUs/WhyUs.jsx[39m
+
+[90m    src/components/ui/SmokeBackground.jsx[39m
+
+[90m    src/components/ui/badge.jsx[39m
+
+[90m    src/components/ui/button.jsx[39m
+
+[90m    src/components/ui/demo.tsx[39m
+
+[90m    src/components/ui/hero-dithering-card.tsx[39m
+
+[90m    src/registry/magicui/shiny-button.jsx[39m
+
+[90m    src/registry/magicui/text-animate-demo.jsx[39m
+
+[90m    src/registry/magicui/text-animate.jsx[39m
+
+  [31mÔ£û[39m [31mBugs: State synced to a prop inside an effect[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-adjust-state-on-prop-change[39m
+    This effect adjusts state after a prop changes, so users
+    briefly see the stale value.
+[2m    ÔåÆ Adjust the state inline during render with a `prev`-prop[22m
+[2m    comparison (`if (prop !== prevProp) { setPrevProp(prop);[22m
+[2m    setX(...); }`), or refactor to remove the duplicated state.[22m
+[2m    Routing the adjustment through a useEffect forces an extra[22m
+[2m    render with a stale UI between the two commits. See[22m
+[2m    https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes[22m
+
+[90m    src/components/Products/Products.jsx:457[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m 456 |[39m     setSelectedSize(product[33m.[39msizes[[35m0[39m] [33m?[39m[33m?[39m [32m''[39m)          [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 457 |[39m     setQuantity([35m1[39m)                                   [2mÔöé[22m
+    [2mÔöé[22m  [90m     |[39m     [31m[1m^[22m[39m                                                [2mÔöé[22m
+    [2mÔöé[22m  [90m 458 |[39m   }[33m,[39m [product])[0m                                      [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+  [33mÔÜá[39m [33mBugs: Button missing explicit type[39m [90m├ù60[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/button-has-type[39m
+    Your users can submit the form by accident because a
+    `<button>` with no `type` defaults to submit.
+[2m    ÔåÆ Set an explicit button `type` so plain buttons do not[22m
+[2m    submit forms by accident: `type="button"`, `"submit"`, or[22m
+[2m    `"reset"`.[22m
+
+[90m    src/components/Chatbase/Chatbase.jsx:27[39m
+
+[90m    src/components/Chatbase/Chatbase.jsx:39[39m
+
+[90m    src/components/Cart/CartDrawer.jsx:23[39m
+
+[90m    src/components/Cart/CartDrawer.jsx:55[39m
+
+[90m    src/components/Cart/CartDrawer.jsx:61[39m
+
+[90m    src/components/Cart/CartDrawer.jsx:67[39m
+
+[90m    src/components/Cart/CartDrawer.jsx:90[39m
+
+[90m    src/pages/Tools/BMICalculator.jsx:144[39m
+
+[90m    src/components/FeaturedProducts/FeaturedProducts.jsx:82[39m
+
+[90m    src/components/FeaturedProducts/FeaturedProducts.jsx:115[39m
+
+[90m    src/components/Products/Products.jsx:167[39m
+
+[90m    src/components/Products/Products.jsx:175[39m
+
+[90m    src/components/Products/Products.jsx:224[39m
+
+[90m    src/components/Products/Products.jsx:242[39m
+
+[90m    src/components/Products/Products.jsx:257[39m
+
+[90m    src/components/Products/Products.jsx:269[39m
+
+[90m    src/components/Products/Products.jsx:294[39m
+
+[90m    src/components/Products/Products.jsx:307[39m
+
+[90m    src/components/Products/Products.jsx:331[39m
+
+[90m    src/components/Products/Products.jsx:338[39m
+
+[90m    src/components/Products/Products.jsx:345[39m
+
+[90m    src/components/ui/hero-dithering-card.tsx:56[39m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:74[39m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:78[39m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:85[39m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:90[39m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:95[39m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:140[39m
+
+[90m    src/components/ui/ScrollToTop.jsx:15[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:295[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:333[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:341[39m
+
+[90m    src/components/FeaturedProducts/NewProducts.jsx:76[39m
+
+[90m    src/components/CTABanner/WorkBanner.jsx:71[39m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:152[39m
+
+[90m    src/pages/AdminPage.jsx:410[39m
+
+[90m    src/pages/AdminPage.jsx:435-436[39m
+
+[90m    src/pages/AdminPage.jsx:452[39m
+
+[90m    src/pages/AdminPage.jsx:462[39m
+
+[90m    src/pages/AdminPage.jsx:612[39m
+
+[90m    src/pages/AdminPage.jsx:656[39m
+
+[90m    src/pages/AdminPage.jsx:682-685[39m
+
+[90m    src/pages/AdminPage.jsx:692[39m
+
+[90m    src/pages/AdminPage.jsx:701-702[39m
+
+[90m    src/pages/AdminPage.jsx:791[39m
+
+[90m    src/pages/AdminPage.jsx:805-806[39m
+
+[90m    src/pages/AdminPage.jsx:885[39m
+
+[90m    src/pages/AdminPage.jsx:899-900[39m
+
+[90m    src/pages/AdminPage.jsx:961[39m
+
+[90m    src/pages/Tools/CalorieCalculator.jsx:249[39m
+
+[90m    src/components/Navbar/Navbar.jsx:64[39m
+
+[90m    src/components/Navbar/Navbar.jsx:96[39m
+
+[90m    src/components/Navbar/Navbar.jsx:143[39m
+
+[90m    src/components/Navbar/LanguageSwitcher.jsx:31[39m
+
+[90m    src/components/Navbar/LanguageSwitcher.jsx:52[39m
+
+  [33mÔÜá[39m [33mPerformance: State only used in handlers[39m [90m├ù5[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/rerender-state-only-in-handlers[39m
+    Each update to "progress" redraws your component for
+    nothing because this useState is set but never shown on
+    screen.
+[2m    ÔåÆ Use useRef instead of useState when the value is only set[22m
+[2m    and never shown on screen. `ref.current = ...` updates it[22m
+[2m    without redrawing the component.[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:21[39m
+
+[90m    src/components/Loader/LoaderReveal.jsx:25[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:200[39m
+
+[90m    src/pages/AdminPage.jsx:339[39m
+
+[90m    src/components/Navbar/Navbar.jsx:14[39m
+
+  [33mÔÜá[39m [33mBugs: State updates chained through effects[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-chain-state-updates[39m
+    Chaining state updates triggers an extra render each step.
+[2m    ÔåÆ Set all the related state together in the event handler[22m
+[2m    that starts it, instead of having one useEffect react to a[22m
+[2m    state change and set more state. See[22m
+[2m    https://react.dev/learn/you-might-not-need-an-effect#chains-of-computations[22m
+
+[90m    src/components/Products/Products.jsx:114[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:234[39m
+
+[90m    src/pages/AdminPage.jsx:369[39m
+
+  [33mÔÜá[39m [33mBugs: Event logic handled in an effect[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-event-handler[39m
+    Faking an event handler with state plus a useEffect costs
+    an extra render & runs late.
+[2m    ÔåÆ Run the side effect in the event handler that triggers[22m
+[2m    it, instead of watching its state from a useEffect. See[22m
+[2m    https://react.dev/learn/you-might-not-need-an-effect#sharing-logic-between-event-handlers[22m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:224[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:234[39m
+
+[90m    src/pages/AdminPage.jsx:369[39m
+
+  [33mÔÜá[39m [33mAccessibility: Click handler missing keyboard handler[39m [90m├ù7[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/click-events-have-key-events[39m
+    Keyboard users can't trigger this click handler because
+    there's no keyboard one, so add `onKeyUp`, `onKeyDown`, or
+    `onKeyPress`.
+[2m    ÔåÆ Pair `onClick` with a key handler so keyboard users can[22m
+[2m    trigger it.[22m
+
+[90m    src/components/Hero/Hero.jsx:633[39m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:44[39m
+
+[90m    src/pages/AdminPage.jsx:200[39m
+
+[90m    src/pages/AdminPage.jsx:753[39m
+
+[90m    src/pages/AdminPage.jsx:856[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:1119[39m
+
+[90m    src/components/Navbar/Navbar.jsx:130[39m
+
+  [31mÔ£û[39m [31mBugs: Mutable value in effect dependencies[39m [90m├ù5[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-mutable-in-deps[39m
+    Values like "location.*" can change without re-rendering
+    the component, so this dependency will not make the effect
+    run again.
+[2m    ÔåÆ Read mutable values like `location.pathname` or[22m
+[2m    `ref.current` inside the effect body, or subscribe with[22m
+[2m    `useSyncExternalStore`. Changing them doesn't redraw the[22m
+[2m    screen, so listing them in deps won't make the effect run[22m
+[2m    again.[22m
+
+[90m    src/App.jsx:56[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m 55 |[39m     [36mreturn[39m () [33m=>[39m window[33m.[39mclearTimeout(timeout)         [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 56 |[39m   }[33m,[39m [location[33m.[39mpathname[33m,[39m location[33m.[39msearch])            [2mÔöé[22m
+    [2mÔöé[22m  [90m 57 |[39m   [0m                                                    [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+[90m    src/components/Products/Products.jsx:60[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m 59 |[39m     setActiveCategory(categoryParam)                  [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 60 |[39m   }[33m,[39m [location[33m.[39msearch[33m,[39m categories])                   [2mÔöé[22m
+    [2mÔöé[22m  [90m    |[39m       [31m[1m^[22m[39m                                               [2mÔöé[22m
+    [2mÔöé[22m  [90m 61 |[39m[0m                                                       [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+[90m    src/components/Products/Products.jsx:66[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m 65 |[39m     }                                                 [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 66 |[39m   }[33m,[39m [location[33m.[39msearch])                               [2mÔöé[22m
+    [2mÔöé[22m  [90m    |[39m       [31m[1m^[22m[39m                                               [2mÔöé[22m
+    [2mÔöé[22m  [90m 67 |[39m[0m                                                       [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+[90m    src/components/PageTransition/PageTransition.jsx:43[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m 42 |[39m     }                                                 [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 43 |[39m   }[33m,[39m [location[33m.[39mpathname])                             [2mÔöé[22m
+    [2mÔöé[22m  [90m    |[39m       [31m[1m^[22m[39m                                               [2mÔöé[22m
+    [2mÔöé[22m  [90m 44 |[39m   [36mreturn[39m ([0m                                            [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+  [33mÔÜá[39m [33mBugs: State initialized from a mount effect[39m [90m├ù5[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-initialize-state[39m
+    Your users see an extra render with empty "inView" because
+    a useEffect sets its starting value.
+[2m    ÔåÆ Pass the initial value directly to useState() instead of[22m
+[2m    setting it from a mount-only useEffect. For SSR hydration,[22m
+[2m    prefer useSyncExternalStore().[22m
+
+[90m    src/components/ui/LazyImage.jsx:24[39m
+
+[90m    src/components/ProductReviews/ProductReviews.jsx:219[39m
+
+[90m    src/registry/magicui/text-animate.jsx:30[39m
+
+[90m    src/registry/magicui/text-animate.jsx:34[39m
+
+[90m    src/pages/AdminPage.jsx:348[39m
+
+  [33mÔÜá[39m [33mPerformance: Empty default prop breaks memo[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/rerender-memo-with-default-value[39m
+    This keeps redrawing children that compare props because
+    default prop value {} makes a brand new object every
+    render, so move it to a constant at the top of the file
+[2m    ÔåÆ Move it to the top of the file: `const EMPTY_ITEMS:[22m
+[2m    Item[] = []`, then use that as the default value[22m
+
+[90m    src/components/ui/SmokeBackground.jsx:41[39m
+
+  [33mÔÜá[39m [33mPerformance: Repeated localStorage reads[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/js-cache-storage[39m
+    This is slow because sessionStorage.getItem("loader_shown")
+    runs several times & re-parses the data each call, so read
+    it once & reuse the value
+[2m    ÔåÆ Read `localStorage`/`sessionStorage` once and reuse the[22m
+[2m    value. Every read has to parse the data again, which is slow[22m
+
+[90m    src/components/Loader/Loader.jsx:32[39m
+
+  [33mÔÜá[39m [33mAccessibility: Noninteractive element given interactive role[39m [90m├ù2[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-noninteractive-element-to-interactive-role[39m
+    Role `listbox` gives `<ul>` interactive semantics even
+    though the element is noninteractive, so screen reader
+    users get the wrong controls.
+[2m    ÔåÆ Use a real interactive element instead of adding an[22m
+[2m    interactive role to a static one.[22m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:58[39m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:64[39m
+
+  [33mÔÜá[39m [33mAccessibility: Custom modal instead of dialog[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/prefer-html-dialog[39m
+    Keyboard users can tab out of this `role="dialog"` modal
+    because it has no built-in focus trapping, so use the
+    native `<dialog>`, which gives you focus trapping, `Escape`
+    to close, and the backdrop for free.
+[2m    ÔåÆ Replace the wrapper with `<dialog>` and open it with[22m
+[2m    `dialog.showModal()`. For the trigger, prefer `<button[22m
+[2m    commandfor="id" command="show-modal">` (Chrome 135+), or a[22m
+[2m    `useRef` with `dialogRef.current?.showModal()`.[22m
+
+[90m    src/components/Chatbase/Chatbase.jsx:31[39m
+
+[90m    src/components/Cart/CartDrawer.jsx:15[39m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:147[39m
+
+  [33mÔÜá[39m [33mMaintainability: Static value rebuilt every render[39m [90m├ù8[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/prefer-module-scope-static-value[39m
+    `content` inside `BMICalculator` uses no local state but is
+    rebuilt every render, so it looks new each time & breaks
+    memoized children. Move it to the top of the file, outside
+    the component.
+[2m    ÔåÆ Move the value above the component, at the top of the[22m
+[2m    file. It doesn't use local state, so rebuilding it each[22m
+[2m    update is wasted and makes it look new every time.[22m
+
+[90m    src/pages/Tools/BMICalculator.jsx:14[39m
+
+[90m    src/components/ui/ScrollBasedVelocityImagesDemo.jsx:8[39m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:17[39m
+
+[90m    src/hooks/useStoreData.ts:67[39m
+
+[90m    src/pages/Tools/WorkoutPlanning.jsx:21[39m
+
+[90m    src/pages/Tools/WorkoutPlanning.jsx:259[39m
+
+[90m    src/pages/Tools/BodyTypes.jsx:8[39m
+
+[90m    src/pages/Tools/CalorieCalculator.jsx:17[39m
+
+  [33mÔÜá[39m [33mAccessibility: Tabindex on non-interactive element[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-noninteractive-tabindex[39m
+    Keyboard users get stuck focusing this element they can't
+    act on because `tabIndex` makes it tabbable, so remove it.
+[2m    ÔåÆ Only add `tabIndex` to interactive elements or[22m
+[2m    interactive roles.[22m
+
+[90m    src/components/Products/Products.jsx:479[39m
+
+  [33mÔÜá[39m [33mPerformance: Ref initializer runs on every render[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/rerender-lazy-ref-init[39m
+    useRef(hexToRgb()) rebuilds this value on every render &
+    throws it away.
+[2m    ÔåÆ Initialize the ref lazily so expensive values are not[22m
+[2m    rebuilt and discarded on every render.[22m
+
+[90m    src/components/ui/SmokeBackground.jsx:43[39m
+
+  [33mÔÜá[39m [33mMaintainability: deslop/unused-export[39m [90m├ù7[39m
+    Unused export: `default` is exported but no module imports
+    it, so it expands the public surface and can mislead
+    callers about supported API.
+[2m    ÔåÆ Drop the `export` keyword (or remove the declaration) if[22m
+[2m    no other module uses this symbol.[22m
+
+[90m    src/components/ui/menu-toggle-icon.jsx:40[39m
+
+[90m    src/data/siteData.js:115[39m
+
+[90m    src/hooks/useScrollReveal.js:103[39m
+
+[90m    src/hooks/useScrollReveal.js:107[39m
+
+[90m    src/lib/utils.ts:14[39m
+
+[90m    src/lib/utils.ts:29[39m
+
+[90m    src/registry/magicui/scroll-based-velocity.jsx:27[39m
+
+  [33mÔÜá[39m [33mAccessibility: Handler on non-interactive element[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-noninteractive-element-interactions[39m
+    Keyboard & screen reader users can't trigger this `<main>`
+    because it isn't interactive, so use a button or link or
+    add an interactive role.
+[2m    ÔåÆ Put interactions on a button or link, or add an[22m
+[2m    interactive role.[22m
+
+[90m    src/components/Hero/Hero.jsx:633[39m
+
+[90m    src/components/Products/Products.jsx:475[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:1119[39m
+
+  [33mÔÜá[39m [33mPerformance: Permanent will-change wastes GPU[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-permanent-will-change[39m
+    This wastes GPU memory because will-change is left on all
+    the time, so add it right before the animation & remove it
+    when the animation ends
+[2m    ÔåÆ Add will-change when the animation starts[22m
+[2m    (`onMouseEnter`) and remove it when it ends[22m
+[2m    (`onAnimationEnd`). Leaving it on all the time wastes GPU[22m
+[2m    memory and can slow things down[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:196[39m
+
+[90m    src/components/Loader/LoaderRevealVideo.jsx:88[39m
+
+[90m    src/components/PageTransition/PageTransition.jsx:54[39m
+
+  [33mÔÜá[39m [33mPerformance: Spread copy before sort()[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/js-tosorted-immutable[39m
+    This wastes work because [...array].sort() copies the array
+    just to sort it, so use array.toSorted() to sort without
+    the extra copy (ES2023)
+[2m    ÔåÆ Use `array.toSorted()` (ES2023) instead of[22m
+[2m    `[...array].sort()` so you sort without copying the array[22m
+[2m    first[22m
+
+[90m    src/components/Products/Products.jsx:86[39m
+
+  [33mÔÜá[39m [33mAccessibility: Autofocus on an element[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-autofocus[39m
+    `autoFocus` moves focus on load, which can disrupt screen
+    reader and keyboard users. Remove it and let users choose
+    where to focus.
+[2m    ÔåÆ Do not use `autoFocus`. It disorients users on load.[22m
+
+[90m    src/pages/AdminPage.jsx:406[39m
+
+  [33mÔÜá[39m [33mMaintainability: Large inline style object rebuilds every render[39m [90m├ù5[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-inline-exhaustive-style[39m
+    This inline style has 8 properties, which is hard to read &
+    rebuilds every render. Move it to a CSS class, CSS module,
+    or styled component.
+[2m    ÔåÆ Move the styles to a CSS class, CSS module, Tailwind[22m
+[2m    utilities, or a styled component. Big inline objects are[22m
+[2m    hard to read and rebuild on every update.[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:188[39m
+
+[90m    src/registry/magicui/meteors.jsx:23[39m
+
+[90m    src/components/Loader/LoaderRevealVideo.jsx:80[39m
+
+[90m    src/components/Loader/LoaderRevealVideo.jsx:100[39m
+
+[90m    src/pages/Tools/BodyTypes.jsx:129[39m
+
+  [33mÔÜá[39m [33mMaintainability: Pure function rebuilt every render[39m [90m├ù10[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/prefer-module-scope-pure-function[39m
+    `makeSrcDoc` inside `Chatbase` uses no local state but is
+    rebuilt on every render, so it wastes work & breaks
+    memoized children. Move it to the top of the file, outside
+    the component.
+[2m    ÔåÆ Move the function above the component, at the top of the[22m
+[2m    file. It doesn't use local state, so rebuilding it each[22m
+[2m    update is wasted work.[22m
+
+[90m    src/components/Chatbase/Chatbase.jsx:20[39m
+
+[90m    src/components/Hero/Hero.jsx:145[39m
+
+[90m    src/components/Hero/Hero.jsx:151[39m
+
+[90m    src/components/Hero/Hero.jsx:192[39m
+
+[90m    src/components/Hero/Hero.jsx:216[39m
+
+[90m    src/components/Hero/Hero.jsx:246[39m
+
+[90m    src/components/ui/ScrollToTop.jsx:12[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:236[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:247[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:270[39m
+
+  [33mÔÜá[39m [33mMaintainability: Large component is hard to read and change[39m [90m├ù7[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-giant-component[39m
+    Component "LoaderReveal" is 333 lines long, which is hard
+    to read & change. Split it into a few smaller components.
+[2m    ÔåÆ Pull each section into its own component so the parent is[22m
+[2m    easier to read, test, and change.[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:20[39m
+
+[90m    src/components/Hero/Hero.jsx:114[39m
+
+[90m    src/components/Products/Products.jsx:16[39m
+
+[90m    src/pages/AboutPage.jsx:144[39m
+
+[90m    src/pages/Tools/WorkoutPlanning.jsx:7[39m
+
+[90m    src/pages/Tools/CalorieCalculator.jsx:5[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:189[39m
+
+  [33mÔÜá[39m [33mMaintainability: deslop/unused-dependency[39m
+    Unused dependency: `@studio-freight/lenis`
+[2m    ÔåÆ An unused dependency adds install time and supply-chain[22m
+[2m    surface without being used; remove it from package.json if[22m
+[2m    it is genuinely unused.[22m
+
+  [33mÔÜá[39m [33mPerformance: .map().filter(Boolean) loops twice[39m [90m├ù4[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/js-flatmap-filter[39m
+    This loops over your list twice because
+    .map().filter(Boolean) makes two passes, so use .flatMap()
+    to change & drop items in one pass
+[2m    ÔåÆ Use `.flatMap(item => condition ? [value] : [])` to[22m
+[2m    change and drop items in one pass, instead of building a[22m
+[2m    throwaway array in between[22m
+
+[90m    src/components/ui/ScrollBasedVelocityImagesDemo.jsx:21[39m
+
+[90m    src/pages/AdminPage.jsx:520[39m
+
+[90m    src/pages/AdminPage.jsx:527-530[39m
+
+  [33mÔÜá[39m [33mPerformance: Chained array iterations[39m [90m├ù3[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/js-combine-iterations[39m
+    This loops over your list twice because .filter().map()
+    makes two passes, so do it in one pass with .reduce() or a
+    for...of loop
+[2m    ÔåÆ Combine `.map().filter()` style chains into one pass with[22m
+[2m    `.reduce()` or a `for...of` loop, so you only loop over the[22m
+[2m    list once[22m
+
+[90m    src/components/FeaturedProducts/TabbedCatalog.jsx:94[39m
+
+[90m    src/context/CartContext.jsx:43[39m
+
+[90m    src/lib/utils.ts:39[39m
+
+  [33mÔÜá[39m [33mPerformance: Repeated inline style writes[39m [90m├ù8[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/js-batch-dom-css[39m
+    This makes the browser recalculate layout again & again
+    because you set several element.style properties in a row,
+    so set them all at once with cssText or a CSS class to
+    redraw once
+[2m    ÔåÆ Do all your reads first, then all your writes. Mixing[22m
+[2m    them inside a loop makes the browser recalculate the layout[22m
+[2m    again and again, which is slow[22m
+
+[90m    src/components/Hero/Hero.jsx:230-233[39m
+
+[90m    src/components/Hero/HeroWithProducts.jsx:462-465[39m
+
+  [33mÔÜá[39m [33mMaintainability: Children type checked at runtime[39m [90m├ù2[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/no-polymorphic-children[39m
+    Your users hit inconsistent behavior because `typeof
+    children === "string"` makes this component switch on what
+    callers pass, so add clear subcomponents like
+    `<Button.Text>` instead.
+[2m    ÔåÆ Add clear subcomponents like `<Button.Text>` and[22m
+[2m    `<Button.Icon>` so callers don't have to check `typeof[22m
+[2m    children`.[22m
+
+[90m    src/registry/magicui/text-animate.jsx:46[39m
+
+[90m    src/registry/magicui/text-3d-flip.jsx:25[39m
+
+  [33mÔÜá[39m [33mBugs: Many related useState calls[39m [90m├ù6[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/prefer-useReducer[39m
+    5 useState calls in "LoaderReveal" can each trigger a
+    separate render.
+[2m    ÔåÆ Group related state in `useReducer` so one logical update[22m
+[2m    does not fan out into separate renders.[22m
+
+[90m    src/components/Loader/LoaderReveal.jsx:20[39m
+
+[90m    src/pages/ProductPage.jsx:9[39m
+
+[90m    src/components/Products/Products.jsx:16[39m
+
+[90m    src/components/Checkout/CheckoutModal.jsx:79[39m
+
+[90m    src/pages/AdminPage.jsx:327[39m
+
+[90m    src/pages/Tools/CalorieCalculator.jsx:5[39m
+
+  [33mÔÜá[39m [33mMaintainability: Non-component export in component file[39m [90m├ù2[39m
+    [36mLearn more: https://react.doctor/docs/rules/react-doctor/only-export-components[39m
+    This file exports non-components, so Fast Refresh can't
+    safely preserve component state.
+[2m    ÔåÆ Move non-component exports out of component files so Fast[22m
+[2m    Refresh can preserve component state instead of[22m
+[2m    full-reloading.[22m
+
+[90m    src/components/ui/button.jsx:49[39m
+
+[90m    src/components/ui/badge.jsx:31[39m
+
+  [31mÔ£û[39m [31mBugs: TS/2528[39m [90m├ù2[39m
+    A module cannot have multiple default exports.
+
+[90m    src/components/Location/Location.jsx:9[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m  8 |[39m                                                       [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m  9 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mLocation[39m() {                  [2mÔöé[22m
+    [2mÔöé[22m  [90m    |[39m        [31m[1m^[22m[39m                                              [2mÔöé[22m
+    [2mÔöé[22m  [90m 10 |[39m   [36mconst[39m sectionRef [33m=[39m useRef([36mnull[39m)[0m                     [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+[90m    src/registry/magicui/text-animate-demo.jsx:4[39m
+    [2mÔöî[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÉ[22m
+    [2mÔöé[22m [0m [90m 3 |[39m                                                        [2mÔöé[22m
+    [2mÔöé[22m [31m[1m>[22m[39m[90m 4 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mTextAnimateDemo[39m() {            [2mÔöé[22m
+    [2mÔöé[22m  [90m   |[39m        [31m[1m^[22m[39m                                               [2mÔöé[22m
+    [2mÔöé[22m  [90m 5 |[39m   [36mreturn[39m ([0m                                             [2mÔöé[22m
+    [2mÔöö[22m[2mÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m[2mÔöÿ[22m
+
+
+[2m  ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m
+
+  [1mAll 339 issues[22m
+
+  [1mSecurity[22m [2m>[22m [31m1 error[39m[2m, [22m[33m[2m6 warnings[22m[39m
+  [1mBugs[22m [2m>[22m [31m11 errors[39m[2m, [22m[33m[2m131 warnings[22m[39m
+  [1mPerformance[22m [2m>[22m [33m[2m46 warnings[22m[39m
+  [1mAccessibility[22m [2m>[22m [33m[2m83 warnings[22m[39m
+  [1mMaintainability[22m [2m>[22m [33m[2m61 warnings[22m[39m
+
+  [31mÔöîÔöÇÔöÇÔöÇÔöÇÔöÇÔöÉ[39m  [31m29[39m [2m/ 100[22m [31mCritical[39m
+  [31mÔöé x x Ôöé[39m  [31mÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûê[39m[2m[31mÔûôÔûôÔûôÔûôÔûôÔûô[39m[22m[2mÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ[22m
+  [31mÔöé  Ôû¢  Ôöé[39m  React Doctor [2m(https://react.doctor)[22m
+  [31mÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÿ[39m
+
+[90m  You could improve [39m[31m+11%[39m[90m by fixing the top 3 issues[39m
+[90m  Full diagnostics written to C:\Users\Laylo\AppData\Local\Temp\react-doctor-502aefaf-ae37-45c6-8a92-7739356daa9d[39m
+
+[2m  ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ[22m
+
+  [1mShare:[22m [36mhttps://react.doctor/share?p=flex-supps&s=29&e=12&w=327&f=63[39m
+[2m  Tell others how you did on socials[22m
+
+  [1mDocs:[22m [36mhttps://react.doctor/docs[39m
+[2m  Learn more about fixing issues, setting up CI/CD, and[22m
+[2m  configuring rules with a config file[22m
+
+  [1mGitHub:[22m [36mhttps://github.com/millionco/react-doctor[39m
+[2m  Report issues and star the repository![22m
+
