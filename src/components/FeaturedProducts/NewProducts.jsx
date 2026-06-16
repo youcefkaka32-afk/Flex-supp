@@ -73,7 +73,7 @@ export default function NewProducts() {
                         </div>
                       </div>
                     </div>
-                    <button className="new-card__quickadd font-display" onClick={() => addToCart(product)} disabled={!product.inStock}>
+                    <button type="button" className="new-card__quickadd font-display" onClick={() => addToCart(product)} disabled={!product.inStock}>
                       {product.inStock ? t('newProducts.quickAdd') : t('newProducts.outOfStock')}
                     </button>
                   </article>

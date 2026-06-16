@@ -71,28 +71,28 @@ export default function TabbedCatalog() {
         <h2 className="catalog-section__title font-display">{t('catalog.title')}</h2>
 
         <div className="catalog-top-tabs">
-          <button className={`catalog-top-btn font-display ${topTab === 'category' ? 'active' : ''}`}
+          <button type="button" className={`catalog-top-btn font-display ${topTab === 'category' ? 'active' : ''}`}
             onClick={() => { setTopTab('category'); setActiveSubTab('all') }}>
             {t('catalog.byCategory')}
           </button>
-          <button className={`catalog-top-btn font-display ${topTab === 'goal' ? 'active' : ''}`}
+          <button type="button" className={`catalog-top-btn font-display ${topTab === 'goal' ? 'active' : ''}`}
             onClick={() => { setTopTab('goal'); setActiveSubTab('all') }}>
             {t('catalog.byGoal')}
           </button>
         </div>
 
         <div className="catalog-sub-tabs">
-          <button className={`catalog-sub-btn ${activeSubTab === 'all' ? 'active' : ''}`} onClick={() => setActiveSubTab('all')}>
+          <button type="button" className={`catalog-sub-btn ${activeSubTab === 'all' ? 'active' : ''}`} onClick={() => setActiveSubTab('all')}>
             {t('catalog.allProducts')}
           </button>
           {topTab === 'category'
             ? categories.map(cat => (
-                <button key={cat.id} className={`catalog-sub-btn ${activeSubTab === cat.id ? 'active' : ''}`} onClick={() => setActiveSubTab(cat.id)}>
+                <button type="button" key={cat.id} className={`catalog-sub-btn ${activeSubTab === cat.id ? 'active' : ''}`} onClick={() => setActiveSubTab(cat.id)}>
                   {cat.name}
                 </button>
               ))
             : goals.filter(g => g.id !== 'all').map(goal => (
-                <button key={goal.id} className={`catalog-sub-btn ${activeSubTab === goal.id ? 'active' : ''}`} onClick={() => setActiveSubTab(goal.id)}>
+                <button type="button" key={goal.id} className={`catalog-sub-btn ${activeSubTab === goal.id ? 'active' : ''}`} onClick={() => setActiveSubTab(goal.id)}>
                   {goal.name}
                 </button>
               ))
@@ -137,7 +137,7 @@ export default function TabbedCatalog() {
                         </div>
                       </div>
                     </div>
-                    <button className="catalog-card__quickadd font-display" onClick={() => addToCart(product)} disabled={!product.inStock}>
+                    <button type="button" className="catalog-card__quickadd font-display" onClick={() => addToCart(product)} disabled={!product.inStock}>
                       {product.inStock ? t('catalog.quickAdd') : t('catalog.outOfStock')}
                     </button>
                   </article>

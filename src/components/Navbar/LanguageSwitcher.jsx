@@ -29,6 +29,7 @@ export default function LanguageSwitcher() {
   return (
     <div className="lang-switcher" ref={ref}>
       <button
+        type="button"
         className="lang-switcher__trigger"
         onClick={() => setOpen(o => !o)}
         aria-label="Change language"
@@ -50,6 +51,7 @@ export default function LanguageSwitcher() {
         <div className="lang-switcher__dropdown">
           {LANGUAGES.map(lang => (
             <button
+              type="button"
               key={lang.code}
               className={`lang-switcher__option ${lang.code === i18n.language ? 'active' : ''}`}
               onClick={() => select(lang.code)}

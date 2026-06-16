@@ -69,6 +69,7 @@ export default function WorkBanner() {
 
         {/* Mute toggle */}
         <button
+          type="button"
           className="work-banner__mute-btn"
           onClick={toggleMute}
           aria-label={muted ? 'Unmute video' : 'Mute video'}

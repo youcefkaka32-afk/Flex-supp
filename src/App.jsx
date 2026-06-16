@@ -90,7 +90,6 @@ export default function App() {
   const forceFirstLoad = typeof window !== 'undefined' && window.location.search.includes('firstload')
   const isFirstLoad = forceFirstLoad || (typeof window !== 'undefined' && sessionStorage.getItem('loader_shown') !== 'true')
 
-  console.log('[App] 🎬 Starting with:', { isFirstLoad, forceFirstLoad, revealComplete })
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
@@ -158,10 +157,7 @@ export default function App() {
         {!isAdmin && (
           <LoaderReveal 
             isFirstLoad={isFirstLoad}
-            onComplete={() => {
-              console.log('[App] ✅ Reveal complete')
-              setRevealComplete(true)
-            }}
+            onComplete={() => setRevealComplete(true)}
           />
         )}
         {/* Chatbase now injected from index.html with defensive overrides */}

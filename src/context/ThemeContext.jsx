@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react'
 
 const ThemeContext = createContext({ theme: 'light', toggleTheme: () => {} })
 
@@ -14,10 +14,14 @@ export function ThemeProvider({ children }) {
     localStorage.setItem('flexsupps-theme', theme)
   }, [theme])
 
-  const toggleTheme = () => setTheme(t => (t === 'light' ? 'dark' : 'light'))
+  // useCallback so toggleTheme has a stable reference between renders
+  const toggleTheme = useCallback(() => setTheme(t => (t === 'light' ? 'dark' : 'light')), [])
+
+  // useMemo so the context object is stable — consumers only re-render when theme changes
+  const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme])
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   )

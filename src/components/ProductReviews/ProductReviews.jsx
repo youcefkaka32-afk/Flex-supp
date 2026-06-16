@@ -292,7 +292,7 @@ export default function ProductReviews() {
 
         {/* Carousel */}
         <div className="reviews-carousel-wrap">
-          <button className="reviews-nav-btn prev" onClick={handlePrev} disabled={index === 0} aria-label="Previous">
+          <button type="button" className="reviews-nav-btn prev" onClick={handlePrev} disabled={index === 0} aria-label="Previous">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
           </button>
 
@@ -330,7 +330,7 @@ export default function ProductReviews() {
             </div>
           </div>
 
-          <button className="reviews-nav-btn next" onClick={handleNext} disabled={index === maxIndex} aria-label="Next">
+          <button type="button" className="reviews-nav-btn next" onClick={handleNext} disabled={index === maxIndex} aria-label="Next">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
         </div>
@@ -339,6 +339,7 @@ export default function ProductReviews() {
         <div className="reviews-dots">
           {(isMobile ? ALL_REVIEWS : Array.from({ length: maxIndex + 1 })).map((_, i) => (
             <button
+              type="button"
               key={i}
               className={`reviews-dot ${i === index ? 'active' : ''}`}
               onClick={() => handleDot(i)}

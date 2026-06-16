@@ -149,7 +149,7 @@ export default function CheckoutModal() {
         {/* Header */}
         <div className="checkout-modal__header">
           <h2 className="checkout-modal__title">{t('checkout.title')}</h2>
-          <button className="checkout-modal__close" onClick={handleClose}>✕</button>
+          <button type="button" className="checkout-modal__close" onClick={handleClose} aria-label="Close checkout">✕</button>
         </div>
 
         {/* Order summary */}

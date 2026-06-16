@@ -1,4 +1,4 @@
-import { createContext, useReducer, useState } from 'react'
+import { createContext, useReducer, useState, useMemo, useCallback } from 'react'
 
 // ─────────────────────────────────────────────
 // Types
@@ -63,27 +63,29 @@ export function CartProvider({ children }) {
   const [drawerOpen, setDrawer] = useState(false)
   const [checkoutOpen, setCheckout] = useState(false)
 
-  const openDrawer   = () => setDrawer(true)
-  const closeDrawer  = () => setDrawer(false)
-  const openCheckout = () => { setDrawer(false); setCheckout(true) }
-  const closeCheckout = () => setCheckout(false)
+  const openDrawer   = useCallback(() => setDrawer(true), [])
+  const closeDrawer  = useCallback(() => setDrawer(false), [])
+  const openCheckout = useCallback(() => { setDrawer(false); setCheckout(true) }, [])
+  const closeCheckout = useCallback(() => setCheckout(false), [])
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0)
   const totalPrice = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
 
+  const value = useMemo(() => ({
+    items,
+    dispatch,
+    drawerOpen,
+    checkoutOpen,
+    openDrawer,
+    closeDrawer,
+    openCheckout,
+    closeCheckout,
+    totalItems,
+    totalPrice,
+  }), [items, dispatch, drawerOpen, checkoutOpen, openDrawer, closeDrawer, openCheckout, closeCheckout, totalItems, totalPrice])
+
   return (
-    <CartContext.Provider value={{
-      items,
-      dispatch,
-      drawerOpen,
-      checkoutOpen,
-      openDrawer,
-      closeDrawer,
-      openCheckout,
-      closeCheckout,
-      totalItems,
-      totalPrice,
-    }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   )

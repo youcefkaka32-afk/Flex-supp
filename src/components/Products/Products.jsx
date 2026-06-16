@@ -417,7 +417,7 @@ function PriceRangeSlider({ min, max, value, onChange }) {
     }
     window.addEventListener('mousemove', move)
     window.addEventListener('mouseup', up)
-    window.addEventListener('touchmove', move)
+    window.addEventListener('touchmove', move, { passive: true })
     window.addEventListener('touchend', up)
   }
 

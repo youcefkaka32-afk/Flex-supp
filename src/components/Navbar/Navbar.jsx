@@ -62,6 +62,7 @@ export default function Navbar() {
               <img src="/flexlgo.png" alt="FLEX SUPPS Logo" className="navbar-logo-img" />
             </Link>
             <button
+              type="button"
               className="mobile-menu-button"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
@@ -94,6 +95,7 @@ export default function Navbar() {
           <div className="global-navbar__right">
             <LanguageSwitcher />
             <button
+              type="button"
               className="theme-toggle-btn"
               onClick={toggleTheme}
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -141,6 +143,7 @@ export default function Navbar() {
             <div className="mobile-menu-header">
               <h2 className="font-display">MENU</h2>
               <button
+                type="button"
                 className="mobile-menu-close"
                 onClick={() => setMobileOpen(false)}
                 aria-label="Close menu"

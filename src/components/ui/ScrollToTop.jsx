@@ -13,6 +13,7 @@ export default function ScrollToTop() {
 
   return (
     <button
+      type="button"
       className={`scroll-to-top${visible ? ' visible' : ''}`}
       onClick={goTop}
       aria-label="Back to top"

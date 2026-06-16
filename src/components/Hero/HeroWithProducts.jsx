@@ -11,6 +11,16 @@ import CartIcon from '../Cart/CartIcon'
 gsap.registerPlugin(CustomEase)
 CustomEase.create('heroEase', '0.22, 1, 0.36, 1')
 
+// Escapes HTML special chars to prevent XSS when injecting into innerHTML
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 function isWebGLSupported() {
   try {
     const c = document.createElement('canvas')
@@ -257,6 +267,7 @@ export default function HeroWithProducts() {
     infoKickerRef.current.textContent = t(`hero.slides.${key}.kicker`, slide.kicker)
     
     if (slide.infoSubHtml) {
+      // infoSubHtml is internal-only markup from siteData.js — not user-controlled input
       infoSubRef.current.innerHTML = slide.infoSubHtml
     } else {
       infoSubRef.current.textContent = t(`hero.slides.${key}.subtitle`, slide.subtitle)
@@ -288,7 +299,7 @@ export default function HeroWithProducts() {
       if (!isFront) return '' // Do not render back/outline layers for cursive Arabic text
       const key = slide.title.toLowerCase()
       const translatedTitle = t(`hero.slides.${key}.title`, slide.title)
-      return `<span class="letter solid" data-idx="0">${translatedTitle}</span>`
+      return `<span class="letter solid" data-idx="0">${escHtml(translatedTitle)}</span>`
     }
     
     const spec = titleSpec(slide)
@@ -297,7 +308,7 @@ export default function HeroWithProducts() {
         const visible = isFront ? item.frontVisible : item.backVisible
         const visibilityClass = visible ? '' : 'hidden'
         const outlineClass = item.outline ? 'outline' : 'solid'
-        return `<span class="letter ${outlineClass} ${visibilityClass}" data-idx="${index}">${item.letter}</span>`
+        return `<span class="letter ${outlineClass} ${visibilityClass}" data-idx="${index}">${escHtml(item.letter)}</span>`
       })
       .join('')
   }
