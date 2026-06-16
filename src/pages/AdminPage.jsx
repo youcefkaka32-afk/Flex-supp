@@ -403,7 +403,7 @@ export default function AdminPage() {
             <p className="admin-login__sub">Entrez votre code PIN</p>
             <form onSubmit={handlePinSubmit}>
               <input type="password" className="admin-login__input" placeholder="••••" value={pin}
-                onChange={e => setPin(e.target.value)} autoFocus maxLength={6} />
+                onChange={e => setPin(e.target.value)} autoFocus />
               {pinError && <p className="admin-login__error">{pinError}</p>}
               <button type="submit" className="admin-login__btn">Connexion</button>
             </form>
