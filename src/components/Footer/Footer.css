@@ -236,6 +236,17 @@ a.footer-contact-item-small:hover { color: var(--red); }
   margin: 0;
 }
 
+.footer-dev-credit-link {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.footer-dev-credit-link:hover {
+  color: var(--red);
+}
+
 .footer-disclaimer {
   font-size: 11px;
   color: rgba(255,255,255,0.28);
