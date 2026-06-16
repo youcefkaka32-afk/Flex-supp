@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import '../styles/admin.css'
 import { supabase } from '../lib/supabase'
 
-const ADMIN_PIN = (import.meta.env.VITE_ADMIN_PIN && import.meta.env.VITE_ADMIN_PIN !== 'undefined') ? import.meta.env.VITE_ADMIN_PIN : '1234'
-const SESSION_KEY = 'flexsupps_admin_session'
+// Auth constants
 const STORAGE_BUCKET = 'product-images'
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 
@@ -327,8 +326,10 @@ function ProductModal({ product, brands, categories, onSave, onClose, saving }) 
 export default function AdminPage() {
   const navigate = useNavigate()
   const [authenticated, setAuthenticated] = useState(false)
-  const [pin, setPin] = useState('')
-  const [pinError, setPinError] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [authError, setAuthError] = useState('')
+  const [authLoading, setAuthLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('products')
   const [toasts, setToasts] = useState([])
   const [products, setProducts] = useState([])
@@ -345,7 +346,17 @@ export default function AdminPage() {
   }, [])
 
   useEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY) === 'authenticated') setAuthenticated(true)
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setAuthenticated(true)
+    })
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthenticated(!!session)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const fetchAll = useCallback(async () => {
@@ -368,22 +379,26 @@ export default function AdminPage() {
 
   useEffect(() => { if (authenticated) fetchAll() }, [authenticated, fetchAll])
 
-  function handlePinSubmit(e) {
+  async function handleLoginSubmit(e) {
     e.preventDefault()
-    if (pin === ADMIN_PIN) {
+    setAuthLoading(true)
+    setAuthError('')
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) throw error
       setAuthenticated(true)
-      sessionStorage.setItem(SESSION_KEY, 'authenticated')
-      setPinError('')
-    } else {
-      setPinError('Code PIN incorrect')
-      setPin('')
+    } catch (err) {
+      setAuthError(err.message || 'Identifiants incorrects')
+    } finally {
+      setAuthLoading(false)
     }
   }
 
-  function handleLogout() {
+  async function handleLogout() {
+    await supabase.auth.signOut()
     setAuthenticated(false)
-    sessionStorage.removeItem(SESSION_KEY)
-    setPin('')
+    setEmail('')
+    setPassword('')
   }
 
   function switchTab(tab) {
@@ -400,14 +415,31 @@ export default function AdminPage() {
               <span className="admin-login__logo-flex">FLEX</span>
               <span className="admin-login__logo-tag">ADMIN</span>
             </div>
-            <p className="admin-login__sub">Entrez votre code PIN</p>
-            <form onSubmit={handlePinSubmit}>
-              <input type="password" className="admin-login__input" placeholder="••••" value={pin}
-                onChange={e => setPin(e.target.value)} autoFocus />
-              {pinError && <p className="admin-login__error">{pinError}</p>}
-              <button type="submit" className="admin-login__btn">Connexion</button>
+            <p className="admin-login__sub">Connexion Administrateur</p>
+            <form onSubmit={handleLoginSubmit}>
+              <input
+                type="email"
+                className="admin-login__input-field"
+                placeholder="Email admin"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoFocus
+              />
+              <input
+                type="password"
+                className="admin-login__input-field"
+                placeholder="Mot de passe"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+              />
+              {authError && <p className="admin-login__error">{authError}</p>}
+              <button type="submit" className="admin-login__btn" disabled={authLoading}>
+                {authLoading ? 'Connexion en cours...' : 'Connexion'}
+              </button>
             </form>
-            <button className="admin-login__back" onClick={() => navigate('/')}>← Retour au site</button>
+            <button className="admin-login__back" onClick={() => navigate('/')} disabled={authLoading}>← Retour au site</button>
           </div>
         </div>
       </div>

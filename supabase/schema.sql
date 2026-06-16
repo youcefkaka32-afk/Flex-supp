@@ -68,9 +68,9 @@ create policy "Public can read products" on products for select using (true);
 create policy "Public can read categories" on categories for select using (true);
 create policy "Public can read brands" on brands for select using (true);
 
-create policy "Anon can manage products" on products for all to anon using (true) with check (true);
-create policy "Anon can manage categories" on categories for all to anon using (true) with check (true);
-create policy "Anon can manage brands" on brands for all to anon using (true) with check (true);
+create policy "Authenticated can manage products" on products for all to authenticated using (true) with check (true);
+create policy "Authenticated can manage categories" on categories for all to authenticated using (true) with check (true);
+create policy "Authenticated can manage brands" on brands for all to authenticated using (true) with check (true);
 
 -- Storage bucket for product images
 insert into storage.buckets (id, name, public)
@@ -78,17 +78,17 @@ values ('product-images', 'product-images', true)
 on conflict (id) do nothing;
 
 drop policy if exists "Public can view product images" on storage.objects;
-drop policy if exists "Anon can upload product images" on storage.objects;
-drop policy if exists "Anon can delete product images" on storage.objects;
+drop policy if exists "Authenticated can upload product images" on storage.objects;
+drop policy if exists "Authenticated can delete product images" on storage.objects;
 
 create policy "Public can view product images"
   on storage.objects for select
   using (bucket_id = 'product-images');
 
-create policy "Anon can upload product images"
-  on storage.objects for insert to anon
+create policy "Authenticated can upload product images"
+  on storage.objects for insert to authenticated
   with check (bucket_id = 'product-images');
 
-create policy "Anon can delete product images"
-  on storage.objects for delete to anon
+create policy "Authenticated can delete product images"
+  on storage.objects for delete to authenticated
   using (bucket_id = 'product-images');
