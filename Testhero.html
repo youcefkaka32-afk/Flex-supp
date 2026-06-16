@@ -1,0 +1,3233 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AirZone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+    <style>
+      :root {
+        --white: #ffffff;
+        --black: #04070b;
+        --green: #00d084;
+        --teal: #1a9090;
+        --pink: #f03070;
+        --navy: #040c1a;
+        --text-dim: rgba(255, 255, 255, 0.62);
+        --text-muted: rgba(255, 255, 255, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: initial;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        overflow-x: hidden;
+        overflow-y: visible;
+        background: linear-gradient(180deg, #04070b 0%, #07111b 60%, #05070a 100%);
+        color: var(--white);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      button,
+      a {
+        font: inherit;
+        color: inherit;
+      }
+
+      .hero {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #040c1a;
+        cursor: none;
+        isolation: isolate;
+      }
+
+      .bg-layer {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        will-change: opacity, transform;
+      }
+
+      .bg-gl-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .bg-layer.is-active {
+        opacity: 1;
+      }
+
+      /* SNEAKERS slide scanline texture overlay */
+      .has-scanlines::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 3px,
+          rgba(0, 0, 0, 0.25) 3px,
+          rgba(0, 0, 0, 0.25) 4px
+        );
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.25;
+      }
+
+      .bg-layer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 30%),
+          radial-gradient(circle at 15% 80%, rgba(0, 0, 0, 0.35), transparent 40%);
+        mix-blend-mode: soft-light;
+        pointer-events: none;
+      }
+
+      .bg-weave {
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent 45%),
+          linear-gradient(315deg, rgba(255, 255, 255, 0.02), transparent 45%),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.45));
+        background-size: cover;
+      }
+
+      .crt-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background:
+          linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
+          linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.025), rgba(0, 0, 255, 0.05)),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 14%, rgba(0, 0, 0, 0) 86%, rgba(0, 0, 0, 0.18));
+        background-size: 100% 3px, 7px 100%, 100% 100%;
+        mix-blend-mode: overlay;
+        opacity: 0.52;
+        animation: crtPulse 7s steps(2, end) infinite;
+      }
+
+      .fx-defs {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .grain {
+        position: absolute;
+        inset: 0;
+        z-index: 15;
+        width: 100%;
+        height: 100%;
+        opacity: 0.06;
+        mix-blend-mode: overlay;
+        pointer-events: none;
+      }
+
+      .glitch-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 45;
+        pointer-events: none;
+        opacity: 0;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02)),
+          radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12), transparent 42%);
+        mix-blend-mode: screen;
+      }
+
+      .vhs-flash-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 46;
+        pointer-events: none;
+        opacity: 0;
+        background: #ffffff;
+        will-change: opacity;
+      }
+
+      .scanline {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 12px;
+        opacity: 0;
+        background: rgba(255, 255, 255, 0.08);
+        mix-blend-mode: screen;
+        transform: translateX(0);
+      }
+
+      .nav {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 1240px;
+        z-index: 30;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 16px 24px;
+        min-height: 64px;
+        pointer-events: none;
+      }
+
+      .nav > * {
+        pointer-events: auto;
+      }
+
+      .logo {
+        font-family: "Permanent Marker", cursive;
+        font-size: 31px;
+        letter-spacing: 0.02em;
+        line-height: 1;
+        text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      .center-nav {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        justify-self: center;
+      }
+
+      .center-nav a,
+      .right-nav a,
+      .right-nav button {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.92);
+        text-decoration: none;
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .center-nav a {
+        position: relative;
+        padding-bottom: 4px;
+      }
+
+      .center-nav a.active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -2px;
+        height: 1.5px;
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      .right-nav {
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        white-space: nowrap;
+      }
+
+      .icon-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .cart {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .cart-badge {
+        position: absolute;
+        top: -4px;
+        right: -8px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: var(--green);
+        color: #02140f;
+        font-size: 10px;
+        line-height: 15px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .ghost-nav {
+        position: absolute;
+        top: 50%;
+        width: 220px;
+        height: 220px;
+        margin-top: -110px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 12;
+        transition: border-color 0.2s, background-color 0.2s;
+      }
+
+      .ghost-nav.left {
+        left: 16px;
+      }
+
+      .ghost-nav.right {
+        right: 16px;
+      }
+
+      .ghost-nav button {
+        pointer-events: auto;
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.55);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 28px;
+        cursor: pointer;
+        transition: color 180ms ease;
+      }
+
+      .ghost-nav button:hover {
+        color: rgba(255, 255, 255, 1);
+      }
+
+      .arrow-symbol {
+        display: inline-block;
+        pointer-events: none;
+        will-change: transform;
+      }
+
+      .stage {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+      }
+
+      .title-stage {
+        position: absolute;
+        inset: 0;
+        z-index: 11;
+        pointer-events: none;
+      }
+
+      .title-layer {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 0;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        top: 58%;
+        white-space: nowrap;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(90px, 12vw, 140px);
+        line-height: 0.92;
+        letter-spacing: 0.08em;
+        font-weight: 900;
+        text-transform: uppercase;
+        will-change: transform, opacity;
+      }
+
+      .title-layer.back {
+        z-index: 1;
+      }
+
+      .title-layer.front {
+        z-index: 3;
+      }
+
+      .title-layer.left-title {
+        left: 0;
+        transform: translate(0, -50%);
+      }
+
+      .title-layer .letter {
+        display: inline-block;
+        min-width: 0.65em;
+        color: rgba(255, 255, 255, 0.98);
+        opacity: 0;
+        transform: translateY(80px);
+        will-change: transform, opacity;
+      }
+
+      .title-layer .letter.outline {
+        color: transparent;
+        -webkit-text-stroke: 3px rgba(255, 255, 255, 0.95);
+        text-stroke: 3px rgba(255, 255, 255, 0.95);
+      }
+
+      .title-layer .letter.hidden {
+        opacity: 0 !important;
+      }
+
+      /* Front-layer hidden letters: invisible but hold layout space for alignment with back layer */
+      .title-layer.front .letter.hidden {
+        visibility: hidden !important;
+        opacity: 1 !important;
+      }
+
+      .shoe-stage {
+        position: absolute;
+        z-index: 2;
+        will-change: transform;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .shoe-stage::before {
+        display: none;
+      }
+
+      .shoe-shadow {
+        position: absolute;
+        left: 50%;
+        bottom: 4%;
+        width: 65%;
+        height: 28px;
+        transform: translateX(-50%);
+        background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 40%, transparent 72%);
+        filter: blur(12px);
+        pointer-events: none;
+        z-index: 0;
+        flex-shrink: 0;
+      }
+
+      .shoe-float {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        will-change: transform;
+        perspective: 900px;
+        perspective-origin: center center;
+      }
+
+      .shoe-base {
+        width: 100%;
+        height: 100%;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      .shoe-tilt {
+        width: 100%;
+        height: 100%;
+        will-change: transform;
+        transform-style: preserve-3d;
+      }
+
+      .shoe-media-mount {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .shoe-svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
+        object-position: center center;
+        overflow: visible;
+        filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.25));
+      }
+
+      .hero.is-glitching .shoe-svg {
+        filter: url(#chromaticGlitch) drop-shadow(0 18px 22px rgba(0, 0, 0, 0.25));
+      }
+
+      .hero.is-glitching .title-stage {
+        filter: url(#chromaticGlitch);
+      }
+
+      .hero.is-glitching .bg-layer.is-active {
+        filter: saturate(1.15) contrast(1.08);
+      }
+
+      .hero.is-transitioning-liquid .bg-layer,
+      .hero.is-transitioning-liquid .stage {
+        filter: url(#liquidDisplacement);
+      }
+
+      /* Sneakers scanline texture (always visible at low opacity) */
+      .bg-layer.has-scanlines::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.06) 0px,
+          rgba(0, 0, 0, 0.06) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.25;
+      }
+
+      .info-block {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 72px;
+        z-index: 25;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        pointer-events: none;
+      }
+
+      .info-line {
+        opacity: 0;
+        transform: translateY(16px);
+        white-space: nowrap;
+        pointer-events: auto;
+      }
+
+      .info-line.kicker {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 15px;
+        letter-spacing: 0.22em;
+        font-family: "IBM Plex Mono", monospace;
+        text-transform: uppercase;
+      }
+
+      .info-line.sub {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 17px;
+        letter-spacing: 0.14em;
+        font-family: "IBM Plex Mono", monospace;
+      }
+
+      .info-line.sub .sub-mark {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.55);
+        font-style: normal;
+      }
+
+      .info-line.sub .sub-italic {
+        font-size: 17px;
+        color: rgba(255, 255, 255, 0.85);
+        font-style: italic;
+        letter-spacing: 0.16em;
+      }
+
+      .voir-plus {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 4px;
+        color: rgba(255, 255, 255, 1);
+        font-size: 18px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(16px);
+        margin-top: 14px;
+      }
+
+      .voir-plus.prominent {
+        font-size: 13px;
+      }
+
+
+
+      .cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--green);
+        background: rgba(0, 208, 132, 0.15);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+        display: none;
+        transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
+      }
+
+      .cursor.hovering {
+        width: 48px;
+        height: 48px;
+        background: rgba(0, 208, 132, 0.25);
+      }
+
+      .slide-action {
+        cursor: pointer;
+      }
+
+      .bg-veil {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.08) 100%);
+      }
+
+      .site-section {
+        position: relative;
+        z-index: 1;
+        padding: 88px 0;
+        background: #ffffff;
+        color: #18181b;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .site-section.alt {
+        background: #f8f9fa;
+      }
+
+      @keyframes crtPulse {
+        0%,
+        100% {
+          opacity: 0.42;
+        }
+        50% {
+          opacity: 0.58;
+        }
+      }
+
+      .section-shell {
+        width: min(1240px, calc(100vw - 48px));
+        margin: 0 auto;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        color: rgba(0, 0, 0, 0.52);
+        font-size: 11px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+
+      .section-title {
+        margin: 0;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(34px, 4vw, 64px);
+        line-height: 0.95;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #18181b;
+      }
+
+      .section-copy {
+        margin: 0;
+        max-width: 560px;
+        color: rgba(0, 0, 0, 0.66);
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
+      .brand-track {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+      }
+
+      .brand-track::-webkit-scrollbar {
+        display: none;
+      }
+
+      .brand-card {
+        display: grid;
+        place-items: center;
+        min-width: 240px;
+        min-height: 110px;
+        padding: 22px 18px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: rgba(0, 0, 0, 0.02);
+        scroll-snap-align: start;
+        transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+      }
+
+      .brand-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(0, 0, 0, 0.16);
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .brand-card img {
+        display: block;
+        max-width: 100%;
+        max-height: 44px;
+        object-fit: contain;
+        filter: grayscale(1) brightness(0.15);
+        opacity: 0.88;
+      }
+
+      .category-grid,
+      .product-grid,
+      .map-grid,
+      .footer-grid {
+        display: grid;
+        gap: 20px;
+      }
+
+      .category-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .category-card,
+      .product-card,
+      .info-panel,
+      .map-frame {
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: #ffffff;
+        color: #18181b;
+      }
+
+      /* Footer panels must be transparent inside the dark footer — not white */
+      .footer-band .footer-panel {
+        border: none;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.85);
+        padding: 24px 0;
+      }
+
+      .category-card {
+        position: relative;
+        min-height: 340px;
+        overflow: hidden;
+      }
+
+      .category-card a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .category-media {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        background: #0b111a;
+      }
+
+      .category-content {
+        position: absolute;
+        inset: auto 0 0 0;
+        padding: 20px;
+        background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.84));
+      }
+
+      .category-name {
+        margin: 0;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 34px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .category-meta {
+        margin-top: 4px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .product-card {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .product-media-wrap {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        background: #0b111a;
+      }
+
+      .product-media-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .product-media-wrap img.hover {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .product-card:hover .product-media-wrap img.hover {
+        opacity: 1;
+      }
+
+      .product-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 10px;
+        padding: 18px;
+      }
+
+      .product-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        color: rgba(0, 0, 0, 0.56);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .product-name {
+        margin: 0;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 27px;
+        line-height: 0.95;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #18181b;
+      }
+
+      .product-price {
+        margin-top: auto;
+        color: rgba(0, 0, 0, 0.9);
+        font-size: 13px;
+        letter-spacing: 0.12em;
+      }
+
+      .price-old {
+        color: rgba(0, 0, 0, 0.46);
+        text-decoration: line-through;
+        margin-right: 10px;
+      }
+
+      .product-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 18px;
+        border: 1px solid rgba(0, 0, 0, 0.16);
+        background: transparent;
+        color: #18181b;
+        text-decoration: none;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .btn.primary {
+        border-color: #459647;
+        background: #459647;
+        color: #fff;
+      }
+
+      .btn.primary:hover {
+        background: #3a8039;
+      }
+
+      .map-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: stretch;
+      }
+
+      .map-frame {
+        min-height: 460px;
+        overflow: hidden;
+      }
+
+      .map-frame iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+        min-height: 460px;
+      }
+
+      .info-panel {
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .info-panel .title {
+        margin: 0 0 10px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 48px;
+        line-height: 0.95;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .info-panel p {
+        margin: 0;
+        color: rgba(0, 0, 0, 0.68);
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
+      /* ── SCROLL-REVEAL initial states ── */
+      .reveal-up {
+        opacity: 0;
+        transform: translateY(48px);
+        will-change: transform, opacity;
+      }
+      .reveal-left {
+        opacity: 0;
+        transform: translateX(-40px);
+        will-change: transform, opacity;
+      }
+      .reveal-scale {
+        opacity: 0;
+        transform: scale(0.92);
+        will-change: transform, opacity;
+      }
+
+      /* ── FOOTER photo background (matches original site) ── */
+      .footer-band {
+        position: relative;
+        padding: 96px 0 40px;
+        background: #060a10;
+        color: rgba(255, 255, 255, 0.92);
+        border: none;
+        overflow: hidden;
+        border-radius: 88px 88px 0 0;
+        margin: 0 16px;
+        will-change: border-radius, transform;
+        --footer-arc-scale: 1;
+        --footer-border-opacity: 0.18;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.24);
+      }
+      .footer-band::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: -18px;
+        width: calc(100% - 48px);
+        height: 48px;
+        transform: translateX(-50%);
+        border-radius: 0 0 100% 100%;
+        background: rgba(255, 255, 255, 0.04);
+        pointer-events: none;
+        z-index: 1;
+      }
+      .footer-band::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: -26px;
+        width: calc(100% - 32px);
+        height: 80px;
+        transform: translateX(-50%) scaleY(var(--footer-arc-scale));
+        transform-origin: bottom center;
+        border: none;
+        border-bottom: 2px solid rgba(255, 255, 255, var(--footer-border-opacity));
+        border-radius: 100% 100% 0 0;
+        pointer-events: none;
+        transition: transform 0.24s ease, border-color 0.18s ease;
+        z-index: 3;
+      }
+      .footer-bg-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 30%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.55;
+        filter: brightness(0.7) saturate(1.1);
+      }
+      .footer-bg-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background:
+          linear-gradient(to bottom, rgba(4,7,11,0.72) 0%, rgba(4,7,11,0.42) 40%, rgba(4,7,11,0.80) 100%);
+        pointer-events: none;
+      }
+      .footer-band .section-shell {
+        position: relative;
+        z-index: 2;
+      }
+      .footer-band .eyebrow {
+        color: rgba(255,255,255,0.38);
+      }
+      .footer-band .footer-panel h3 {
+        color: rgba(255,255,255,0.92);
+      }
+      .footer-band .footer-panel p {
+        color: rgba(255,255,255,0.52);
+        font-size: 13px;
+        line-height: 1.8;
+        margin: 0;
+      }
+      .footer-band .social-list a {
+        color: rgba(255,255,255,0.60);
+        transition: color 200ms ease;
+      }
+      .footer-band .social-list a:hover {
+        color: rgba(255,255,255,1);
+      }
+      .footer-band .copyright {
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.30);
+      }
+      .footer-wordmark {
+        font-family: 'Permanent Marker', cursive;
+        font-size: clamp(60px, 8vw, 110px);
+        letter-spacing: 0.02em;
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(255,255,255,0.12);
+        text-stroke: 1px rgba(255,255,255,0.12);
+        text-transform: uppercase;
+        line-height: 1;
+        margin: 0 0 48px;
+        user-select: none;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-panel {
+        padding: 24px;
+      }
+
+      .footer-panel h3 {
+        margin: 0 0 12px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 28px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .social-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .social-list a {
+        color: rgba(0, 0, 0, 0.78);
+        text-decoration: none;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .copyright {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        color: rgba(0, 0, 0, 0.56);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      @media (max-width: 1024px) {
+        .center-nav {
+          gap: 14px;
+        }
+
+        .title-layer {
+          font-size: clamp(48px, 9vw, 88px);
+        }
+
+        .shoe-stage {
+          transform-origin: center center;
+        }
+
+        .category-grid,
+        .product-grid,
+        .map-grid,
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .map-frame,
+        .map-frame iframe {
+          min-height: 360px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav {
+          grid-template-columns: 1fr auto;
+          gap: 10px;
+        }
+
+        .center-nav {
+          display: none;
+        }
+
+        .right-nav {
+          gap: 10px;
+        }
+
+        .logo {
+          font-size: 26px;
+        }
+
+        .ghost-nav {
+          width: 140px;
+          height: 140px;
+          margin-top: -70px;
+        }
+
+        .ghost-nav.left {
+          left: -70px;
+        }
+
+        .ghost-nav.right {
+          right: -70px;
+        }
+
+        .title-layer {
+          top: 50%;
+          font-size: clamp(38px, 12vw, 68px);
+          letter-spacing: 0.1em;
+        }
+
+        .title-layer.left-title {
+          left: 12px;
+          transform: translate(0, -50%);
+        }
+
+        .info-block {
+          left: 50%;
+          transform: translate(-50%, 0);
+          bottom: 110px;
+        }
+
+        .voir-plus {
+          right: 16px;
+          bottom: 68px;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .nav {
+          padding: 12px 14px;
+        }
+
+        .right-nav {
+          gap: 8px;
+          font-size: 11px;
+        }
+
+        .logo {
+          font-size: 24px;
+        }
+
+        .ghost-nav {
+          opacity: 0.55;
+        }
+
+        .title-layer {
+          font-size: clamp(34px, 13vw, 54px);
+          letter-spacing: 0.08em;
+        }
+
+        .info-line.sub {
+          white-space: normal;
+          max-width: calc(100vw - 36px);
+          line-height: 1.35;
+        }
+
+        .shoe-stage {
+          transform: translateZ(0);
+        }
+
+        .section-shell {
+          width: min(100vw - 28px, 1240px);
+        }
+
+        .site-section {
+          padding: 64px 0;
+        }
+
+        .section-head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="hero" id="hero">
+      <canvas id="hero-gl-canvas" class="bg-gl-canvas"></canvas>
+      <div class="bg-layer is-active" id="bgA"></div>
+      <div class="bg-layer" id="bgB"></div>
+      <div class="bg-veil"></div>
+      <canvas class="grain" id="grain"></canvas>
+      <div class="glitch-overlay" id="glitchOverlay" aria-hidden="true"></div>
+      <div class="crt-overlay" aria-hidden="true"></div>
+      <div class="vhs-flash-overlay" id="vhsFlash" aria-hidden="true"></div>
+      <svg class="fx-defs" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <filter id="liquidDisplacement" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise" />
+          <feDisplacementMap id="liquidMap" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <filter id="chromaticGlitch" x="-20%" y="-20%" width="140%" height="140%">
+          <feOffset in="SourceGraphic" dx="-4" dy="0" result="redShift">
+            <animate attributeName="dx" values="-4;0;-3;0" dur="0.18s" repeatCount="indefinite" />
+          </feOffset>
+          <feColorMatrix
+            in="redShift"
+            type="matrix"
+            values="1 0 0 0 0
+                    0 0 0 0 0
+                    0 0 0 0 0
+                    0 0 0 1 0"
+            result="red"
+          />
+          <feOffset in="SourceGraphic" dx="4" dy="0" result="blueShift">
+            <animate attributeName="dx" values="4;0;3;0" dur="0.16s" repeatCount="indefinite" />
+          </feOffset>
+          <feColorMatrix
+            in="blueShift"
+            type="matrix"
+            values="0 0 0 0 0
+                    0 0 0 0 0
+                    0 0 0 0 1
+                    0 0 0 1 0"
+            result="blue"
+          />
+          <feMerge>
+            <feMergeNode in="red" />
+            <feMergeNode in="blue" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </svg>
+
+      <header class="nav">
+        <div class="logo">AIR✳ZONE</div>
+        <nav class="center-nav" aria-label="Primary">
+          <a href="#" data-nav="accueil">ACCUEIL</a>
+          <a href="#" data-nav="boutique">BOUTIQUE</a>
+          <a href="#" data-nav="apropos">À PROPOS</a>
+        </nav>
+        <div class="right-nav">
+          <a href="#">LOGIN / REGISTER</a>
+          <button class="icon-link" type="button" aria-label="Search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-3.5-3.5"></path>
+            </svg>
+          </button>
+          <a href="#" class="cart" aria-label="Cart">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 6h15l-1.5 8h-11z"></path>
+              <path d="M6 6l-2-3H1"></path>
+              <circle cx="10" cy="20" r="1.5" fill="currentColor" stroke="none"></circle>
+              <circle cx="18" cy="20" r="1.5" fill="currentColor" stroke="none"></circle>
+            </svg>
+            <span class="cart-badge">0</span>
+            <span>0 DA</span>
+          </a>
+        </div>
+      </header>
+
+      <div class="ghost-nav left">
+        <button type="button" id="prevBtn" aria-label="Previous slide"><span class="arrow-symbol">←</span></button>
+      </div>
+      <div class="ghost-nav right">
+        <button type="button" id="nextBtn" aria-label="Next slide"><span class="arrow-symbol">→</span></button>
+      </div>
+
+      <section class="stage" id="stage" aria-live="polite">
+        <div class="title-stage">
+          <div class="title-layer back" id="titleBack"></div>
+          <div class="title-layer front" id="titleFront"></div>
+        </div>
+
+        <div class="shoe-stage" id="shoeStage">
+          <div class="shoe-shadow" id="shoeShadow"></div>
+          <div class="shoe-float" id="shoeFloat">
+            <div class="shoe-base" id="shoeBase">
+              <div class="shoe-tilt" id="shoeTilt">
+                <div id="shoeSvgMount" class="shoe-media-mount" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-line kicker" id="infoKicker">HIGH QUALITE</div>
+          <div class="info-line sub" id="infoSub"></div>
+          <a class="voir-plus info-line" id="voirPlus" href="#">voir plus</a>
+        </div>
+      </section>
+
+      <div class="cursor" id="cursor"></div>
+    </main>
+
+    <section class="site-section alt" id="brandsSection">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Marques</div>
+            <h2 class="section-title">Les marques qui portent la vitrine</h2>
+          </div>
+          <p class="section-copy">
+            Le logo rail du site source devient un bandeau horizontal lisible, avec les mêmes marques clés visibles d’un coup d’œil.
+          </p>
+        </div>
+        <div class="brand-track" id="brandTrack"></div>
+      </div>
+    </section>
+
+    <section class="site-section" id="categoriesSection">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Catégories</div>
+            <h2 class="section-title">Acheter par univers</h2>
+          </div>
+          <p class="section-copy">
+            Le site source met en avant trois chemins d’achat clairs. On les garde visibles dès l’arrivée sous le hero.
+          </p>
+        </div>
+        <div class="category-grid" id="categoryGrid"></div>
+      </div>
+    </section>
+
+    <section class="site-section alt" id="productsSection">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Boutique</div>
+            <h2 class="section-title">Produits les plus vendus</h2>
+          </div>
+          <p class="section-copy">
+            Les cartes ci-dessous reprennent les produits visibles dans l’export HTML, avec image, prix et action d’achat.
+          </p>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+    </section>
+
+    <section class="site-section" id="locationSection">
+      <div class="section-shell">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Localisation</div>
+            <h2 class="section-title">AirZone localisation</h2>
+          </div>
+          <p class="section-copy">La carte et le bloc d’adresse reprennent le magasin de Cheraga tel qu’il apparaît dans la page source.</p>
+        </div>
+        <div class="map-grid">
+          <div class="map-frame">
+            <iframe
+              loading="lazy"
+              src="https://maps.google.com/maps?q=QW6F%2BXW%2C%20Ch%C3%A9raga&t=m&z=16&output=embed&iwloc=near"
+              title="QW6F+XW, Chéraga"
+              aria-label="QW6F+XW, Chéraga"
+            ></iframe>
+          </div>
+          <div class="info-panel">
+            <div>
+              <div class="eyebrow">Magasin</div>
+              <div class="title">AirZone DZ</div>
+              <p>
+                Fournisseur officiel de sneakers, running et soulier.
+                <br />AIRZONE.DZ, Cheraga, Alger
+              </p>
+            </div>
+            <div>
+              <div class="eyebrow">Réseaux</div>
+              <p>Instagram, Facebook et TikTok sont exposés dans le footer, comme sur le site d’origine.</p>
+            </div>
+            <a class="btn primary" href="#productsSection">Voir les produits</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-band" id="footerSection">
+      <img class="footer-bg-photo" src="Sneakrs.png" alt="" draggable="false" />
+      <div class="footer-bg-overlay"></div>
+      <div class="section-shell">
+        <p class="footer-wordmark reveal-up">AIR✳ZONE</p>
+        <div class="footer-grid" style="margin-bottom:48px">
+          <div class="footer-panel reveal-up">
+            <div class="eyebrow">AirZone official</div>
+            <h3>Morning out of Air's</h3>
+            <p>
+              The one and only in Algeria<br />
+              AIRZONE.DZ, CHERAGA, ALGER
+            </p>
+            <div style="height: 20px"></div>
+            <ul class="social-list">
+              <li><a href="https://www.instagram.com/airzone.dz/" target="_blank" rel="noreferrer">Instagram</a></li>
+              <li><a href="https://www.facebook.com/" target="_blank" rel="noreferrer">Facebook</a></li>
+              <li><a href="https://www.tiktok.com/" target="_blank" rel="noreferrer">TikTok</a></li>
+            </ul>
+          </div>
+          <div class="footer-panel reveal-up">
+            <div class="eyebrow">Contactez-nous</div>
+            <h3>Restez connectés</h3>
+            <p>
+              Suivez-nous sur les réseaux sociaux pour les dernières arrivages, drops exclusifs et promotions AirZone.
+            </p>
+            <div style="height: 20px"></div>
+            <ul class="social-list">
+              <li><a href="https://www.instagram.com/airzone.dz/" target="_blank" rel="noreferrer">@airzone.dz</a></li>
+              <li><a href="#" target="_blank" rel="noreferrer">WhatsApp</a></li>
+              <li><a href="#" target="_blank" rel="noreferrer">Telegram</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="copyright reveal-up">
+          <span>© 2025 AirZone. All rights reserved.</span>
+          <span style="letter-spacing:0.18em;font-size:10px">CHERAGA · ALGER · DZ</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const slides = [
+        {
+          nav: "accueil",
+          title: "SUPERFLY",
+          subtitle: "SUPERFLY NEXXXXXXXXXXXT GÉNÉRATION",
+          cta: "VOIR PLUS",
+          ctaHref: "https://airzonedz.com/produit/superfly-next-generation/",
+          ctaProminent: true,
+          // Soft crimson radial fading to white at the bottom
+          background:
+            "radial-gradient(circle at 55% 35%, #d82c65 0%, #b21448 30%, #7e002c 65%, #400018 100%)",
+          backgroundOverlay:
+            "linear-gradient(to top, #ffffff 0%, transparent 35%)",
+          backdrop: "",
+          titleStyle: {
+            top: "53%",
+            left: "50%",
+            align: "center",
+            width: "auto",
+          },
+          // SUPERFLY: SUP=solid(0,1,2), ER=outline(3,4), FLY=solid(5,6,7)
+          // front layer = solid letters above shoe (S,U,P,F,L,Y)
+          // back layer = outline letters behind shoe (E,R)
+          titleSplit: {
+            front: [0, 1, 2, 5, 6, 7],
+            back: [3, 4],
+            outlines: [3, 4],
+          },
+          shoe: "superfly",
+          shoeStyle: {
+            left: "50%",
+            top: "53%",
+            width: "68vw",
+            height: "66vh",
+            baseRotate: "20deg",
+            scale: "1.0",
+          },
+        },
+        {
+          nav: "accueil",
+          title: "RUNNING",
+          subtitle: "FIRST DROP IN ALGERIA 🇩🇿🔥 ! THE NEXT 3% IS HERE",
+          cta: "VOIR PLUS",
+          ctaHref: "https://airzonedz.com/categorie-produit/running/",
+          ctaProminent: false,
+          // Soft teal/cyan radial fading to white at the bottom
+          background:
+            "radial-gradient(circle at 68% 45%, #1fa0a0 0%, #0d5c6b 35%, #032b35 70%, #011014 100%)",
+          backgroundOverlay:
+            "linear-gradient(to top, #ffffff 0%, transparent 35%)",
+          backdrop: "",
+          titleStyle: {
+            top: "53%",
+            left: "50%",
+            align: "center",
+            width: "auto",
+          },
+          // RUNNING: RU & NG solid in front layer; NNI outline in back layer
+          titleSplit: {
+            front: [0, 1, 5, 6],
+            back: [2, 3, 4],
+            outlines: [2, 3, 4],
+          },
+          shoe: "running",
+          shoeStyle: {
+            left: "50%",
+            top: "51%",
+            width: "82vw",
+            height: "84vh",
+            baseRotate: "25deg",
+            scale: "1.0",
+          },
+        },
+        {
+          nav: "accueil",
+          title: "SNEAKERS",
+          subtitle: "dz THE ONE AND ONLY IN ALGERIA dz",
+          infoSubHtml:
+            '<span class="sub-mark">dz</span> <span class="sub-italic">THE ONE AND ONLY IN ALGERIA</span> <span class="sub-mark">dz</span>',
+          cta: "VOIR PLUS",
+          ctaHref: "https://airzonedz.com/categorie-produit/sneakers/",
+          ctaProminent: false,
+          // Soft blue radial fading to white at the bottom
+          background:
+            "radial-gradient(circle at 60% 42%, #2061c2 0%, #153f90 35%, #061c4d 70%, #010614 100%)",
+          backgroundOverlay:
+            "linear-gradient(to top, #ffffff 0%, transparent 35%)",
+          backdrop: "has-scanlines",
+          titleStyle: {
+            top: "53%",
+            left: "50%",
+            align: "center",
+            width: "auto",
+          },
+          // SNEAKERS: SNE=solid(0,1,2), AKE=outline(3,4,5), RS=solid(6,7)
+          titleSplit: {
+            front: [0, 1, 2, 6, 7],
+            back: [3, 4, 5],
+            outlines: [3, 4, 5],
+          },
+          shoe: "sneakers",
+          shoeStyle: {
+            left: "50%",
+            top: "51%",
+            width: "66vw",
+            height: "100vh",
+            baseRotate: "8deg",
+            scale: "1.0",
+          },
+        },
+      ];
+
+      const runningSvg = `
+        <svg class="shoe-svg" viewBox="0 0 1200 700" aria-hidden="true">
+          <defs>
+            <linearGradient id="runUpper" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d9ff42"/>
+              <stop offset="55%" stop-color="#b9ff00"/>
+              <stop offset="100%" stop-color="#9cef00"/>
+            </linearGradient>
+            <linearGradient id="runSole" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#14223d"/>
+              <stop offset="100%" stop-color="#07111f"/>
+            </linearGradient>
+            <linearGradient id="runPod" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffb44d"/>
+              <stop offset="100%" stop-color="#ff5a22"/>
+            </linearGradient>
+          </defs>
+          <path d="M160 451c76-37 125-40 210-23 98 19 170 47 269 52 69 3 139-12 213-55l78-46 74 76-94 67c-68 49-139 82-221 88-64 5-134-7-220-16-126-13-215-11-294-1-38 5-77 10-116 10-38 0-90-14-126-37-18-11-25-28-22-47 6-29 28-54 49-68z" fill="url(#runSole)"/>
+          <path d="M219 357c23-34 58-69 110-98 71-39 121-51 191-57 68-6 140 4 193 27 47 20 71 47 103 84 28 31 61 58 108 77 42 17 90 25 153 24l55 73c-112 13-210 10-287-10-82-21-124-60-179-74-58-15-108-2-186 5-73 6-136-2-197-17-36-9-48-12-67-34z" fill="url(#runUpper)"/>
+          <path d="M349 194c42-17 100-23 167-17 84 8 134 32 170 66l-73 39c-42-31-93-44-150-46-62-2-99 6-145 26-27 12-55 28-78 48l-63-30c36-42 94-71 172-86z" fill="#06192e" opacity="0.95"/>
+          <path d="M254 322c28-18 62-31 101-37 40-6 65-6 102 0l-18 34c-31-4-52-3-84 5-32 8-61 19-97 37z" fill="#16294a" opacity="0.95"/>
+          <path d="M606 219c54 22 93 58 128 100 15 18 29 28 50 38 24 10 60 18 100 18l-42 47c-58 1-109-9-151-30-44-22-73-55-97-84-24-30-54-55-96-72z" fill="#0b1c32" opacity="0.95"/>
+          <path d="M280 270l84 28" stroke="#fefefe" stroke-width="12" stroke-linecap="round"/>
+          <path d="M314 232l92 29" stroke="#fefefe" stroke-width="12" stroke-linecap="round"/>
+          <path d="M629 302c48 11 82 22 113 39" stroke="#f05b2d" stroke-width="18" stroke-linecap="round"/>
+          <path d="M507 549c115 4 202-4 279-31 57-19 108-48 158-83l55 52c-63 47-125 82-195 99-88 21-183 18-303 0-58-9-111-9-159-3-58 6-112 10-169 1-17-3-39-8-57-18-16-9-27-21-29-36l420 19z" fill="url(#runPod)"/>
+          <ellipse cx="724" cy="465" rx="72" ry="30" fill="#ff9a28" opacity="0.8"/>
+          <path d="M709 438c17 24 27 51 29 84" stroke="#13233e" stroke-width="16" stroke-linecap="round"/>
+        </svg>
+      `;
+
+      const superflySvg = `
+        <svg class="shoe-svg" viewBox="0 0 1200 700" aria-hidden="true">
+          <defs>
+            <linearGradient id="flyUpper" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff3f86"/>
+              <stop offset="50%" stop-color="#ff1166"/>
+              <stop offset="100%" stop-color="#b10056"/>
+            </linearGradient>
+            <linearGradient id="flySole" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1a1a1f"/>
+              <stop offset="100%" stop-color="#060608"/>
+            </linearGradient>
+            <linearGradient id="flyHeel" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98"/>
+              <stop offset="100%" stop-color="#dbe2ea" stop-opacity="0.45"/>
+            </linearGradient>
+          </defs>
+          <path d="M159 459c49-35 92-58 139-79 77-35 149-50 231-58 97-9 163 2 233 28 54 20 103 53 140 93 22 24 48 39 94 46l77 11-41 86c-72 5-133-7-181-24-59-21-95-53-144-75-43-19-101-26-175-23-82 3-145 10-212 18-61 8-105 11-148 8-45-4-79-13-100-28-13-9-22-20-13-24z" fill="url(#flySole)"/>
+          <path d="M215 348c43-39 93-70 160-96 84-32 170-45 245-41 80 4 146 30 212 74 63 42 96 76 127 114 18 22 45 48 94 65l-46 55c-44-10-84-27-117-52-40-31-63-65-100-83-42-21-92-23-167-20-88 4-143 14-212 32-45 12-99 35-171 68-38 18-75 28-115 31-26 2-39 0-55-9-18-10-18-30 0-38 32-15 64-43 84-60z" fill="url(#flyUpper)"/>
+          <path d="M420 189c42-18 106-25 188-17 90 8 156 35 203 73l-84 43c-39-34-91-49-157-53-72-4-124 5-175 28-32 14-66 34-101 60l-76-35c43-45 104-79 202-99z" fill="url(#flyHeel)"/>
+          <path d="M571 225c82 18 133 51 172 90" stroke="#0d0d10" stroke-width="20" stroke-linecap="round"/>
+          <path d="M362 275c51-11 96-13 149-3" stroke="#0a0a0c" stroke-width="16" stroke-linecap="round"/>
+          <path d="M328 320l123 34" stroke="#0a0a0c" stroke-width="16" stroke-linecap="round"/>
+          <path d="M738 454l114 34" stroke="#ffea1f" stroke-width="16" stroke-linecap="round"/>
+          <g fill="#d4d9e4">
+            <ellipse cx="935" cy="556" rx="18" ry="12"/>
+            <ellipse cx="904" cy="541" rx="18" ry="12"/>
+            <ellipse cx="869" cy="523" rx="18" ry="12"/>
+            <ellipse cx="841" cy="507" rx="18" ry="12"/>
+          </g>
+        </svg>
+      `;
+
+      const sneakersSvg = `
+        <svg class="shoe-svg" viewBox="0 0 1200 700" aria-hidden="true">
+          <defs>
+            <linearGradient id="sneakSole" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fbfbfd"/>
+              <stop offset="100%" stop-color="#d9dfe9"/>
+            </linearGradient>
+            <linearGradient id="sneakUpper" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="65%" stop-color="#eef0f6"/>
+              <stop offset="100%" stop-color="#c7cfdb"/>
+            </linearGradient>
+            <linearGradient id="sneakGrey" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#9da7b6"/>
+              <stop offset="100%" stop-color="#626f81"/>
+            </linearGradient>
+          </defs>
+          <path d="M180 486c60-37 145-65 248-80 84-12 142-13 214-7 82 7 146 26 204 54 38 18 78 29 132 35 52 6 110 4 166-2l66 75c-77 17-161 20-250 10-67-7-126-21-171-39-58-24-101-29-170-26-99 4-192 21-291 45-80 20-145 27-197 24-38-3-60-16-63-31-4-18 18-38 112-58z" fill="url(#sneakSole)"/>
+          <path d="M229 340c39-31 99-63 174-84 90-25 191-24 283-3 73 16 127 48 181 87 53 38 110 63 179 79 43 10 96 13 140 11l-41 66c-67 6-124 2-176-9-66-15-109-39-159-75-52-38-92-59-143-72-84-22-165-17-243-1-58 12-102 27-147 47-59 26-94 45-141 52-30 5-58 4-74-5-17-9-13-26 7-43 25-20 61-45 80-50z" fill="url(#sneakUpper)"/>
+          <path d="M348 201c70-21 156-23 239-4 86 19 151 56 194 97l-78 29c-45-35-98-53-161-61-70-8-131 2-190 25l-60-34c14-17 31-33 56-52z" fill="url(#sneakGrey)" opacity="0.85"/>
+          <path d="M544 276c33 8 61 17 90 34" stroke="#ffffff" stroke-width="16" stroke-linecap="round"/>
+          <path d="M372 296c43-8 85-8 135 2" stroke="#99a3b1" stroke-width="18" stroke-linecap="round"/>
+          <path d="M401 338l104 29" stroke="#ffffff" stroke-width="15" stroke-linecap="round"/>
+          <path d="M432 379l108 30" stroke="#ffffff" stroke-width="15" stroke-linecap="round"/>
+          <path d="M576 366l56 122" stroke="#111827" stroke-width="14" stroke-linecap="round"/>
+          <path d="M625 368l42 132" stroke="#111827" stroke-width="14" stroke-linecap="round"/>
+          <path d="M670 372l34 130" stroke="#111827" stroke-width="14" stroke-linecap="round"/>
+          <path d="M702 375l27 121" stroke="#111827" stroke-width="14" stroke-linecap="round"/>
+          <path d="M750 391c42 18 79 42 111 67" stroke="#111827" stroke-width="20" stroke-linecap="round"/>
+          <path d="M850 509c33 16 66 30 104 40" stroke="#111827" stroke-width="14" stroke-linecap="round"/>
+          <path d="M876 479c10 32 13 62 9 92" stroke="#111827" stroke-width="10" stroke-linecap="round"/>
+          <path d="M255 532c85-18 176-26 272-26" stroke="#10141d" stroke-width="16" stroke-linecap="round" opacity="0.55"/>
+          <path d="M232 495c37 8 63 10 98 8" stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity="0.8"/>
+        </svg>
+      `;
+
+      const ui = {
+        hero: document.getElementById("hero"),
+        stage: document.getElementById("stage"),
+        bgA: document.getElementById("bgA"),
+        bgB: document.getElementById("bgB"),
+        grain: document.getElementById("grain"),
+        glitchOverlay: document.getElementById("glitchOverlay"),
+        vhsFlash: document.getElementById("vhsFlash"),
+        titleFront: document.getElementById("titleFront"),
+        titleBack: document.getElementById("titleBack"),
+        shoeStage: document.getElementById("shoeStage"),
+        shoeFloat: document.getElementById("shoeFloat"),
+        shoeBase: document.getElementById("shoeBase"),
+        shoeTilt: document.getElementById("shoeTilt"),
+        shoeMount: document.getElementById("shoeSvgMount"),
+        infoSub: document.getElementById("infoSub"),
+        infoKicker: document.getElementById("infoKicker"),
+        voirPlus: document.getElementById("voirPlus"),
+        prevBtn: document.getElementById("prevBtn"),
+        nextBtn: document.getElementById("nextBtn"),
+        cursor: document.getElementById("cursor"),
+        navLinks: Array.from(document.querySelectorAll(".center-nav a")),
+        brandTrack: document.getElementById("brandTrack"),
+        categoryGrid: document.getElementById("categoryGrid"),
+        productGrid: document.getElementById("productGrid"),
+      };
+
+      const shoeMarkup = {
+        running: {
+          src: "Running.png",
+          alt: "Running",
+          style: "transform: translate(4%, 3%) scale(1.1);",
+        },
+        superfly: {
+          src: "Superfly.png",
+          alt: "Superfly",
+          style: "transform: translate(4%, 0%) scale(1.1);",
+        },
+        sneakers: {
+          src: "Sneakrs.png",
+          alt: "Sneakers",
+          style: "transform: translate(-6%, 5%) scale(1.1);",
+        },
+      };
+
+      let currentIndex = 0;
+      let activeBackground = ui.bgA;
+      let inactiveBackground = ui.bgB;
+      let autoplay = null;
+      let paused = false;
+      let transitioning = false;
+      let lastNoiseTime = 0;
+      let glitchPower = 0;
+      const cursorTarget = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      const cursorPos = { x: cursorTarget.x, y: cursorTarget.y };
+      const tilt = { x: 0, y: 0, ry: 0, rx: 0, scale: 1 };
+
+      CustomEase.create("heroEase", "0.22, 1, 0.36, 1");
+
+      const brands = [
+        { name: "PUMA", href: "https://airzonedz.com/marque/puma/", img: "https://airzonedz.com/wp-content/uploads/2025/02/PUMA-e1739663764194.png" },
+        { name: "NIKE", href: "https://airzonedz.com/marque/nike/", img: "https://airzonedz.com/wp-content/uploads/2025/02/NIKE-e1739663748820-scaled.png" },
+        { name: "NEW BALANCE", href: "https://airzonedz.com/marque/new-balance/", img: "https://airzonedz.com/wp-content/uploads/2025/02/new-balance-seeklogo.png" },
+        { name: "ASICS", href: "https://airzonedz.com/marque/asics/", img: "https://airzonedz.com/wp-content/uploads/2025/02/ASICS.png" },
+        { name: "ADIDAS", href: "https://airzonedz.com/marque/adidas/", img: "https://airzonedz.com/wp-content/uploads/2025/02/ADIDAS-e1739663730827.png" },
+      ];
+
+      const categories = [
+        { name: "RUNNING", count: "22 products", href: "https://airzonedz.com/categorie-produit/running/", img: "https://airzonedz.com/wp-content/uploads/2025/02/run.svg" },
+        { name: "SOULIER", count: "16 products", href: "https://airzonedz.com/categorie-produit/soulier/", img: "https://airzonedz.com/wp-content/uploads/2025/02/2-800x800.png" },
+        { name: "SNEAKERS", count: "28 products", href: "https://airzonedz.com/categorie-produit/sneakers/", img: "https://airzonedz.com/wp-content/uploads/2025/02/1-1-800x800.png" },
+      ];
+
+      const products = [
+        {
+          name: "ADIOS PRO 4 NOIR VERT",
+          href: "https://airzonedz.com/produit/adios-pro-4-noir-vert/",
+          category: "SNEAKERS",
+          price: "13800 DA",
+          img: "https://airzonedz.com/wp-content/uploads/2025/08/img_1246-800x800.jpeg",
+          hover: "https://airzonedz.com/wp-content/uploads/2025/08/img_1248-800x800.jpeg",
+          tags: ["Sneakers"],
+        },
+        {
+          name: "ADIOS PRO 4 X AMG",
+          href: "https://airzonedz.com/produit/adios-pro-4-x-amg/",
+          category: "RUNNING / SNEAKERS",
+          price: "13800 DA",
+          img: "https://airzonedz.com/wp-content/uploads/2026/02/img_9519-600x800.jpeg",
+          hover: "https://airzonedz.com/wp-content/uploads/2026/02/img_9507-600x800.jpeg",
+          tags: ["Running", "Sneakers"],
+        },
+        {
+          name: "ADIZERO EVO SL BLACK",
+          href: "https://airzonedz.com/produit/adizero-evo-sl-black/",
+          category: "RUNNING / SNEAKERS / SOULIER",
+          price: "12800 DA",
+          oldPrice: "15500 DA",
+          img: "https://airzonedz.com/wp-content/uploads/2026/02/e36cf088-c852-4ddc-b4fa-372df4b4cf55-640x800.jpeg",
+          hover: "https://airzonedz.com/wp-content/uploads/2026/02/img_1790-640x800.jpeg",
+          tags: ["Running", "Sneakers", "Soulier"],
+        },
+        {
+          name: "ADIZERO EVO SL WHITE",
+          href: "https://airzonedz.com/produit/adizero-evo-sl-white/",
+          category: "RUNNING / SNEAKERS / SOULIER",
+          price: "12800 DA",
+          oldPrice: "16500 DA",
+          img: "https://airzonedz.com/wp-content/uploads/2026/02/65adc875-0e58-4044-9575-f42598525754-2-640x800.jpeg",
+          hover: "https://airzonedz.com/wp-content/uploads/2026/02/img_1799-640x800.jpeg",
+          tags: ["Running", "Sneakers", "Soulier"],
+        },
+        {
+          name: "AIR MAX 95 CENTRAL CEE",
+          href: "https://airzonedz.com/produit/air-max-95-central-cee/",
+          category: "SNEAKERS",
+          price: "14800 DA",
+          oldPrice: "18500 DA",
+          img: "https://airzonedz.com/wp-content/uploads/2025/03/img_7020-800x800.jpeg",
+          hover: "https://airzonedz.com/wp-content/uploads/2025/03/img_7021-800x800.jpeg",
+          tags: ["Sneakers"],
+        },
+        {
+          name: "AIR MAX DN SAFARI",
+          href: "https://airzonedz.com/produit/air-max-dn-safari/",
+          category: "RUNNING / SNEAKERS",
+          price: "15900 DA",
+          oldPrice: "18000 DA",
+          img: "https://airzonedz.com/wp-content/uploads/2025/03/img_1856-660x800.jpeg",
+          hover: "https://airzonedz.com/wp-content/uploads/2025/03/img_1851-657x800.jpeg",
+          tags: ["Running", "Sneakers"],
+        },
+      ];
+
+      const floatTl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: "sine.inOut" } });
+      floatTl.to(ui.shoeFloat, { y: -20, rotationZ: 1.5, duration: 3.2 }, 0);
+
+      const setTiltX  = gsap.quickTo(tilt, "x",  { duration: 0.6,  ease: "power2.out", onUpdate: applyTilt });
+      const setTiltY  = gsap.quickTo(tilt, "y",  { duration: 0.6,  ease: "power2.out", onUpdate: applyTilt });
+      const setTiltRY = gsap.quickTo(tilt, "ry", { duration: 0.7,  ease: "power2.out", onUpdate: applyTilt });
+      const setTiltRX = gsap.quickTo(tilt, "rx", { duration: 0.7,  ease: "power2.out", onUpdate: applyTilt });
+
+      function titleSpec(slide) {
+        const letters = slide.title.split("");
+        const visibleFront = slide.titleSplit.front || [];
+        const visibleBack = slide.titleSplit.back || [];
+        const outlines = slide.titleSplit.outlines || [];
+        return letters
+          .map((letter, index) => {
+            const frontVisible = visibleFront.includes(index);
+            const backVisible = visibleBack.includes(index);
+            const outline = outlines.includes(index);
+            return {
+              letter,
+              frontVisible,
+              backVisible,
+              outline,
+            };
+          });
+      }
+
+      function buildTitleLayer(slide, layer) {
+        const isFront = layer === "front";
+        const spec = titleSpec(slide);
+        const alignLeft = slide.titleStyle.align === "left";
+        return {
+          style: `top:${slide.titleStyle.top}; left:${slide.titleStyle.left}; width:${slide.titleStyle.width}; justify-content:${alignLeft ? "flex-start" : "center"}; transform:${alignLeft ? "translate(0, -50%)" : "translate(-50%, -50%)"};`,
+          html: spec
+            .map((item, index) => {
+              const visible = isFront ? item.frontVisible : item.backVisible;
+              const visibilityClass = visible ? "" : "hidden";
+              const outlineClass = item.outline ? "outline" : "solid";
+              return `<span class="letter ${outlineClass} ${visibilityClass}" data-idx="${index}">${item.letter}</span>`;
+            })
+            .join(""),
+        };
+      }
+
+      function applyTitle(slide) {
+        const front = buildTitleLayer(slide, "front");
+        const back = buildTitleLayer(slide, "back");
+        ui.titleFront.setAttribute("style", front.style);
+        ui.titleBack.setAttribute("style", back.style);
+        ui.titleFront.innerHTML = front.html;
+        ui.titleBack.innerHTML = back.html;
+      }
+
+      function applyShoe(slide) {
+        ui.shoeStage.style.left = slide.shoeStyle.left;
+        ui.shoeStage.style.top = slide.shoeStyle.top;
+        ui.shoeStage.style.width = slide.shoeStyle.width;
+        ui.shoeStage.style.height = slide.shoeStyle.height;
+        ui.shoeBase.style.transform = `rotate(${slide.shoeStyle.baseRotate}) scale(${slide.shoeStyle.scale})`;
+        const shoe = shoeMarkup[slide.shoe];
+        ui.shoeMount.innerHTML = `
+          <img class="shoe-svg" src="${shoe.src}" alt="${shoe.alt}" style="${shoe.style}" draggable="false" loading="eager" />
+        `;
+      }
+
+      function applyBackground(slide, layer) {
+        layer.className = "bg-layer is-active";
+        if (slide.backdrop) {
+          layer.classList.add(slide.backdrop);
+        }
+        // If slide has an overlay gradient (e.g. Superfly blush), combine them
+        if (slide.backgroundOverlay) {
+          layer.style.background = slide.backgroundOverlay + ", " + slide.background;
+        } else {
+          layer.style.background = slide.background;
+        }
+      }
+
+      function syncNav(slide) {
+        ui.navLinks.forEach((link) => {
+          link.classList.toggle("active", link.dataset.nav === slide.nav);
+        });
+      }
+
+      function syncCTA(slide) {
+        if (slide.infoSubHtml) {
+          ui.infoSub.innerHTML = slide.infoSubHtml;
+        } else {
+          ui.infoSub.textContent = slide.subtitle;
+        }
+        ui.voirPlus.textContent = slide.cta;
+        ui.voirPlus.href = slide.ctaHref;
+        ui.voirPlus.classList.toggle("prominent", !!slide.ctaProminent);
+      }
+
+      function animateEntry() {
+        const activeSlide = slides[currentIndex];
+        const frontLetters = Array.from(ui.titleFront.querySelectorAll(".letter"));
+        const backLetters = Array.from(ui.titleBack.querySelectorAll(".letter"));
+        const allLetters = [...frontLetters, ...backLetters];
+
+        gsap.killTweensOf([allLetters, ui.infoKicker, ui.infoSub, ui.voirPlus, ui.shoeStage, ui.titleFront, ui.titleBack]);
+        gsap.set([ui.infoKicker, ui.infoSub, ui.voirPlus], { opacity: 0, y: 18 });
+        gsap.set([ui.titleBack, ui.titleFront], { x: 0, y: 0 });
+        
+        if (activeSlide.shoe === "superfly") {
+          // Shoe slides UP from below; letters will slide DOWN from above
+          gsap.set(ui.shoeStage, { opacity: 0, scale: 1.05, y: 600, x: 0, xPercent: -50, yPercent: -50 });
+        } else {
+          gsap.set(ui.shoeStage, { opacity: 0, scale: 0.88, y: -72, x: -160, xPercent: -50, yPercent: -50 });
+        }
+
+        const entryTl = gsap.timeline();
+        if (activeSlide.shoe === "superfly") {
+          // PNG slides UP
+          entryTl.to(ui.shoeStage, {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            xPercent: -50,
+            yPercent: -50,
+            scale: 1,
+            duration: 1.0,
+            ease: "power4.out",
+          }, 0);
+        } else {
+          entryTl.to(ui.shoeStage, {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            xPercent: -50,
+            yPercent: -50,
+            scale: 1,
+            duration: 0.78,
+            ease: "power3.out",
+          }, 0);
+        }
+
+        const length = activeSlide.title.length;
+        const duration = 0.7;
+        const ease = "power3.out";
+        const delayStart = activeSlide.shoe === "superfly" ? 0.08 : 0.1;
+
+        for (let i = 0; i < length; i++) {
+          const fl = frontLetters[i];
+          const bl = backLetters[i];
+          if (!fl || !bl) continue;
+
+          const isFVisible = !fl.classList.contains("hidden");
+          const isBVisible = !bl.classList.contains("hidden");
+
+          const delay = delayStart + i * 0.035;
+
+          // Front hidden letters: only animate position (visibility:hidden handles invisibility)
+          // Back hidden letters + all visible: reset opacity to 0 then animate
+          const opacityTargets = [];
+          if (isFVisible) opacityTargets.push(fl);
+          if (isBVisible) opacityTargets.push(bl);
+          // Also reset back-hidden (outline spacers) opacity to 0 so they don't flash
+          if (!isBVisible) gsap.set(bl, { opacity: 0 });
+
+          if (activeSlide.shoe === "superfly") {
+            if (isFVisible) gsap.set(fl, { opacity: 0, y: -200, x: 0 });
+            else gsap.set(fl, { y: -200, x: 0 }); // front hidden: position only
+            gsap.set(bl, { opacity: 0, y: -200, x: 0 });
+          } else {
+            if (isFVisible) gsap.set(fl, { opacity: 0, y: 0, x: -150 });
+            else gsap.set(fl, { y: 0, x: -150 }); // front hidden: position only
+            gsap.set(bl, { opacity: 0, y: 0, x: -150 });
+          }
+
+          // Animate position of both layers together
+          entryTl.to([fl, bl], {
+            y: 0,
+            x: 0,
+            duration: duration,
+            ease: ease,
+          }, delay);
+
+          // Animate opacity of visible letters only
+          if (opacityTargets.length > 0) {
+            entryTl.to(opacityTargets, {
+              opacity: 1,
+              duration: duration,
+              ease: ease,
+            }, delay);
+          }
+        }
+        entryTl.to(
+          [ui.infoKicker, ui.infoSub],
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.32,
+            stagger: 0.1,
+            ease: "power2.out",
+          },
+          0.34
+        );
+        entryTl.to(
+          ui.voirPlus,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.42,
+            ease: "power2.out",
+            letterSpacing: "0.22em",
+          },
+          0.44
+        );
+        gsap.set(ui.voirPlus, { letterSpacing: activeSlide.ctaProminent ? "0.16em" : "0.22em" });
+      }
+
+      let glScene, glCamera, glRenderer, glMaterial, glPlane;
+      let isGLActive = false;
+
+      function isWebGLSupported() {
+        try {
+          const canvas = document.createElement("canvas");
+          return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function parseRadialGradient(bgStr) {
+        let centerX = 0.5;
+        let centerY = 0.5;
+        const centerMatch = bgStr.match(/circle\s+at\s+([\d\.]+)%\s+([\d\.]+)%/);
+        if (centerMatch) {
+          centerX = parseFloat(centerMatch[1]) / 100;
+          centerY = 1.0 - parseFloat(centerMatch[2]) / 100;
+        }
+
+        const colors = [];
+        const offsets = [];
+        const colorStopRegex = /(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\s+([\d\.]+)%/g;
+        let match;
+        while ((match = colorStopRegex.exec(bgStr)) !== null) {
+          colors.push(new THREE.Color(match[1]));
+          offsets.push(parseFloat(match[2]) / 100);
+        }
+
+        while (colors.length < 4) {
+          colors.push(colors[colors.length - 1] || new THREE.Color("#000000"));
+          offsets.push(1.0);
+        }
+
+        return {
+          center: new THREE.Vector2(centerX, centerY),
+          colors: colors.slice(0, 4),
+          offsets: offsets.slice(0, 4)
+        };
+      }
+
+      function initWebGLBg() {
+        if (!isWebGLSupported() || typeof THREE === "undefined") {
+          console.warn("WebGL not supported or Three.js not loaded. Falling back to CSS transitions.");
+          return;
+        }
+
+        const canvas = document.getElementById("hero-gl-canvas");
+        if (!canvas) return;
+
+        isGLActive = true;
+
+        // Hide CSS background divs
+        ui.bgA.style.display = "none";
+        ui.bgB.style.display = "none";
+
+        glRenderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: true,
+          alpha: false,
+          powerPreference: "high-performance"
+        });
+        glRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        glRenderer.setSize(window.innerWidth, window.innerHeight);
+
+        glScene = new THREE.Scene();
+        glCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+        const slide = slides[currentIndex];
+        const initialGrad = parseRadialGradient(slide.background);
+
+        const vertexShader = `
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = vec4(position, 1.0);
+          }
+        `;
+
+        const fragmentShader = `
+          uniform float uTime;
+          uniform float uProgress;
+          uniform float uGlitch;
+          uniform vec2 uResolution;
+          
+          uniform vec2 uPrevCenter;
+          uniform vec3 uPrevC0;
+          uniform vec3 uPrevC1;
+          uniform vec3 uPrevC2;
+          uniform vec3 uPrevC3;
+          uniform vec4 uPrevOffsets;
+
+          uniform vec2 uNextCenter;
+          uniform vec3 uNextC0;
+          uniform vec3 uNextC1;
+          uniform vec3 uNextC2;
+          uniform vec3 uNextC3;
+          uniform vec4 uNextOffsets;
+
+          varying vec2 vUv;
+
+          vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+
+          float snoise(vec2 v){
+            const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                     -0.577350269189626, 0.024390243902439);
+            vec2 i  = floor(v + dot(v, C.yy) );
+            vec2 x0 = v -   i + dot(i, C.xx);
+            vec2 i1;
+            i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+            vec4 x12 = x0.xyxy + C.xxzz;
+            x12.xy -= i1;
+            i = mod(i, 289.0);
+            vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0) )
+            + i.x + vec3(0.0, i1.x, 1.0) );
+            vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+              dot(x12.zw,x12.zw)), 0.0);
+            m = m*m ;
+            m = m*m ;
+            vec3 x = 2.0 * fract(p * C.www) - 1.0 ;
+            vec3 h = abs(x) - 0.5 ;
+            vec3 a0 = x - floor(x + 0.5);
+            vec3 m0 = 2.0 * a0 * a0 + h * h ;
+            vec3 g;
+            g.x  = a0.x  * x0.x  + h.x  * x0.y;
+            g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+            return 130.0 * dot(m, g);
+          }
+
+          vec3 getGradient(vec2 uv, vec2 center, vec3 c0, vec3 c1, vec3 c2, vec3 c3, vec4 offsets) {
+            vec2 aspectUV = (uv - center) * vec2(uResolution.x / uResolution.y, 1.0);
+            float dist = length(aspectUV);
+            float scaledDist = dist * 0.75;
+            
+            if (scaledDist < offsets.y) {
+              return mix(c0, c1, (scaledDist - offsets.x) / (offsets.y - offsets.x));
+            } else if (scaledDist < offsets.z) {
+              return mix(c1, c2, (scaledDist - offsets.y) / (offsets.z - offsets.y));
+            } else {
+              return mix(c2, c3, clamp((scaledDist - offsets.z) / (offsets.w - offsets.z), 0.0, 1.0));
+            }
+          }
+
+          void main() {
+            vec2 uv = vUv;
+            
+            // 1. Digital Block Glitch (horizontal block offsets)
+            if (uGlitch > 0.0) {
+              float rows = 28.0;
+              float rowId = floor(uv.y * rows);
+              // Pseudo-random row shift based on rowId and uTime
+              float randomShift = fract(sin(rowId * 123.456 + floor(uTime * 32.0)) * 43758.5453);
+              // Shift only some rows depending on glitch intensity
+              if (randomShift > 0.85 - uGlitch * 0.12) {
+                uv.x += (randomShift - 0.5) * 0.045 * uGlitch;
+              }
+            }
+
+            float freq = 2.8;
+            float warpStrength = sin(uProgress * 3.14159265);
+            float amp = 0.35 * warpStrength;
+            
+            float t = uTime * 0.15;
+            float staticAmp = 0.025;
+            
+            float nX = snoise(uv * freq + vec2(t, uProgress * 1.5));
+            float nY = snoise(uv * freq + vec2(uProgress * 1.5, t + 8.0));
+            
+            vec2 distUVPrev = uv + vec2(nX, nY) * (amp + staticAmp);
+            vec2 distUVNext = uv - vec2(nX, nY) * (amp + staticAmp);
+            
+            // 2. Chromatic Aberration RGB split during sampling
+            float rShift = 0.012 * uGlitch;
+            float bShift = -0.012 * uGlitch;
+
+            // Prev Colors split
+            vec2 rPrev = distUVPrev + vec2(rShift, 0.0);
+            vec2 gPrev = distUVPrev;
+            vec2 bPrev = distUVPrev + vec2(bShift, 0.0);
+
+            float rPrevCol = getGradient(rPrev, uPrevCenter, uPrevC0, uPrevC1, uPrevC2, uPrevC3, uPrevOffsets).r;
+            float gPrevCol = getGradient(gPrev, uPrevCenter, uPrevC0, uPrevC1, uPrevC2, uPrevC3, uPrevOffsets).g;
+            float bPrevCol = getGradient(bPrev, uPrevCenter, uPrevC0, uPrevC1, uPrevC2, uPrevC3, uPrevOffsets).b;
+            vec3 colorPrev = vec3(rPrevCol, gPrevCol, bPrevCol);
+
+            // Next Colors split
+            vec2 rNext = distUVNext + vec2(rShift, 0.0);
+            vec2 gNext = distUVNext;
+            vec2 bNext = distUVNext + vec2(bShift, 0.0);
+
+            float rNextCol = getGradient(rNext, uNextCenter, uNextC0, uNextC1, uNextC2, uNextC3, uNextOffsets).r;
+            float gNextCol = getGradient(gNext, uNextCenter, uNextC0, uNextC1, uNextC2, uNextC3, uNextOffsets).g;
+            float bNextCol = getGradient(bNext, uNextCenter, uNextC0, uNextC1, uNextC2, uNextC3, uNextOffsets).b;
+            vec3 colorNext = vec3(rNextCol, gNextCol, bNextCol);
+
+            float blendNoise = snoise(uv * 3.0 + vec2(0.0, uProgress * 2.0)) * 0.12;
+            float mixFactor = clamp(uProgress + blendNoise * warpStrength, 0.0, 1.0);
+            
+            vec3 color = mix(colorPrev, colorNext, mixFactor);
+            
+            float bottomFade = smoothstep(0.35, 0.0, uv.y);
+            color = mix(color, vec3(1.0, 1.0, 1.0), bottomFade * 0.95);
+            
+            gl_FragColor = vec4(color, 1.0);
+          }
+        `;
+
+        glMaterial = new THREE.ShaderMaterial({
+          vertexShader: vertexShader,
+          fragmentShader: fragmentShader,
+          uniforms: {
+            uTime: { value: 0 },
+            uProgress: { value: 1.0 },
+            uGlitch: { value: 0.0 },
+            uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+            
+            uPrevCenter: { value: initialGrad.center },
+            uPrevC0: { value: initialGrad.colors[0] },
+            uPrevC1: { value: initialGrad.colors[1] },
+            uPrevC2: { value: initialGrad.colors[2] },
+            uPrevC3: { value: initialGrad.colors[3] },
+            uPrevOffsets: { value: new THREE.Vector4(...initialGrad.offsets) },
+
+            uNextCenter: { value: initialGrad.center },
+            uNextC0: { value: initialGrad.colors[0] },
+            uNextC1: { value: initialGrad.colors[1] },
+            uNextC2: { value: initialGrad.colors[2] },
+            uNextC3: { value: initialGrad.colors[3] },
+            uNextOffsets: { value: new THREE.Vector4(...initialGrad.offsets) }
+          },
+          depthWrite: false,
+          depthTest: false
+        });
+
+        glPlane = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), glMaterial);
+        glScene.add(glPlane);
+
+        const clock = new THREE.Clock();
+        function animate() {
+          requestAnimationFrame(animate);
+          glMaterial.uniforms.uTime.value = clock.getElapsedTime();
+          glRenderer.render(glScene, glCamera);
+        }
+        animate();
+
+        window.addEventListener("resize", onGLResize);
+      }
+
+      function onGLResize() {
+        if (!isGLActive) return;
+        glRenderer.setSize(window.innerWidth, window.innerHeight);
+        glRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        glMaterial.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+      }
+
+      function triggerGLTransition(prevSlide, nextSlide) {
+        if (!isGLActive) return;
+
+        const prevGrad = parseRadialGradient(prevSlide.background);
+        const nextGrad = parseRadialGradient(nextSlide.background);
+
+        glMaterial.uniforms.uPrevCenter.value.copy(prevGrad.center);
+        glMaterial.uniforms.uPrevC0.value.copy(prevGrad.colors[0]);
+        glMaterial.uniforms.uPrevC1.value.copy(prevGrad.colors[1]);
+        glMaterial.uniforms.uPrevC2.value.copy(prevGrad.colors[2]);
+        glMaterial.uniforms.uPrevC3.value.copy(prevGrad.colors[3]);
+        glMaterial.uniforms.uPrevOffsets.value.set(...prevGrad.offsets);
+
+        glMaterial.uniforms.uNextCenter.value.copy(nextGrad.center);
+        glMaterial.uniforms.uNextC0.value.copy(nextGrad.colors[0]);
+        glMaterial.uniforms.uNextC1.value.copy(nextGrad.colors[1]);
+        glMaterial.uniforms.uNextC2.value.copy(nextGrad.colors[2]);
+        glMaterial.uniforms.uNextC3.value.copy(nextGrad.colors[3]);
+        glMaterial.uniforms.uNextOffsets.value.set(...nextGrad.offsets);
+
+        glMaterial.uniforms.uProgress.value = 0.0;
+        gsap.killTweensOf(glMaterial.uniforms.uProgress);
+        gsap.to(glMaterial.uniforms.uProgress, {
+          value: 1.0,
+          duration: 0.6,
+          ease: "power2.out"
+        });
+
+        // Glitch spike & decay
+        glMaterial.uniforms.uGlitch.value = 1.0;
+        gsap.killTweensOf(glMaterial.uniforms.uGlitch);
+        gsap.to(glMaterial.uniforms.uGlitch, {
+          value: 0.0,
+          duration: 1.2,
+          ease: "power2.out"
+        });
+      }
+
+      function renderSlide(index, immediate = false, skipEntry = false) {
+        const slide = slides[index];
+        const oldSlide = slides[currentIndex];
+        currentIndex = index;
+        applyTitle(slide);
+        applyShoe(slide);
+        syncNav(slide);
+        syncCTA(slide);
+
+        if (immediate) {
+          if (isGLActive) {
+            const grad = parseRadialGradient(slide.background);
+            glMaterial.uniforms.uPrevCenter.value.copy(grad.center);
+            glMaterial.uniforms.uPrevC0.value.copy(grad.colors[0]);
+            glMaterial.uniforms.uPrevC1.value.copy(grad.colors[1]);
+            glMaterial.uniforms.uPrevC2.value.copy(grad.colors[2]);
+            glMaterial.uniforms.uPrevC3.value.copy(grad.colors[3]);
+            glMaterial.uniforms.uPrevOffsets.value.set(...grad.offsets);
+
+            glMaterial.uniforms.uNextCenter.value.copy(grad.center);
+            glMaterial.uniforms.uNextC0.value.copy(grad.colors[0]);
+            glMaterial.uniforms.uNextC1.value.copy(grad.colors[1]);
+            glMaterial.uniforms.uNextC2.value.copy(grad.colors[2]);
+            glMaterial.uniforms.uNextC3.value.copy(grad.colors[3]);
+            glMaterial.uniforms.uNextOffsets.value.set(...grad.offsets);
+
+            glMaterial.uniforms.uProgress.value = 1.0;
+          } else {
+            applyBackground(slide, activeBackground);
+            activeBackground.classList.add("is-active");
+            inactiveBackground.classList.remove("is-active");
+            gsap.set(ui.bgB, { opacity: 0, scale: 1 });
+            gsap.set(ui.bgA, { opacity: 1, scale: 1 });
+          }
+          if (!skipEntry) animateEntry();
+          return;
+        }
+
+        if (isGLActive) {
+          triggerGLTransition(oldSlide, slide);
+        } else {
+          applyBackground(slide, inactiveBackground);
+          
+          gsap.killTweensOf([activeBackground, inactiveBackground]);
+          
+          gsap.set(inactiveBackground, { opacity: 0, scale: 1.15 });
+          inactiveBackground.classList.add("is-active");
+          
+          gsap.to(inactiveBackground, {
+            opacity: 1,
+            scale: 1,
+            duration: 1.6,
+            ease: "power2.out",
+          });
+          
+          gsap.to(activeBackground, {
+            opacity: 0,
+            scale: 0.92,
+            duration: 1.6,
+            ease: "power2.out",
+            onComplete: () => {
+              activeBackground.classList.remove("is-active");
+            },
+          });
+
+          [activeBackground, inactiveBackground] = [inactiveBackground, activeBackground];
+        }
+
+        if (!skipEntry) {
+          requestAnimationFrame(() => {
+            animateEntry();
+          });
+        }
+      }
+
+      function createNoiseCanvas() {
+        const canvas = ui.grain;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        const noiseW = 256;
+        const noiseH = 256;
+        let imgData = ctx.createImageData(noiseW, noiseH);
+        let data = imgData.data;
+
+        function resize() {
+          canvas.width = noiseW;
+          canvas.height = noiseH;
+          canvas.style.width = "100%";
+          canvas.style.height = "100%";
+        }
+
+        function draw(ts) {
+          if (ts - lastNoiseTime < 40 && glitchPower < 0.5) {
+            requestAnimationFrame(draw);
+            return;
+          }
+          lastNoiseTime = ts;
+
+          const baseAlpha = glitchPower > 0 ? Math.floor(100 + glitchPower * 90) : 22;
+          const jitter = 40 + glitchPower * 120;
+          
+          for (let i = 0; i < data.length; i += 4) {
+            const v = Math.floor(jitter + Math.random() * (120 + glitchPower * 120));
+            data[i] = v;     // R
+            data[i+1] = v;   // G
+            data[i+2] = v;   // B
+            data[i+3] = baseAlpha; // A
+          }
+
+          ctx.putImageData(imgData, 0, 0);
+          requestAnimationFrame(draw);
+        }
+
+        resize();
+        requestAnimationFrame(draw);
+      }
+
+      function spawnGlitchScanlines() {
+        ui.glitchOverlay.innerHTML = "";
+        const lines = 10 + Math.floor(Math.random() * 6);
+        for (let i = 0; i < lines; i += 1) {
+          const line = document.createElement("div");
+          line.className = "scanline";
+          line.style.top = `${Math.random() * 100}%`;
+          line.style.height = `${8 + Math.random() * 20}px`;
+          line.style.opacity = `${0.22 + Math.random() * 0.62}`;
+          line.style.transform = `translateX(${(Math.random() - 0.5) * 180}px)`;
+          line.style.background = `linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,${0.04 + Math.random() * 0.12}), rgba(255,255,255,0.02))`;
+          ui.glitchOverlay.appendChild(line);
+          gsap.to(line, {
+            opacity: 0,
+            x: (Math.random() - 0.5) * 180,
+            duration: 0.12 + Math.random() * 0.12,
+            delay: Math.random() * 0.08,
+            ease: "power2.out",
+            onComplete: () => line.remove(),
+          });
+        }
+      }
+
+      function glitchTo(nextIndex) {
+        if (transitioning || nextIndex === currentIndex) return;
+        transitioning = true;
+        paused = true;
+        clearTimeout(autoplay);
+
+        const nextSlide  = slides[nextIndex];
+        const currentSlide = slides[currentIndex];
+
+        // Direction: forward = shoe exits LEFT, new shoe enters from RIGHT (and vice-versa)
+        const isForward = (nextIndex > currentIndex) || (currentIndex === slides.length - 1 && nextIndex === 0);
+
+        // ─────────────────────────────────────────────────────────────────
+        // SLINGSHOT EXIT VECTORS (current shoe ripped off-screen)
+        // ─────────────────────────────────────────────────────────────────
+        const exitX    = isForward ? -1600 : 1600;
+        const exitSkew = isForward ? -28   : 28;    // warp in opposite direction of travel
+        const exitSc   = 0.55;                       // squish as it accelerates away
+
+        // Entry vectors (new shoe crashes in)
+        const entryX   = isForward ? 1800  : -1800; // starts further off-screen than exit
+        const entrySkew = isForward ? 22   : -22;
+
+        // ─────────────────────────────────────────────────────────────────
+        // PHASE 0 – Immediate: noise burst + scanlines + chromatic split
+        // ─────────────────────────────────────────────────────────────────
+        glitchPower = 0.9;
+        spawnGlitchScanlines();
+        ui.hero.classList.add("is-glitching");
+
+        // Hard RGB shake on titles – feels like CRT being hit
+        gsap.to(ui.titleFront, { x: 14, skewX: 4, duration: 0.04, yoyo: true, repeat: 4, ease: "none",
+          onComplete: () => gsap.set(ui.titleFront, { x: 0, skewX: 0 }) });
+        gsap.to(ui.titleBack,  { x: -10, skewX: -4, duration: 0.04, yoyo: true, repeat: 4, ease: "none",
+          onComplete: () => gsap.set(ui.titleBack,  { x: 0, skewX: 0 }) });
+
+        // ─────────────────────────────────────────────────────────────────
+        // PHASE 1 (0 → 0.12s) – SLINGSHOT: current shoe ripped off-screen
+        // ─────────────────────────────────────────────────────────────────
+        const leavingLetters = [
+          ...ui.titleBack.querySelectorAll(".letter:not(.hidden)"),
+          ...ui.titleFront.querySelectorAll(".letter:not(.hidden)"),
+        ];
+        leavingLetters.sort((a, b) => parseInt(a.getAttribute("data-idx")) - parseInt(b.getAttribute("data-idx")));
+
+        // Shoe slingshot: extreme velocity, squish + skew distortion
+        gsap.to(ui.shoeStage, {
+          x: exitX,
+          scaleX: exitSc,
+          skewX: exitSkew,
+          opacity: 0,
+          duration: 0.45,
+          ease: "power4.in",
+        });
+
+        // Letters scatter in same direction, instant stagger
+        gsap.to(leavingLetters, {
+          x: isForward ? 220 : -220,
+          opacity: 0,
+          duration: 0.30,
+          stagger: 0.02,
+          ease: "power3.in",
+        });
+
+        // ─────────────────────────────────────────────────────────────────
+        // PHASE 2 (t=0.10s) – WHITE FLASH + COLOR FLOOD
+        // ─────────────────────────────────────────────────────────────────
+        const tl = gsap.timeline();
+
+        // White flash: spike to a much gentler opacity peak then decay
+        tl.to(ui.vhsFlash, { opacity: 0.35, duration: 0.12, ease: "none" }, 0.35);
+        tl.to(ui.vhsFlash, { opacity: 0,    duration: 0.55, ease: "power2.out" }, 0.47);
+
+        // Background color flood fires AT the flash peak
+        tl.call(() => {
+          renderSlide(nextIndex, false, true);
+        }, null, 0.35);
+
+        // ─────────────────────────────────────────────────────────────────
+        // PHASE 3 (t=0.13s) – NEW SHOE CRASHES IN with elastic overshoot
+        // ─────────────────────────────────────────────────────────────────
+        tl.call(() => {
+          gsap.killTweensOf(ui.shoeStage);
+          // Position new shoe off-screen, squished and skewed like it's mid-flight
+          gsap.set(ui.shoeStage, {
+            x: entryX,
+            scaleX: 0.6,
+            skewX: entrySkew,
+            opacity: 1,
+            xPercent: -50,
+            yPercent: -50,
+          });
+          // Crash in: fast approach then elastic settle
+          gsap.to(ui.shoeStage, {
+            x: 0,
+            scaleX: 1,
+            skewX: 0,
+            opacity: 1,
+            xPercent: -50,
+            yPercent: -50,
+            duration: 1.30,
+            ease: "back.out(1.8)",
+          });
+        }, null, 0.45);
+
+        // ─────────────────────────────────────────────────────────────────
+        // PHASE 4 (t=0.16s) – Letters slam in with rapid stagger
+        // ─────────────────────────────────────────────────────────────────
+        tl.call(() => {
+          const frontLetters = Array.from(ui.titleFront.querySelectorAll(".letter"));
+          const backLetters = Array.from(ui.titleBack.querySelectorAll(".letter"));
+          const length = nextSlide.title.length;
+          
+          const allNewLetters = [...frontLetters, ...backLetters];
+          gsap.killTweensOf(allNewLetters);
+
+          for (let i = 0; i < length; i++) {
+            const fl = frontLetters[i];
+            const bl = backLetters[i];
+            if (!fl || !bl) continue;
+
+            const isFVisible = !fl.classList.contains("hidden");
+            const isBVisible = !bl.classList.contains("hidden");
+
+            const targets = [fl, bl];
+            const visibleTargets = [];
+            if (isFVisible) visibleTargets.push(fl);
+            if (isBVisible) visibleTargets.push(bl);
+
+            const delay = i * 0.035;
+
+            gsap.set(targets, { x: isForward ? -180 : 180, skewX: isForward ? 10 : -10 });
+            gsap.set(visibleTargets, { opacity: 0 });
+
+            // Animate positions of both layers together
+            gsap.to(targets, {
+              x: 0,
+              skewX: 0,
+              duration: 0.90,
+              ease: "power3.out",
+              delay: delay,
+            });
+
+            // Animate opacity of visible ones
+            if (visibleTargets.length > 0) {
+              gsap.to(visibleTargets, {
+                opacity: 1,
+                duration: 0.90,
+                ease: "power3.out",
+                delay: delay,
+              });
+            }
+          }
+
+          // Info block rises in
+          gsap.set([ui.infoKicker, ui.infoSub, ui.voirPlus], { opacity: 0, y: 18 });
+          gsap.to([ui.infoKicker, ui.infoSub], {
+            opacity: 1, y: 0, duration: 0.65,
+            stagger: 0.16, delay: 0.25, ease: "power2.out",
+          });
+          gsap.to(ui.voirPlus, {
+            opacity: 1, y: 0, duration: 0.65,
+            delay: 0.45, ease: "power2.out",
+          });
+        }, null, 0.55);
+
+        // ─────────────────────────────────────────────────────────────────
+        // CLEANUP (t=0.82s)
+        // ─────────────────────────────────────────────────────────────────
+        tl.call(() => {
+          glitchPower = 0;
+          ui.hero.classList.remove("is-glitching");
+          transitioning = false;
+          paused = false;
+          scheduleAutoplay();
+        }, null, 2.20);
+      }
+
+      function scheduleAutoplay() {
+        clearTimeout(autoplay);
+        if (paused || transitioning) return;
+        autoplay = setTimeout(() => {
+          glitchTo((currentIndex + 1) % slides.length);
+        }, 5600);
+      }
+
+      function moveCursor(e) {
+        cursorTarget.x = e.clientX;
+        cursorTarget.y = e.clientY;
+      }
+
+      function animateCursor() {
+        cursorPos.x += (cursorTarget.x - cursorPos.x) * 0.15;
+        cursorPos.y += (cursorTarget.y - cursorPos.y) * 0.15;
+        ui.cursor.style.transform = `translate(${cursorPos.x}px, ${cursorPos.y}px) translate(-50%, -50%)`;
+        requestAnimationFrame(animateCursor);
+      }
+
+      function renderStoreSections() {
+        if (ui.brandTrack) {
+          ui.brandTrack.innerHTML = brands
+            .concat(brands)
+            .map(
+              (brand) => `
+                <a class="brand-card" href="${brand.href}" aria-label="${brand.name}">
+                  <img src="${brand.img}" alt="${brand.name}" loading="lazy" />
+                </a>
+              `
+            )
+            .join("");
+        }
+
+        if (ui.categoryGrid) {
+          ui.categoryGrid.innerHTML = categories
+            .map(
+              (category) => `
+                <article class="category-card">
+                  <a href="${category.href}" aria-label="${category.name}">
+                    <img class="category-media" src="${category.img}" alt="${category.name}" loading="lazy" />
+                    <div class="category-content">
+                      <h3 class="category-name">${category.name}</h3>
+                      <div class="category-meta">${category.count}</div>
+                    </div>
+                  </a>
+                </article>
+              `
+            )
+            .join("");
+        }
+
+        if (ui.productGrid) {
+          ui.productGrid.innerHTML = products
+            .map(
+              (product) => `
+                <article class="product-card">
+                  <a class="product-media-wrap" href="${product.href}" aria-label="${product.name}">
+                    <img src="${product.img}" alt="${product.name}" loading="lazy" />
+                    <img class="hover" src="${product.hover}" alt="" loading="lazy" />
+                  </a>
+                  <div class="product-body">
+                    <div class="product-tags">${product.tags.join(" · ")}</div>
+                    <h3 class="product-name">${product.name}</h3>
+                    <div class="product-tags">${product.category}</div>
+                    <div class="product-price">
+                      ${product.oldPrice ? `<span class="price-old">${product.oldPrice}</span>` : ""}
+                      <span>${product.price}</span>
+                    </div>
+                    <div class="product-actions">
+                      <a class="btn primary" href="${product.href}">Choix des options</a>
+                      <a class="btn" href="${product.href}">Quick view</a>
+                    </div>
+                  </div>
+                </article>
+              `
+            )
+            .join("");
+        }
+      }
+
+      function applyTilt() {
+        // Shoe moves OPPOSITE of cursor + subtle 3D perspective rotation
+        ui.shoeTilt.style.transform =
+          `translate(${tilt.x}px, ${tilt.y}px) rotateY(${tilt.ry}deg) rotateX(${tilt.rx}deg)`;
+      }
+
+      function onHeroMove(e) {
+        const rect = ui.hero.getBoundingClientRect();
+        const nx = (e.clientX - rect.left) / rect.width - 0.5;   // -0.5 to +0.5
+        const ny = (e.clientY - rect.top) / rect.height - 0.5;
+        setTiltX(nx * -60);        // opposite horizontal offset, max ±60px
+        setTiltY(ny * -25);        // opposite vertical offset, max ±25px
+        setTiltRY(nx * -8);        // Y rotation opposite, max ±8deg
+        setTiltRX(ny * 5);         // X rotation opposite, max ±5deg
+      }
+
+      function onHeroLeave() {
+        gsap.to(tilt, {
+          x: 0,
+          y: 0,
+          ry: 0,
+          rx: 0,
+          duration: 1.2,
+          ease: "elastic.out(1, 0.5)",
+          onUpdate: applyTilt,
+        });
+      }
+
+      ui.prevBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        glitchTo((currentIndex - 1 + slides.length) % slides.length);
+      });
+      ui.nextBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        glitchTo((currentIndex + 1) % slides.length);
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        const rect = ui.hero.getBoundingClientRect();
+        const overHero = e.clientY >= rect.top && e.clientY <= rect.bottom && e.clientX >= rect.left && e.clientX <= rect.right;
+        if (overHero) {
+          ui.cursor.style.display = "block";
+        } else {
+          ui.cursor.style.display = "none";
+        }
+        moveCursor(e);
+        onHeroMove(e);
+      });
+      ui.hero.addEventListener("mouseenter", () => {
+        paused = true;
+        clearTimeout(autoplay);
+        ui.cursor.style.display = "block";
+      });
+      ui.hero.addEventListener("mouseleave", () => {
+        onHeroLeave();
+        paused = false;
+        scheduleAutoplay();
+        ui.cursor.style.display = "none";
+      });
+
+      document.querySelectorAll(".hero a, .hero button, .ghost-nav button").forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          ui.cursor.classList.add("hovering");
+        });
+        el.addEventListener("mouseleave", () => {
+          ui.cursor.classList.remove("hovering");
+        });
+      });
+
+      window.addEventListener("blur", () => {
+        paused = true;
+        clearTimeout(autoplay);
+      });
+      window.addEventListener("focus", () => {
+        paused = false;
+        scheduleAutoplay();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") glitchTo((currentIndex + 1) % slides.length);
+        if (e.key === "ArrowLeft") glitchTo((currentIndex - 1 + slides.length) % slides.length);
+      });
+
+      function initMagneticNav() {
+        const navs = [
+          { container: document.querySelector(".ghost-nav.left"), btn: document.getElementById("prevBtn"), symbol: document.querySelector(".ghost-nav.left .arrow-symbol") },
+          { container: document.querySelector(".ghost-nav.right"), btn: document.getElementById("nextBtn"), symbol: document.querySelector(".ghost-nav.right .arrow-symbol") }
+        ];
+
+        navs.forEach(({ container, btn, symbol }) => {
+          if (!container || !btn || !symbol) return;
+
+          btn.addEventListener("mousemove", (e) => {
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const deltaX = e.clientX - centerX;
+            const deltaY = e.clientY - centerY;
+            
+            gsap.to(container, {
+              x: deltaX * 0.15,
+              y: deltaY * 0.15,
+              scale: 2.2,
+              borderColor: "rgba(255, 255, 255, 0.45)",
+              backgroundColor: "rgba(255, 255, 255, 0.04)",
+              duration: 0.3,
+              ease: "power2.out"
+            });
+
+            gsap.to(symbol, {
+              x: deltaX * 0.32,
+              y: deltaY * 0.32,
+              scale: 1.15,
+              duration: 0.3,
+              ease: "power2.out"
+            });
+          });
+
+          btn.addEventListener("mouseleave", () => {
+            gsap.to(container, {
+              x: 0,
+              y: 0,
+              scale: 1,
+              borderColor: "rgba(255, 255, 255, 0.14)",
+              backgroundColor: "rgba(255, 255, 255, 0)",
+              duration: 0.8,
+              ease: "elastic.out(1.1, 0.6)"
+            });
+
+            gsap.to(symbol, {
+              x: 0,
+              y: 0,
+              scale: 1,
+              duration: 0.8,
+              ease: "elastic.out(1.1, 0.6)"
+            });
+          });
+        });
+      }
+
+      gsap.set(ui.shoeStage, { xPercent: -50, yPercent: -50 });
+      gsap.set([ui.bgA, ui.bgB], { clearProps: "transform" });
+      createNoiseCanvas();
+      renderStoreSections();
+      initWebGLBg();
+      renderSlide(0, true);
+      animateCursor();
+      initMagneticNav();
+      scheduleAutoplay();
+
+      // ─────────────────────────────────────────────────────────
+      // LENIS SMOOTH SCROLL
+      // ─────────────────────────────────────────────────────────
+      let lenis;
+      if (typeof Lenis !== "undefined") {
+        lenis = new Lenis({
+          duration: 1.25,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: "vertical",
+          smoothWheel: true,
+          wheelMultiplier: 0.9,
+          touchMultiplier: 1.5,
+        });
+
+        // Tie Lenis to GSAP ticker for perfect sync
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+
+        // Wire ScrollTrigger scroll proxy to Lenis
+        if (typeof ScrollTrigger !== "undefined") {
+          lenis.on("scroll", ScrollTrigger.update);
+        }
+
+        // ── FOOTER SCROLL MORPH: border-radius → 0 as footer enters view ──
+        const footerEl = document.getElementById("footerSection");
+        if (footerEl) {
+          const RADIUS_START = 88; // px, softly pill-shaped
+          const RADIUS_END   = 24; // px, still elegant but less rounded
+          const MARGIN_START = 16; // px side margin when rounded
+          const MARGIN_END   = 0;  // px side margin when flat
+          const ARC_START = 1.0;
+          const ARC_END = 0.76;
+
+          lenis.on("scroll", ({ scroll }) => {
+            const rect = footerEl.getBoundingClientRect();
+            const winH  = window.innerHeight;
+
+            // progress 0 = footer top just enters viewport bottom
+            // progress 1 = footer top reaches 40% of viewport
+            const entryRange = winH * 0.55;
+            let progress = 1 - Math.min(1, Math.max(0, rect.top / entryRange));
+
+            // Easing for a smooth feel
+            const eased = progress < 0.5
+              ? 2 * progress * progress
+              : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+            const radius = RADIUS_START + (RADIUS_END - RADIUS_START) * eased;
+            const margin = MARGIN_START + (MARGIN_END - MARGIN_START) * eased;
+            const borderOpacity = 0.18 * (1 - eased);
+            const arcScale = ARC_START + (ARC_END - ARC_START) * eased;
+
+            footerEl.style.borderRadius = `${radius}px ${radius}px 0 0`;
+            footerEl.style.marginLeft   = `${margin}px`;
+            footerEl.style.marginRight  = `${margin}px`;
+            footerEl.style.borderColor  = `rgba(255,255,255,${borderOpacity})`;
+            footerEl.style.setProperty("--footer-border-opacity", borderOpacity.toFixed(3));
+            footerEl.style.setProperty("--footer-arc-scale", arcScale.toFixed(3));
+          });
+        }
+      }
+
+      // ─────────────────────────────────────────────────────────
+      // GSAP SCROLLTRIGGER — SECTION REVEAL ANIMATIONS
+      // ─────────────────────────────────────────────────────────
+      if (typeof ScrollTrigger !== "undefined") {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Helper: animate a group of elements sliding up
+        function revealUp(els, triggerEl, stagger = 0.1, delay = 0) {
+          gsap.fromTo(els,
+            { opacity: 0, y: 52 },
+            {
+              opacity: 1, y: 0,
+              duration: 0.9,
+              stagger: stagger,
+              delay: delay,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: "top 82%",
+                once: true,
+              }
+            }
+          );
+        }
+
+        function revealLeft(els, triggerEl, stagger = 0.12) {
+          gsap.fromTo(els,
+            { opacity: 0, x: -44 },
+            {
+              opacity: 1, x: 0,
+              duration: 0.85,
+              stagger: stagger,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: "top 80%",
+                once: true,
+              }
+            }
+          );
+        }
+
+        function revealScale(els, triggerEl, stagger = 0.08) {
+          gsap.fromTo(els,
+            { opacity: 0, scale: 0.90, y: 28 },
+            {
+              opacity: 1, scale: 1, y: 0,
+              duration: 1.0,
+              stagger: stagger,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: "top 82%",
+                once: true,
+              }
+            }
+          );
+        }
+
+        // ── Brands section ──
+        const brandsSection = document.getElementById("brandsSection");
+        if (brandsSection) {
+          revealLeft(brandsSection.querySelectorAll(".eyebrow, .section-title"), brandsSection, 0.12);
+          revealUp(brandsSection.querySelectorAll(".section-copy"), brandsSection, 0, 0.18);
+          // Brand cards animate in after a short delay (they're rendered via JS, use MutationObserver)
+          const brandObs = new MutationObserver(() => {
+            const cards = brandsSection.querySelectorAll(".brand-card");
+            if (cards.length) {
+              brandObs.disconnect();
+              gsap.fromTo(cards,
+                { opacity: 0, y: 36 },
+                {
+                  opacity: 1, y: 0, duration: 0.7,
+                  stagger: 0.07, ease: "power2.out",
+                  scrollTrigger: { trigger: brandsSection, start: "top 78%", once: true }
+                }
+              );
+            }
+          });
+          brandObs.observe(document.getElementById("brandTrack"), { childList: true });
+        }
+
+        // ── Categories section ──
+        const categoriesSection = document.getElementById("categoriesSection");
+        if (categoriesSection) {
+          revealLeft(categoriesSection.querySelectorAll(".eyebrow, .section-title"), categoriesSection, 0.12);
+          revealUp(categoriesSection.querySelectorAll(".section-copy"), categoriesSection, 0, 0.14);
+          const catObs = new MutationObserver(() => {
+            const cards = categoriesSection.querySelectorAll(".category-card");
+            if (cards.length) {
+              catObs.disconnect();
+              revealScale(cards, categoriesSection, 0.12);
+            }
+          });
+          catObs.observe(document.getElementById("categoryGrid"), { childList: true });
+        }
+
+        // ── Products section ──
+        const productsSection = document.getElementById("productsSection");
+        if (productsSection) {
+          revealLeft(productsSection.querySelectorAll(".eyebrow, .section-title"), productsSection, 0.12);
+          revealUp(productsSection.querySelectorAll(".section-copy"), productsSection, 0, 0.14);
+          const prodObs = new MutationObserver(() => {
+            const cards = productsSection.querySelectorAll(".product-card");
+            if (cards.length) {
+              prodObs.disconnect();
+              gsap.fromTo(cards,
+                { opacity: 0, y: 44, scale: 0.94 },
+                {
+                  opacity: 1, y: 0, scale: 1,
+                  duration: 0.85,
+                  stagger: 0.09,
+                  ease: "power3.out",
+                  scrollTrigger: { trigger: productsSection, start: "top 78%", once: true }
+                }
+              );
+            }
+          });
+          prodObs.observe(document.getElementById("productGrid"), { childList: true });
+        }
+
+        // ── Location section ──
+        const locationSection = document.getElementById("locationSection");
+        if (locationSection) {
+          revealLeft(locationSection.querySelectorAll(".eyebrow, .section-title"), locationSection, 0.12);
+          revealUp(locationSection.querySelectorAll(".section-copy"), locationSection, 0, 0.14);
+          revealScale(locationSection.querySelectorAll(".map-frame, .info-panel"), locationSection, 0.14);
+        }
+
+        // ── Footer reveal ──
+        const footerSection = document.getElementById("footerSection");
+        if (footerSection) {
+          revealUp(footerSection.querySelectorAll(".footer-wordmark"), footerSection, 0, 0);
+          revealUp(footerSection.querySelectorAll(".footer-panel"), footerSection, 0.14, 0.1);
+          revealUp(footerSection.querySelectorAll(".copyright"), footerSection, 0, 0.28);
+        }
+
+        // ── Section headers: eyebrow line animate ──
+        document.querySelectorAll(".site-section").forEach((sec) => {
+          const eyebrow = sec.querySelector(".eyebrow");
+          const title   = sec.querySelector(".section-title");
+          const copy    = sec.querySelector(".section-copy");
+          if (eyebrow) revealLeft([eyebrow], sec);
+          if (title)   revealLeft([title],   sec, 0);
+          if (copy)    revealUp([copy],       sec, 0, 0.15);
+        });
+      }
+
+      // ─────────────────────────────────────────────────────────
+      // FOOTER WEBGL SHADER — dark animated aurora/grain shader
+      // ─────────────────────────────────────────────────────────
+      function initFooterShader() {
+        const canvas = document.getElementById("footer-gl");
+        if (!canvas || !isWebGLSupported() || typeof THREE === "undefined") {
+          // Fallback: plain animated canvas gradient
+          initFooterCanvas2D();
+          return;
+        }
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        const w = canvas.offsetWidth || window.innerWidth;
+        const h = canvas.offsetHeight || 300;
+        renderer.setSize(w, h);
+
+        const scene  = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+        const footerVert = `
+          varying vec2 vUv;
+          void main(){ vUv=uv; gl_Position=vec4(position,1.); }
+        `;
+
+        const footerFrag = `
+          uniform float uTime;
+          uniform vec2  uRes;
+          varying vec2  vUv;
+
+          vec3 permute(vec3 x){return mod(((x*34.)+1.)*x,289.);}
+          float snoise(vec2 v){
+            const vec4 C=vec4(.211324865405187,.366025403784439,-.577350269189626,.024390243902439);
+            vec2 i=floor(v+dot(v,C.yy)),x0=v-i+dot(i,C.xx),i1=(x0.x>x0.y)?vec2(1,0):vec2(0,1);
+            vec4 x12=x0.xyxy+C.xxzz; x12.xy-=i1;
+            i=mod(i,289.);
+            vec3 p=permute(permute(i.y+vec3(0,i1.y,1))+i.x+vec3(0,i1.x,1));
+            vec3 m=max(.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);
+            m=m*m; m=m*m;
+            vec3 x=2.*fract(p*C.www)-1.,h=abs(x)-.5,a0=x-floor(x+.5);
+            vec3 g; g.x=a0.x*x0.x+h.x*x0.y; g.yz=a0.yz*x12.xz+h.yz*x12.yw;
+            return 130.*dot(m,g);
+          }
+
+          void main(){
+            vec2 uv = vUv;
+            float t  = uTime * 0.18;
+
+            /* multi-octave noise aurora */
+            float n1 = snoise(uv * 1.8 + vec2(t, 0.));
+            float n2 = snoise(uv * 3.2 + vec2(0., t * 0.7));
+            float n3 = snoise(uv * 6.0 + vec2(t * 0.4, t * 0.3));
+            float n  = n1 * 0.55 + n2 * 0.30 + n3 * 0.15;
+
+            /* dark-teal to deep-navy palette */
+            vec3 colA = vec3(0.02, 0.055, 0.12);   /* deep navy */
+            vec3 colB = vec3(0.04, 0.19,  0.22);   /* dark teal */
+            vec3 colC = vec3(0.10, 0.05,  0.22);   /* deep violet */
+
+            float t1 = smoothstep(-0.5, 0.5, n);
+            float t2 = smoothstep(-0.2, 0.8, n2);
+            vec3 col  = mix(colA, colB, t1);
+            col       = mix(col,  colC, t2 * 0.35);
+
+            /* top-to-bottom fade: dark on top, slightly lighter at bottom edge */
+            col += vec3(0.0, 0.02, 0.04) * (1. - uv.y) * 0.4;
+
+            /* subtle bright grain */
+            float grain = fract(sin(dot(uv, vec2(12.9898, 78.233)) + uTime * 37.) * 43758.5);
+            col += (grain - 0.5) * 0.018;
+
+            gl_FragColor = vec4(col, 1.0);
+          }
+        `;
+
+        const mat = new THREE.ShaderMaterial({
+          vertexShader: footerVert,
+          fragmentShader: footerFrag,
+          uniforms: {
+            uTime: { value: 0 },
+            uRes:  { value: new THREE.Vector2(w, h) }
+          },
+          depthTest: false, depthWrite: false
+        });
+
+        scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+
+        const clk = new THREE.Clock();
+        function drawFooter() {
+          requestAnimationFrame(drawFooter);
+          mat.uniforms.uTime.value = clk.getElapsedTime();
+          renderer.render(scene, camera);
+        }
+        drawFooter();
+
+        // Resize
+        const ro = new ResizeObserver(() => {
+          const nw = canvas.offsetWidth, nh = canvas.offsetHeight;
+          renderer.setSize(nw, nh);
+          mat.uniforms.uRes.value.set(nw, nh);
+        });
+        ro.observe(canvas.parentElement);
+      }
+
+      function initFooterCanvas2D() {
+        const canvas = document.getElementById("footer-gl");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        let t = 0;
+        function draw() {
+          const w = canvas.offsetWidth, h = canvas.offsetHeight;
+          canvas.width = w; canvas.height = h;
+          const grd = ctx.createLinearGradient(0, 0, w, h);
+          const shift = Math.sin(t * 0.5) * 0.15;
+          grd.addColorStop(0,          `hsl(${220 + shift * 40}, 60%, 8%)`);
+          grd.addColorStop(0.5 + shift, `hsl(${185 + shift * 20}, 55%, 12%)`);
+          grd.addColorStop(1,          `hsl(${265 - shift * 30}, 50%, 10%)`);
+          ctx.fillStyle = grd;
+          ctx.fillRect(0, 0, w, h);
+          t += 0.008;
+          requestAnimationFrame(draw);
+        }
+        draw();
+      }
+
+      initFooterShader();
+
+
+      // ─────────────────────────────────────────────────────────
+      // BRAND TRACK AUTO-SCROLL (via Lenis-compatible rAF)
+      // ─────────────────────────────────────────────────────────
+      let brandScroll = 0;
+      function animateBrands() {
+        if (ui.brandTrack && ui.brandTrack.scrollWidth > ui.brandTrack.clientWidth) {
+          brandScroll += 0.35;
+          if (brandScroll >= ui.brandTrack.scrollWidth / 2) {
+            brandScroll = 0;
+          }
+          ui.brandTrack.scrollLeft = brandScroll;
+        }
+        requestAnimationFrame(animateBrands);
+      }
+      animateBrands();
+    </script>
+
+  </body>
+</html>

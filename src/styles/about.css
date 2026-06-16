@@ -919,3 +919,257 @@ a.about-cta__meta-value:hover { color: var(--red); }
   color: #ffffff;
   display: inline-block;
 }
+
+/* ══ STORE SHOWCASE ══════════════════════════════════════════ */
+.about-store {
+  background: #0a0a0a;
+  padding: 7rem 0;
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+.about-store::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 50%, rgba(227,27,35,0.12), transparent),
+    radial-gradient(ellipse 40% 40% at 80% 50%, rgba(227,27,35,0.08), transparent);
+  pointer-events: none;
+}
+
+.about-store__shell {
+  width: min(1200px, calc(100vw - 60px));
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.about-store__header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.about-store__eyebrow {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 1rem;
+}
+
+.about-store__title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(36px, 5vw, 68px);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1;
+}
+
+.about-store__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ── Store Image ── */
+.about-store__img-wrap {
+  position: relative;
+  border-radius: 4px;
+  overflow: visible;
+}
+
+.about-store__neon-frame {
+  position: absolute;
+  inset: -3px;
+  border-radius: 6px;
+  background: transparent;
+  border: 2px solid rgba(227,27,35,0.6);
+  box-shadow:
+    0 0 12px 2px rgba(227,27,35,0.5),
+    0 0 40px 6px rgba(227,27,35,0.25),
+    inset 0 0 20px rgba(227,27,35,0.08);
+  animation: neonPulse 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 12px 2px rgba(227,27,35,0.5), 0 0 40px 6px rgba(227,27,35,0.25), inset 0 0 20px rgba(227,27,35,0.08); opacity: 1; }
+  50%       { box-shadow: 0 0 20px 4px rgba(227,27,35,0.8), 0 0 60px 10px rgba(227,27,35,0.35), inset 0 0 30px rgba(227,27,35,0.12); opacity: 0.85; }
+}
+
+.about-store__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
+  filter: brightness(0.95) contrast(1.05);
+  transition: transform 0.6s cubic-bezier(0.22,1,0.36,1), filter 0.4s;
+}
+
+.about-store__img-wrap:hover .about-store__img {
+  transform: scale(1.02);
+  filter: brightness(1) contrast(1.08);
+}
+
+.about-store__img-badge {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 3;
+  background: var(--red);
+  color: #ffffff;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(227,27,35,0.5);
+}
+
+/* ── Map + Info ── */
+.about-store__info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.about-store__map-wrap {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  flex: 1;
+}
+
+.about-store__map {
+  width: 100%;
+  height: 300px;
+  border: none;
+  display: block;
+  filter: grayscale(30%) invert(5%) contrast(1.1);
+}
+
+.about-store__map-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  background: rgba(227,27,35,0.1);
+  border-top: 1px solid rgba(227,27,35,0.2);
+  color: var(--red);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.25s, color 0.25s;
+}
+
+.about-store__map-cta:hover {
+  background: var(--red);
+  color: #ffffff;
+}
+
+/* ── Detail cards ── */
+.about-store__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.about-store__detail-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.2s;
+}
+
+.about-store__detail-item:last-child {
+  border-bottom: none;
+}
+
+.about-store__detail-item:hover {
+  background: rgba(227,27,35,0.07);
+}
+
+.about-store__detail-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.about-store__detail-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-store__detail-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.about-store__detail-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+}
+
+.about-store__detail-link:hover {
+  color: var(--red);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .about-store__grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .about-store__map {
+    height: 240px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-store {
+    padding: 4rem 0;
+  }
+
+  .about-store__header {
+    margin-bottom: 2.5rem;
+  }
+}

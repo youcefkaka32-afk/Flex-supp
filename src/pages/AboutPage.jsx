@@ -346,6 +346,84 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── STORE SHOWCASE ── */}
+      <section className="about-store">
+        <div className="about-store__shell">
+          <Reveal>
+            <div className="about-store__header">
+              <span className="about-store__eyebrow">📍 {t('contact.address').replace(':', '').trim()} — Daly Ibrahim, Alger</span>
+              <h2 className="about-store__title font-display">{t('about.visitStore') || 'VISIT OUR STORE'}</h2>
+            </div>
+          </Reveal>
+
+          <div className="about-store__grid">
+            {/* Store Image */}
+            <Reveal direction="left" delay={0.1}>
+              <div className="about-store__img-wrap">
+                <div className="about-store__neon-frame" />
+                <img
+                  src="/images/store-front.png"
+                  alt="Flex Supps Store — Daly Ibrahim, Algiers"
+                  className="about-store__img"
+                />
+                <div className="about-store__img-badge font-display">HOME OF ORIGINAL</div>
+              </div>
+            </Reveal>
+
+            {/* Map + Info */}
+            <Reveal direction="right" delay={0.2}>
+              <div className="about-store__info">
+                <div className="about-store__map-wrap">
+                  <iframe
+                    title="Flex Supps Location"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3197.5042840028!2d2.9892!3d36.7349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128fbb2a5c5b5b5b%3A0x5b5b5b5b5b5b5b5b!2sDaly%20Ibrahim%2C%20Algiers!5e0!3m2!1sen!2sdz!4v1700000000000!5m2!1sen!2sdz"
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="about-store__map"
+                  />
+                  <a
+                    href="https://maps.app.goo.gl/XB5kVT4Wv1t8pqKA9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="about-store__map-cta font-display"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    OPEN IN GOOGLE MAPS
+                  </a>
+                </div>
+
+                <div className="about-store__details">
+                  <div className="about-store__detail-item">
+                    <span className="about-store__detail-icon">📍</span>
+                    <div>
+                      <span className="about-store__detail-label">ADDRESS</span>
+                      <span className="about-store__detail-value">Daly Ibrahim, Algiers, Algeria</span>
+                    </div>
+                  </div>
+                  <div className="about-store__detail-item">
+                    <span className="about-store__detail-icon">📞</span>
+                    <div>
+                      <span className="about-store__detail-label">PHONE / WHATSAPP</span>
+                      <a href="tel:+213553628299" className="about-store__detail-value about-store__detail-link">+213 553 62 82 99</a>
+                    </div>
+                  </div>
+                  <div className="about-store__detail-item">
+                    <span className="about-store__detail-icon">📸</span>
+                    <div>
+                      <span className="about-store__detail-label">INSTAGRAM</span>
+                      <a href="https://www.instagram.com/flex_supps_/" target="_blank" rel="noopener noreferrer" className="about-store__detail-value about-store__detail-link">@flex_supps_</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
       {/* ── PRODUCT SHOWCASE ── */}
       <section className="about-products">
         <div className="about-products__shell">
