@@ -1,0 +1,105 @@
+/* ─────────────────────────────────────────────────────────
+   BrandsMarquee — JS rAF scroll + touch/mouse drag
+   ───────────────────────────────────────────────────────── */
+
+/* ── Wrapper ────────────────────────────────────────────── */
+.bm-desktop-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Each row clips its overflow */
+.bm-row-wrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The scrolling track — must be inline-flex so it shrink-wraps
+   to its content width. JS reads scrollWidth to know how wide 1 copy is. */
+.bm-track {
+  display: inline-flex;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  will-change: transform;
+}
+
+/* Individual logo tile — locked size, no compression allowed */
+.bm-logo-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  flex-shrink: 0;
+  height: 96px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.bm-logo-tile img {
+  max-height: 56px;
+  max-width: 140px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  pointer-events: none; /* prevent image drag interfering with scroll */
+}
+
+/* Larger display for specific brands (e.g. MyProtein) */
+.bm-logo-tile--large {
+  height: 160px;
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.bm-logo-tile--large img {
+  max-height: 160px;
+  max-width: 300px;
+}
+
+/* Fade edges */
+.bm-row-wrapper::before,
+.bm-row-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.bm-row-wrapper::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--pg-bg, #fff) 0%, transparent 100%);
+}
+
+.bm-row-wrapper::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--pg-bg, #fff) 0%, transparent 100%);
+}
+
+/* ── Mobile tweaks ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .bm-logo-tile {
+    width: 160px;
+    min-width: 160px;
+    max-width: 160px;
+    height: 88px;
+    padding: 0 14px;
+  }
+
+  .bm-logo-tile img {
+    max-height: 52px;
+    max-width: 120px;
+  }
+}
