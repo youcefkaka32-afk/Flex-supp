@@ -392,37 +392,45 @@ export default function Hero() {
     s.cursorPos.x = s.cursorTarget.x
     s.cursorPos.y = s.cursorTarget.y
 
+    // Skip grain canvas on mobile — not visible and wastes CPU/GPU
+    const isMobileDevice = window.innerWidth <= 768 || window.matchMedia('(hover: none) and (pointer: coarse)').matches
     const grain = grainRef.current
-    const ctx = grain.getContext('2d', { willReadFrequently: true })
-    const nW = 256
-    const nH = 256
-    grain.width = nW
-    grain.height = nH
-    grain.style.width = '100%'
-    grain.style.height = '100%'
-    const imgData = ctx.createImageData(nW, nH)
-    const data = imgData.data
     let rafGrain
 
-    function drawGrain(ts) {
-      if (ts - s.lastNoiseTime < 40 && s.glitchPower < 0.5) {
+    if (!isMobileDevice) {
+      const ctx = grain.getContext('2d', { willReadFrequently: true })
+      const nW = 256
+      const nH = 256
+      grain.width = nW
+      grain.height = nH
+      grain.style.width = '100%'
+      grain.style.height = '100%'
+      const imgData = ctx.createImageData(nW, nH)
+      const data = imgData.data
+
+      function drawGrain(ts) {
+        if (ts - s.lastNoiseTime < 40 && s.glitchPower < 0.5) {
+          rafGrain = requestAnimationFrame(drawGrain)
+          return
+        }
+        s.lastNoiseTime = ts
+        const base = s.glitchPower > 0 ? Math.floor(100 + s.glitchPower * 90) : 22
+        const jitter = 40 + s.glitchPower * 120
+        for (let i = 0; i < data.length; i += 4) {
+          const v = Math.floor(jitter + Math.random() * (120 + s.glitchPower * 120))
+          data[i] = v
+          data[i + 1] = v
+          data[i + 2] = v
+          data[i + 3] = base
+        }
+        ctx.putImageData(imgData, 0, 0)
         rafGrain = requestAnimationFrame(drawGrain)
-        return
       }
-      s.lastNoiseTime = ts
-      const base = s.glitchPower > 0 ? Math.floor(100 + s.glitchPower * 90) : 22
-      const jitter = 40 + s.glitchPower * 120
-      for (let i = 0; i < data.length; i += 4) {
-        const v = Math.floor(jitter + Math.random() * (120 + s.glitchPower * 120))
-        data[i] = v
-        data[i + 1] = v
-        data[i + 2] = v
-        data[i + 3] = base
-      }
-      ctx.putImageData(imgData, 0, 0)
       rafGrain = requestAnimationFrame(drawGrain)
+    } else {
+      // Hide grain canvas entirely on mobile
+      grain.style.display = 'none'
     }
-    rafGrain = requestAnimationFrame(drawGrain)
 
     let cancelled = false
     let rafGL = 0
@@ -430,18 +438,21 @@ export default function Hero() {
 
     ;(async () => {
       try {
-        // Check if mobile device
-        const isMobile = window.innerWidth <= 768
-        
-        // Load textures - use mobile image if available and on mobile device
+        // Skip WebGL entirely on mobile — use CSS background fallback for performance
+        if (isMobileDevice) {
+          renderSlide(s.currentIndex, true, true)
+          scheduleAutoplay()
+          return
+        }
+
+        // Load textures for desktop WebGL
         const textureEntries = await Promise.all(slides.map(async (slide) => {
-          const imageToUse = isMobile && slide.imageMobile ? slide.imageMobile : slide.image
-          return [slide.image, await loadTexture(imageToUse)]
+          return [slide.image, await loadTexture(slide.image)]
         }))
-      if (cancelled) {
-        textureEntries.forEach(([, texture]) => texture.dispose())
-        return
-      }
+        if (cancelled) {
+          textureEntries.forEach(([, texture]) => texture.dispose())
+          return
+        }
         textureEntries.forEach(([src, texture]) => {
           s.textureCache.set(src, texture)
         })
@@ -449,7 +460,7 @@ export default function Hero() {
         if (!isWebGLSupported()) return
 
         const canvas = glCanvasRef.current
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' })
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' })
         // Prefer sizing from the hero container so we have reliable layout
         // dimensions even if the canvas hasn't been painted yet. This avoids
         // transient sampling/scale artifacts when route content changes size.
@@ -461,7 +472,7 @@ export default function Hero() {
           canvas.style.width = `${initialWidth}px`
           canvas.style.height = `${initialHeight}px`
         }
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
         renderer.setSize(initialWidth, initialHeight, false)
         s.glRenderer = renderer
         s.isGLActive = true
